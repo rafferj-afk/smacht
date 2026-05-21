@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import {
   Home, History, Dumbbell, TrendingUp, Plus, X, Check, Play, Square,
   ChevronLeft, Clock, Search, Trash2, Edit3, Timer, Flame, ArrowRight,
-  Settings, Calculator, Download, Upload, Link2, Zap, Volume2, VolumeX, Bell, BellOff
+  Settings, Calculator, Download, Upload, Link2, Zap, Volume2, VolumeX, Bell, BellOff,
+  Moon, Sun,
 } from 'lucide-react';
 
 // ============================================================
@@ -11,8 +12,8 @@ import {
 // ============================================================
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-// Theme tokens (Square-style light)
-const C = {
+// Theme tokens
+const LIGHT = {
   pageBg: '#F5F5F3',
   cardBg: '#FFFFFF',
   border: '#E8E8E6',
@@ -25,7 +26,28 @@ const C = {
   accentHover: '#697060',
   accentTint: '#F2F3F1',
   superset: '#34C759',
+  navBg: 'rgba(255,255,255,0.95)',
+  stickyBg: 'rgba(245,245,243,0.95)',
 };
+
+const DARK = {
+  pageBg: '#111211',
+  cardBg: '#1C1D1B',
+  border: '#2E2F2C',
+  inputBg: '#161714',
+  textPrimary: '#F0F0EE',
+  textSecondary: '#9CA3AF',
+  textMuted: '#6B7280',
+  textFaint: '#374151',
+  accent: '#7C8471',
+  accentHover: '#8E9882',
+  accentTint: '#1E201C',
+  superset: '#34C759',
+  navBg: 'rgba(28,29,27,0.95)',
+  stickyBg: 'rgba(17,18,17,0.95)',
+};
+
+const ThemeContext = React.createContext(LIGHT);
 
 // ============================================================
 //  SEED EXERCISES
@@ -233,9 +255,12 @@ const e1rm = (weight, reps) => {
 // Working sets exclude warmups AND drop sets (drop sets are visual tracking only)
 const isStatSet = (s) => s.completed && s.type !== 'warmup' && s.type !== 'drop';
 const workingSetsOf = (ex) => ex.sets.filter(isStatSet);
-const volumeOf = (workout) =>
-  workout.exercises.reduce((total, ex) =>
-    total + workingSetsOf(ex).reduce((sum, s) => sum + (s.weight || 0) * (s.reps || 0), 0), 0);
+const volumeOf = (workout, exercises = [], bodyweight = 0) =>
+  workout.exercises.reduce((total, ex) => {
+    const def = exercises.find(e => e.id === ex.exerciseId);
+    const bw = def?.equipment === 'Bodyweight' ? bodyweight : 0;
+    return total + workingSetsOf(ex).reduce((sum, s) => sum + ((s.weight || 0) + bw) * (s.reps || 0), 0);
+  }, 0);
 
 let audioCtx = null;
 const playBeep = (enabled) => {
@@ -326,7 +351,7 @@ const groupByMonth = (workouts) => {
   return out;
 };
 
-function computeWeeklyVolume(workouts, numWeeks) {
+function computeWeeklyVolume(workouts, numWeeks, exercises = [], bodyweight = 0) {
   const weeks = [];
   const now = new Date();
   const mondayOfThisWeek = new Date(now);
@@ -338,7 +363,7 @@ function computeWeeklyVolume(workouts, numWeeks) {
     start.setDate(start.getDate() - i * 7);
     const end = new Date(start); end.setDate(end.getDate() + 7);
     const weekWorkouts = workouts.filter(w => { const d = new Date(w.startedAt); return d >= start && d < end; });
-    const volume = weekWorkouts.reduce((s, w) => s + volumeOf(w), 0);
+    const volume = weekWorkouts.reduce((s, w) => s + volumeOf(w, exercises, bodyweight), 0);
     weeks.push({ week: `${start.getDate()}/${start.getMonth() + 1}`, volume: Math.round(volume) });
   }
   return weeks;
@@ -351,9 +376,11 @@ const DEFAULT_SETTINGS = {
   unit: 'kg',
   defaultRest: 90,
   barWeight: 20,
+  bodyweight: 70,
   soundEnabled: true,
   notificationsEnabled: false,
   notificationTime: '08:00',
+  darkMode: false,
 };
 
 export default function App() {
@@ -472,45 +499,53 @@ export default function App() {
 
   const cancelWorkout = () => setActiveWorkout(null);
 
+  const C = settings.darkMode ? DARK : LIGHT;
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: C.pageBg, color: C.textSecondary }}>
-        <div className="text-sm tracking-widest uppercase opacity-60">Loading…</div>
-      </div>
+      <ThemeContext.Provider value={C}>
+        <div className="min-h-screen flex items-center justify-center" style={{ background: C.pageBg, color: C.textSecondary }}>
+          <div className="text-sm tracking-widest uppercase opacity-60">Loading…</div>
+        </div>
+      </ThemeContext.Provider>
     );
   }
 
   if (activeWorkout) {
     return (
-      <ActiveWorkoutView
-        workout={activeWorkout} setWorkout={setActiveWorkout}
-        exercises={exercises} workouts={workouts}
-        onFinish={finishWorkout} onCancel={cancelWorkout}
-        settings={settings}
-      />
+      <ThemeContext.Provider value={C}>
+        <ActiveWorkoutView
+          workout={activeWorkout} setWorkout={setActiveWorkout}
+          exercises={exercises} workouts={workouts}
+          onFinish={finishWorkout} onCancel={cancelWorkout}
+          settings={settings}
+        />
+      </ThemeContext.Provider>
     );
   }
 
   return (
-    <div className="min-h-screen pb-24" style={{ background: C.pageBg, color: C.textPrimary, fontFamily: "'Inter', system-ui, sans-serif" }}>
-      <FontLoader />
-      <div className="max-w-2xl mx-auto">
-        {tab === 'home' && <HomeTab workouts={workouts} routines={routines} exercises={exercises} settings={settings} setSettings={setSettings} onStartEmpty={startEmptyWorkout} onStartRoutine={startFromRoutine} onCreateRoutine={() => setTab('routines')} onOpenSettings={() => setShowSettings(true)} />}
-        {tab === 'history' && <HistoryTab workouts={workouts} exercises={exercises} setWorkouts={setWorkouts} />}
-        {tab === 'exercises' && <ExercisesTab exercises={exercises} setExercises={setExercises} />}
-        {tab === 'progress' && <ProgressTab workouts={workouts} exercises={exercises} settings={settings} />}
-        {tab === 'routines' && <RoutinesTab routines={routines} setRoutines={setRoutines} exercises={exercises} setExercises={setExercises} onStart={startFromRoutine} />}
+    <ThemeContext.Provider value={C}>
+      <div className="min-h-screen pb-24" style={{ background: C.pageBg, color: C.textPrimary, fontFamily: "'Inter', system-ui, sans-serif" }}>
+        <FontLoader />
+        <div className="max-w-2xl mx-auto">
+          {tab === 'home' && <HomeTab workouts={workouts} routines={routines} exercises={exercises} settings={settings} setSettings={setSettings} onStartEmpty={startEmptyWorkout} onStartRoutine={startFromRoutine} onCreateRoutine={() => setTab('routines')} onOpenSettings={() => setShowSettings(true)} />}
+          {tab === 'history' && <HistoryTab workouts={workouts} exercises={exercises} setWorkouts={setWorkouts} settings={settings} />}
+          {tab === 'exercises' && <ExercisesTab exercises={exercises} setExercises={setExercises} />}
+          {tab === 'progress' && <ProgressTab workouts={workouts} exercises={exercises} settings={settings} />}
+          {tab === 'routines' && <RoutinesTab routines={routines} setRoutines={setRoutines} exercises={exercises} setExercises={setExercises} onStart={startFromRoutine} />}
+        </div>
+        <BottomNav tab={tab} setTab={setTab} />
+        {showSettings && (
+          <SettingsModal
+            settings={settings} setSettings={setSettings}
+            workouts={workouts} routines={routines} exercises={exercises}
+            setWorkouts={setWorkouts} setRoutines={setRoutines} setExercises={setExercises}
+            onClose={() => setShowSettings(false)}
+          />
+        )}
       </div>
-      <BottomNav tab={tab} setTab={setTab} />
-      {showSettings && (
-        <SettingsModal
-          settings={settings} setSettings={setSettings}
-          workouts={workouts} routines={routines} exercises={exercises}
-          setWorkouts={setWorkouts} setRoutines={setRoutines} setExercises={setExercises}
-          onClose={() => setShowSettings(false)}
-        />
-      )}
-    </div>
+    </ThemeContext.Provider>
   );
 }
 
@@ -540,6 +575,7 @@ function FontLoader() {
 }
 
 function BottomNav({ tab, setTab }) {
+  const C = useContext(ThemeContext);
   const items = [
     { id: 'home', label: 'Home', icon: Home },
     { id: 'history', label: 'History', icon: History },
@@ -548,7 +584,7 @@ function BottomNav({ tab, setTab }) {
     { id: 'exercises', label: 'Library', icon: Search },
   ];
   return (
-    <nav className="fixed bottom-0 left-0 right-0 backdrop-blur z-40" style={{ background: 'rgba(255,255,255,0.95)', borderTop: `1px solid ${C.border}` }}>
+    <nav className="fixed bottom-0 left-0 right-0 backdrop-blur z-40" style={{ background: C.navBg, borderTop: `1px solid ${C.border}` }}>
       <div className="max-w-2xl mx-auto grid grid-cols-5">
         {items.map((it) => {
           const Icon = it.icon;
@@ -570,6 +606,7 @@ function BottomNav({ tab, setTab }) {
 }
 
 function StatCard({ label, value, unit }) {
+  const C = useContext(ThemeContext);
   return (
     <div className="rounded-2xl p-3" style={{ background: C.cardBg, border: `1px solid ${C.border}` }}>
       <div className="text-[10px] uppercase tracking-wider mb-1" style={{ color: C.textMuted }}>{label}</div>
@@ -580,6 +617,7 @@ function StatCard({ label, value, unit }) {
 }
 
 function Modal({ children, onClose, fullscreen }) {
+  const C = useContext(ThemeContext);
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
       <div className="absolute inset-0 backdrop-blur-sm" style={{ background: 'rgba(0,0,0,0.4)' }} onClick={onClose} />
@@ -598,7 +636,8 @@ function Modal({ children, onClose, fullscreen }) {
 //  HOME TAB (with Today's Plan banner)
 // ============================================================
 function HomeTab({ workouts, routines, exercises, settings, setSettings, onStartEmpty, onStartRoutine, onCreateRoutine, onOpenSettings }) {
-  const totalVolume = workouts.reduce((s, w) => s + volumeOf(w), 0);
+  const C = useContext(ThemeContext);
+  const totalVolume = workouts.reduce((s, w) => s + volumeOf(w, exercises, settings.bodyweight), 0);
   const lastWorkout = workouts[0];
   const thisWeek = workouts.filter((w) => (Date.now() - new Date(w.startedAt)) / (1000 * 60 * 60 * 24) < 7).length;
 
@@ -723,7 +762,7 @@ function HomeTab({ workouts, routines, exercises, settings, setSettings, onStart
             <div className="flex gap-4 text-xs" style={{ color: C.textSecondary }}>
               <span className="flex items-center gap-1"><Clock size={12} /> {fmtDuration(lastWorkout.duration)}</span>
               <span className="flex items-center gap-1"><Dumbbell size={12} /> {lastWorkout.exercises.length} exercises</span>
-              <span className="flex items-center gap-1 num"><Flame size={12} /> {Math.round(volumeOf(lastWorkout))} kg</span>
+              <span className="flex items-center gap-1 num"><Flame size={12} /> {Math.round(volumeOf(lastWorkout, exercises, settings.bodyweight))} kg</span>
             </div>
           </div>
         </div>
@@ -736,6 +775,7 @@ function HomeTab({ workouts, routines, exercises, settings, setSettings, onStart
 //  ACTIVE WORKOUT
 // ============================================================
 function ActiveWorkoutView({ workout, setWorkout, exercises, workouts, onFinish, onCancel, settings }) {
+  const C = useContext(ThemeContext);
   const [showPicker, setShowPicker] = useState(false);
   const [restEndAt, setRestEndAt] = useState(null);
   const [now, setNow] = useState(Date.now());
@@ -847,7 +887,7 @@ function ActiveWorkoutView({ workout, setWorkout, exercises, workouts, onFinish,
     <div className="min-h-screen" style={{ background: C.pageBg, color: C.textPrimary, fontFamily: "'Inter', system-ui, sans-serif" }}>
       <FontLoader />
 
-      <div className="sticky top-0 backdrop-blur z-30" style={{ background: 'rgba(245,245,243,0.95)', borderBottom: `1px solid ${C.border}` }}>
+      <div className="sticky top-0 backdrop-blur z-30" style={{ background: C.stickyBg, borderBottom: `1px solid ${C.border}` }}>
         <div className="max-w-2xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <button onClick={() => setShowCancelConfirm(true)} className="text-xs uppercase tracking-wider" style={{ color: C.textMuted }}>Cancel</button>
@@ -944,6 +984,7 @@ function ExerciseBlock({
   exercise, exIdx, allExercises, workouts, onToggleSet, onUpdateSet, onChangeSetType,
   onAddSet, onRemoveSet, onRemove, onPlateCalc, onSuperset, onClearSuperset, onEditRest, unit
 }) {
+  const C = useContext(ThemeContext);
   const [showTypeMenu, setShowTypeMenu] = useState(null);
   const [showRestEdit, setShowRestEdit] = useState(false);
 
@@ -1061,6 +1102,7 @@ function ExerciseBlock({
 }
 
 function SetRow({ index, set, previous, onToggle, onUpdate, onChangeType, onRemove, onShowTypeMenu, typeMenuOpen, onPlateCalc }) {
+  const C = useContext(ThemeContext);
   // Subtle row tints when completed
   const rowBg = !set.completed ? 'transparent'
     : set.type === 'warmup' ? '#FEF9C3'
@@ -1150,6 +1192,7 @@ function SetRow({ index, set, previous, onToggle, onUpdate, onChangeType, onRemo
 }
 
 function SetTypeMenuButton({ label, active, color, bg, onClick }) {
+  const C = useContext(ThemeContext);
   return (
     <button
       onClick={onClick}
@@ -1162,6 +1205,7 @@ function SetTypeMenuButton({ label, active, color, bg, onClick }) {
 }
 
 function SupersetPicker({ exercises, currentIdx, onPick, onClose }) {
+  const C = useContext(ThemeContext);
   const available = exercises.map((ex, i) => ({ ex, i })).filter(({ ex, i }) => i !== currentIdx && !ex.supersetGroup);
   return (
     <Modal onClose={onClose}>
@@ -1186,6 +1230,7 @@ function SupersetPicker({ exercises, currentIdx, onPick, onClose }) {
 }
 
 function PlateCalculator({ initialWeight, barWeight, onClose }) {
+  const C = useContext(ThemeContext);
   const [target, setTarget] = useState(initialWeight || barWeight);
   const [bar, setBar] = useState(barWeight);
   const result = calculatePlates(target, bar);
@@ -1256,6 +1301,7 @@ function PlateCalculator({ initialWeight, barWeight, onClose }) {
 }
 
 function ExercisePicker({ exercises, onPick, onClose, excludeIds = [] }) {
+  const C = useContext(ThemeContext);
   const [q, setQ] = useState('');
   const [muscle, setMuscle] = useState('All');
   const filtered = exercises.filter((e) => e.name.toLowerCase().includes(q.toLowerCase()) && (muscle === 'All' || e.muscle === muscle));
@@ -1310,7 +1356,8 @@ function ExercisePicker({ exercises, onPick, onClose, excludeIds = [] }) {
 // ============================================================
 //  HISTORY
 // ============================================================
-function HistoryTab({ workouts, exercises, setWorkouts }) {
+function HistoryTab({ workouts, exercises, setWorkouts, settings }) {
+  const C = useContext(ThemeContext);
   const [selectedId, setSelectedId] = useState(null);
   const selected = workouts.find((w) => w.id === selectedId);
 
@@ -1350,7 +1397,7 @@ function HistoryTab({ workouts, exercises, setWorkouts }) {
                 <div className="flex gap-4 text-xs" style={{ color: C.textSecondary }}>
                   <span className="flex items-center gap-1"><Clock size={12} /> {fmtDuration(w.duration)}</span>
                   <span className="flex items-center gap-1"><Dumbbell size={12} /> {w.exercises.length}</span>
-                  <span className="flex items-center gap-1 num"><Flame size={12} /> {Math.round(volumeOf(w))} kg</span>
+                  <span className="flex items-center gap-1 num"><Flame size={12} /> {Math.round(volumeOf(w, exercises, settings?.bodyweight ?? 0))} kg</span>
                 </div>
               </button>
             ))}
@@ -1362,6 +1409,7 @@ function HistoryTab({ workouts, exercises, setWorkouts }) {
 }
 
 function WorkoutDetail({ workout, exercises, onBack, onDelete }) {
+  const C = useContext(ThemeContext);
   const [confirmDelete, setConfirmDelete] = useState(false);
   return (
     <div className="px-5 pt-8">
@@ -1376,7 +1424,7 @@ function WorkoutDetail({ workout, exercises, onBack, onDelete }) {
 
       <div className="grid grid-cols-3 gap-2 mb-6">
         <StatCard label="Duration" value={fmtDuration(workout.duration)} unit="time" />
-        <StatCard label="Volume" value={Math.round(volumeOf(workout))} unit="kg" />
+        <StatCard label="Volume" value={Math.round(volumeOf(workout, exercises))} unit="kg" />
         <StatCard label="Sets" value={workout.exercises.reduce((s, e) => s + e.sets.filter(x => x.type !== 'warmup').length, 0)} unit="working" />
       </div>
 
@@ -1420,6 +1468,7 @@ function WorkoutDetail({ workout, exercises, onBack, onDelete }) {
 //  LIBRARY
 // ============================================================
 function ExercisesTab({ exercises, setExercises }) {
+  const C = useContext(ThemeContext);
   const [q, setQ] = useState('');
   const [muscle, setMuscle] = useState('All');
   const [showAdd, setShowAdd] = useState(false);
@@ -1466,6 +1515,7 @@ function ExercisesTab({ exercises, setExercises }) {
 }
 
 function AddExerciseModal({ onClose, onAdd }) {
+  const C = useContext(ThemeContext);
   const [name, setName] = useState('');
   const [muscle, setMuscle] = useState('Chest');
   const [equipment, setEquipment] = useState('Barbell');
@@ -1511,15 +1561,16 @@ function AddExerciseModal({ onClose, onAdd }) {
 //  PROGRESS
 // ============================================================
 function ProgressTab({ workouts, exercises, settings }) {
+  const C = useContext(ThemeContext);
   const [selectedExId, setSelectedExId] = useState(null);
   const exercisesWithData = exercises.filter((ex) => workouts.some((w) => w.exercises.some((we) => we.exerciseId === ex.id)));
 
   if (selectedExId) {
     const ex = exercises.find((e) => e.id === selectedExId);
-    return <ExerciseProgress exercise={ex} workouts={workouts} onBack={() => setSelectedExId(null)} unit={settings.unit} />;
+    return <ExerciseProgress exercise={ex} workouts={workouts} onBack={() => setSelectedExId(null)} unit={settings.unit} exercises={exercises} bodyweight={settings.bodyweight} />;
   }
 
-  const weeklyVolume = computeWeeklyVolume(workouts, 12);
+  const weeklyVolume = computeWeeklyVolume(workouts, 12, exercises, settings.bodyweight);
 
   return (
     <div className="px-5 pt-8">
@@ -1584,19 +1635,22 @@ function ProgressTab({ workouts, exercises, settings }) {
   );
 }
 
-function ExerciseProgress({ exercise, workouts, onBack, unit }) {
+function ExerciseProgress({ exercise, workouts, onBack, unit, exercises = [], bodyweight = 0 }) {
+  const C = useContext(ThemeContext);
+  const isBodyweight = exercise?.equipment === 'Bodyweight';
   const data = [];
   [...workouts].sort((a, b) => new Date(a.startedAt) - new Date(b.startedAt)).forEach((w) => {
     const exData = w.exercises.find((e) => e.exerciseId === exercise.id);
     if (!exData) return;
     const working = exData.sets.filter(s => s.type !== 'warmup' && s.type !== 'drop');
     if (working.length === 0) return;
-    const best = working.reduce((b, s) => { const score = e1rm(s.weight, s.reps); return score > b.score ? { score, weight: s.weight, reps: s.reps } : b; }, { score: 0, weight: 0, reps: 0 });
+    const bw = isBodyweight ? bodyweight : 0;
+    const best = working.reduce((b, s) => { const score = e1rm((s.weight || 0) + bw, s.reps); return score > b.score ? { score, weight: s.weight, reps: s.reps } : b; }, { score: 0, weight: 0, reps: 0 });
     data.push({
       date: fmtDateShort(w.startedAt), fullDate: w.startedAt,
-      topWeight: Math.max(...working.map((s) => s.weight || 0)),
+      topWeight: Math.max(...working.map((s) => (s.weight || 0) + bw)),
       e1rm: best.score,
-      volume: Math.round(working.reduce((s, x) => s + (x.weight || 0) * (x.reps || 0), 0)),
+      volume: Math.round(working.reduce((s, x) => s + ((x.weight || 0) + bw) * (x.reps || 0), 0)),
     });
   });
 
@@ -1644,6 +1698,7 @@ function ExerciseProgress({ exercise, workouts, onBack, unit }) {
 }
 
 function ChartCard({ title, data, dataKey, color, type = 'line' }) {
+  const C = useContext(ThemeContext);
   return (
     <div className="rounded-2xl p-4 mb-4" style={{ background: C.cardBg, border: `1px solid ${C.border}` }}>
       <div className="text-xs uppercase tracking-wider mb-3" style={{ color: C.textSecondary }}>{title}</div>
@@ -1676,6 +1731,7 @@ function ChartCard({ title, data, dataKey, color, type = 'line' }) {
 //  ROUTINES
 // ============================================================
 function RoutinesTab({ routines, setRoutines, exercises, setExercises, onStart }) {
+  const C = useContext(ThemeContext);
   const [editing, setEditing] = useState(null);
   const [showImport, setShowImport] = useState(false);
 
@@ -1716,7 +1772,7 @@ function RoutinesTab({ routines, setRoutines, exercises, setExercises, onStart }
       </div>
 
       {!hasNippard && (
-        <div className="rounded-2xl p-4 mb-6" style={{ background: 'linear-gradient(to bottom right, rgba(124,132,113,0.08), transparent)', border: `1px solid ${C.accent}20` }}>
+        <div className="rounded-2xl p-4 mb-6" style={{ background: `linear-gradient(to bottom right, ${C.accentTint}, transparent)`, border: `1px solid ${C.border}` }}>
           <div className="flex items-center gap-2 mb-2">
             <Zap size={16} style={{ color: C.accent }} />
             <div className="text-base font-bold" style={{ color: C.textPrimary }}>Load Nippard Min-Max</div>
@@ -1792,6 +1848,7 @@ function RoutinesTab({ routines, setRoutines, exercises, setExercises, onStart }
 }
 
 function ImportRoutineModal({ onClose, onImport, exercises }) {
+  const C = useContext(ThemeContext);
   const [json, setJson] = useState('');
   const [error, setError] = useState('');
   const handleImport = () => {
@@ -1824,6 +1881,7 @@ function ImportRoutineModal({ onClose, onImport, exercises }) {
 }
 
 function RoutineEditor({ routine, exercises, onSave, onCancel, onDelete, isNew }) {
+  const C = useContext(ThemeContext);
   const [name, setName] = useState(routine.name);
   const [note, setNote] = useState(routine.note || '');
   const [scheduledDays, setScheduledDays] = useState(routine.scheduledDays || []);
@@ -1954,6 +2012,7 @@ function RoutineEditor({ routine, exercises, onSave, onCancel, onDelete, isNew }
 }
 
 function LabelledInput({ label, value, onChange, numeric }) {
+  const C = useContext(ThemeContext);
   return (
     <div>
       <label className="text-[10px] uppercase tracking-wider block mb-1" style={{ color: C.textMuted }}>{label}</label>
@@ -1969,6 +2028,7 @@ function LabelledInput({ label, value, onChange, numeric }) {
 //  SETTINGS
 // ============================================================
 function SettingsModal({ settings, setSettings, workouts, routines, exercises, setWorkouts, setRoutines, setExercises, onClose }) {
+  const C = useContext(ThemeContext);
   const [notifStatus, setNotifStatus] = useState(getNotificationStatus());
 
   const toggleNotifications = async () => {
@@ -2047,11 +2107,25 @@ function SettingsModal({ settings, setSettings, workouts, routines, exercises, s
               className="w-full rounded-xl py-3 px-3 mono outline-none"
               style={{ background: C.inputBg, border: `1px solid ${C.border}`, color: C.textPrimary }} />
           </div>
+          <div>
+            <label className="text-[10px] uppercase tracking-wider block mb-1" style={{ color: C.textMuted }}>Bodyweight (kg)</label>
+            <input type="number" step="0.5" value={settings.bodyweight ?? 70}
+              onChange={(e) => setSettings({ ...settings, bodyweight: parseFloat(e.target.value) || 70 })}
+              className="w-full rounded-xl py-3 px-3 mono outline-none"
+              style={{ background: C.inputBg, border: `1px solid ${C.border}`, color: C.textPrimary }} />
+            <div className="text-[10px] mt-1" style={{ color: C.textMuted }}>Used to calculate volume for bodyweight exercises</div>
+          </div>
           <button onClick={() => setSettings({ ...settings, soundEnabled: !settings.soundEnabled })}
             className="w-full rounded-xl py-3 px-4 flex items-center justify-between"
             style={{ background: C.inputBg }}>
             <span className="text-sm" style={{ color: C.textPrimary }}>Rest timer sound</span>
             {settings.soundEnabled ? <Volume2 size={16} style={{ color: C.accent }} /> : <VolumeX size={16} style={{ color: C.textMuted }} />}
+          </button>
+          <button onClick={() => setSettings({ ...settings, darkMode: !settings.darkMode })}
+            className="w-full rounded-xl py-3 px-4 flex items-center justify-between"
+            style={{ background: C.inputBg }}>
+            <span className="text-sm" style={{ color: C.textPrimary }}>Dark mode</span>
+            {settings.darkMode ? <Moon size={16} style={{ color: C.accent }} /> : <Sun size={16} style={{ color: C.textMuted }} />}
           </button>
         </div>
 
