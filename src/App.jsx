@@ -411,7 +411,7 @@ export default function App() {
       const lastFired = await storage.get('gym:lastNotified', null);
       if (lastFired === todayKey) return;
 
-      const ok = fireNotification('Iron Log', `Today's session: ${matched.name}`);
+      const ok = fireNotification('Smacht', `Today's session: ${matched.name}`);
       if (ok) await storage.set('gym:lastNotified', todayKey);
     };
 
@@ -614,7 +614,7 @@ function HomeTab({ workouts, routines, exercises, settings, setSettings, onStart
           <div className="text-xs uppercase tracking-[0.25em] mb-2" style={{ color: C.textMuted }}>
             {new Date().toLocaleDateString('en-IE', { weekday: 'long', day: 'numeric', month: 'long' })}
           </div>
-          <h1 className="app-title">Synthesize</h1>
+          <h1 className="app-title">Smacht</h1>
         </div>
         <button onClick={onOpenSettings} className="p-2 mt-2" style={{ color: C.textMuted }}>
           <Settings size={20} />
@@ -1808,7 +1808,7 @@ function ImportRoutineModal({ onClose, onImport, exercises }) {
     <Modal onClose={onClose}>
       <div className="p-6">
         <h3 className="text-2xl font-bold mb-2" style={{ color: C.textPrimary }}>Import Routine</h3>
-        <p className="text-xs mb-4" style={{ color: C.textSecondary }}>Paste a routine JSON (from another Iron Log user's Share button).</p>
+        <p className="text-xs mb-4" style={{ color: C.textSecondary }}>Paste a routine JSON (from another Smacht user's Share button).</p>
         <textarea value={json} onChange={(e) => { setJson(e.target.value); setError(''); }}
           placeholder={`{\n  "name": "Push Day",\n  "scheduledDays": [0, 2, 4],\n  "exercises": [\n    { "exerciseId": "ex_bench", "workingSets": 3, "repRange": "6-8" }\n  ]\n}`}
           className="w-full rounded-xl py-3 px-3 mono text-xs outline-none h-40 resize-none"
@@ -1988,7 +1988,7 @@ function SettingsModal({ settings, setSettings, workouts, routines, exercises, s
     const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = `iron-log-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.href = url; a.download = `smacht-backup-${new Date().toISOString().slice(0, 10)}.json`;
     a.click(); URL.revokeObjectURL(url);
   };
 
@@ -2001,7 +2001,7 @@ function SettingsModal({ settings, setSettings, workouts, routines, exercises, s
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = `iron-log-workouts-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.href = url; a.download = `smacht-workouts-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click(); URL.revokeObjectURL(url);
   };
 
