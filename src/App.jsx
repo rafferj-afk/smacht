@@ -1010,6 +1010,12 @@ function ExerciseBlock({
     ? allExercises.find((e, i) => i !== exIdx && e.supersetGroup === exercise.supersetGroup)
     : null;
 
+  const historicalBest = bestPRFor(workouts, exercise.exerciseId).weight;
+  const sessionBest = exercise.sets
+    .filter(s => s.completed && s.type !== 'warmup' && s.type !== 'drop')
+    .reduce((max, s) => Math.max(max, s.weight || 0), 0);
+  const isPR = sessionBest > 0 && sessionBest > historicalBest;
+
   return (
     <div
       className="rounded-2xl overflow-hidden"
@@ -1024,6 +1030,11 @@ function ExerciseBlock({
         <div className="flex-1 min-w-0">
           <div className="flex items-baseline gap-2 flex-wrap">
             <h3 className="text-lg font-bold" style={{ color: C.textPrimary }}>{exercise.name}</h3>
+            {isPR && (
+              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full" style={{ background: C.accent, color: 'white' }}>
+                PR
+              </span>
+            )}
             {exercise.repRange && (
               <span className="text-[10px] uppercase tracking-wider mono" style={{ color: C.textMuted }}>
                 {exercise.repRange} reps · RIR {exercise.rirTarget || '—'}
