@@ -341,6 +341,22 @@ const bestE1RMFor = (workouts, exerciseId) => {
 const sessionCountFor = (workouts, exerciseId) =>
   workouts.filter((w) => w.exercises.some((e) => e.exerciseId === exerciseId)).length;
 
+const bestPRFor = (workouts, exerciseId) => {
+  let best = { weight: 0, reps: 0 };
+  for (const w of workouts) {
+    const ex = w.exercises.find(e => e.exerciseId === exerciseId);
+    if (!ex) continue;
+    for (const s of ex.sets) {
+      if (s.type === 'warmup' || s.type === 'drop') continue;
+      const wt = s.weight || 0;
+      if (wt > best.weight || (wt === best.weight && (s.reps || 0) > best.reps)) {
+        best = { weight: wt, reps: s.reps || 0 };
+      }
+    }
+  }
+  return best;
+};
+
 const groupByMonth = (workouts) => {
   const out = {};
   for (const w of workouts) {
@@ -1600,6 +1616,46 @@ function ProgressTab({ workouts, exercises, settings }) {
         </div>
       ) : (
         <>
+          {/* PR Table */}
+          <div className="rounded-2xl mb-6 overflow-hidden" style={{ background: C.cardBg, border: `1px solid ${C.border}` }}>
+            <div className="px-4 py-3" style={{ borderBottom: `1px solid ${C.border}` }}>
+              <div className="text-xs uppercase tracking-wider font-semibold" style={{ color: C.textSecondary }}>Personal Records</div>
+            </div>
+            <div className="grid grid-cols-[1fr_5rem_4rem] px-4 py-2 text-[10px] uppercase tracking-wider font-semibold" style={{ color: C.textMuted, borderBottom: `1px solid ${C.border}` }}>
+              <div>Exercise</div>
+              <div className="text-right">Best</div>
+              <div className="text-right">Reps</div>
+            </div>
+            {MUSCLE_GROUPS.map((mg) => {
+              const list = exercisesWithData.filter(e => e.muscle === mg);
+              if (list.length === 0) return null;
+              return (
+                <div key={mg}>
+                  <div className="px-4 py-1.5 text-[10px] uppercase tracking-wider" style={{ background: C.inputBg, color: C.textMuted }}>{mg}</div>
+                  {list.map((ex) => {
+                    const pr = bestPRFor(workouts, ex.id);
+                    const isBW = ex.equipment === 'Bodyweight';
+                    return (
+                      <button key={ex.id} onClick={() => setSelectedExId(ex.id)}
+                        className="w-full grid grid-cols-[1fr_5rem_4rem] px-4 py-2.5 text-left transition"
+                        style={{ borderTop: `1px solid ${C.border}` }}
+                        onMouseOver={e => e.currentTarget.style.background = C.inputBg}
+                        onMouseOut={e => e.currentTarget.style.background = 'transparent'}>
+                        <div className="text-sm truncate pr-2" style={{ color: C.textPrimary }}>{ex.name}</div>
+                        <div className="mono text-sm font-semibold text-right" style={{ color: C.accent }}>
+                          {pr.weight > 0 ? `${pr.weight} kg` : isBW ? 'BW' : '—'}
+                        </div>
+                        <div className="mono text-sm text-right" style={{ color: C.textSecondary }}>
+                          {pr.reps > 0 ? `×${pr.reps}` : '—'}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              );
+            })}
+          </div>
+
           <div className="text-xs uppercase tracking-[0.25em] mb-3" style={{ color: C.textMuted }}>Tap an exercise</div>
           {MUSCLE_GROUPS.map((mg) => {
             const list = exercisesWithData.filter((e) => e.muscle === mg);
