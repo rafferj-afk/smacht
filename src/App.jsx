@@ -4,7 +4,7 @@ import {
   Home, History, Dumbbell, TrendingUp, Plus, X, Check, Play, Square,
   ChevronLeft, Clock, Search, Trash2, Edit3, Timer, Flame, ArrowRight,
   Settings, Calculator, Download, Upload, Link2, Zap, Volume2, VolumeX, Bell, BellOff,
-  Moon, Sun,
+  Moon, Sun, Copy, CheckCheck, Share2,
 } from 'lucide-react';
 
 // ============================================================
@@ -262,6 +262,60 @@ const volumeOf = (workout, exercises = [], bodyweight = 0) =>
     return total + workingSetsOf(ex).reduce((sum, s) => sum + ((s.weight || 0) + bw) * (s.reps || 0), 0);
   }, 0);
 
+const buildGeminiPrompt = (workout, exerciseDefs = []) => {
+  const date = new Date(workout.startedAt);
+  const dateStr = date.toLocaleDateString('en-IE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  const timeStr = date.toLocaleTimeString('en-IE', { hour: '2-digit', minute: '2-digit' });
+  const endStr = workout.finishedAt
+    ? new Date(workout.finishedAt).toLocaleTimeString('en-IE', { hour: '2-digit', minute: '2-digit' })
+    : null;
+  const durationStr = fmtDuration(workout.duration);
+
+  const muscles = [...new Set(
+    workout.exercises.map(ex => {
+      const def = exerciseDefs.find(e => e.id === ex.exerciseId);
+      return def?.muscle;
+    }).filter(Boolean)
+  )];
+
+  const totalVolume = Math.round(volumeOf(workout, exerciseDefs));
+  const totalWorkingSets = workout.exercises.reduce((n, ex) => n + workingSetsOf(ex).length, 0);
+
+  const exerciseLines = workout.exercises.map((ex, i) => {
+    const def = exerciseDefs.find(e => e.id === ex.exerciseId);
+    const meta = [def?.muscle, def?.equipment].filter(Boolean).join(' · ');
+    const header = `${i + 1}. ${ex.name}${meta ? ` (${meta})` : ''}`;
+
+    const workingSets = workingSetsOf(ex);
+    const setLines = workingSets.map((s, j) => {
+      const rpe = s.rir != null ? `@ RPE ${10 - s.rir}` : '';
+      return `   • Set ${j + 1}: ${s.weight} kg × ${s.reps} reps${rpe ? ' ' + rpe : ''}`;
+    });
+
+    const warmups = ex.sets.filter(s => s.type === 'warmup');
+    const warmupNote = warmups.length > 0 ? `   (+ ${warmups.length} warm-up set${warmups.length > 1 ? 's' : ''})` : '';
+
+    return [header, ...setLines, ...(warmupNote ? [warmupNote] : [])].join('\n');
+  }).join('\n\n');
+
+  return `I completed a strength training session. Please log this workout and update my strength tracking.
+
+WORKOUT: ${workout.name}
+DATE: ${dateStr}
+TIME: ${timeStr}${endStr ? ` – ${endStr}` : ''} (${durationStr})
+
+EXERCISES PERFORMED:
+
+${exerciseLines}
+
+SUMMARY:
+Total volume: ${totalVolume.toLocaleString()} kg
+Working sets: ${totalWorkingSets}
+Muscles targeted: ${muscles.join(', ')}
+
+Note: RPE values are derived from RIR (Reps In Reserve) as RPE = 10 − RIR. Sets where RIR was not recorded show no RPE.`;
+};
+
 let audioCtx = null;
 const playBeep = (enabled) => {
   if (!enabled) return;
@@ -406,6 +460,7 @@ export default function App() {
   const [routines, setRoutines] = useState([]);
   const [workouts, setWorkouts] = useState([]);
   const [activeWorkout, setActiveWorkout] = useState(null);
+  const [completedWorkout, setCompletedWorkout] = useState(null);
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const [showSettings, setShowSettings] = useState(false);
 
@@ -510,6 +565,7 @@ export default function App() {
     if (completed.exercises.length === 0) { setActiveWorkout(null); return; }
     setWorkouts((prev) => [completed, ...prev]);
     setActiveWorkout(null);
+    setCompletedWorkout(completed);
     setTab('history');
   };
 
@@ -558,6 +614,13 @@ export default function App() {
             workouts={workouts} routines={routines} exercises={exercises}
             setWorkouts={setWorkouts} setRoutines={setRoutines} setExercises={setExercises}
             onClose={() => setShowSettings(false)}
+          />
+        )}
+        {completedWorkout && (
+          <GeminiCopyModal
+            workout={completedWorkout}
+            exercises={exercises}
+            onClose={() => setCompletedWorkout(null)}
           />
         )}
       </div>
@@ -1435,9 +1498,99 @@ function HistoryTab({ workouts, exercises, setWorkouts, settings }) {
   );
 }
 
+function GeminiCopyModal({ workout, exercises, onClose }) {
+  const C = useContext(ThemeContext);
+  const [copied, setCopied] = useState(false);
+  const [shared, setShared] = useState(false);
+  const prompt = buildGeminiPrompt(workout, exercises);
+  const canShare = typeof navigator !== 'undefined' && !!navigator.share;
+
+  const handleShare = async () => {
+    try {
+      await navigator.share({ title: `Workout: ${workout.name}`, text: prompt });
+      setShared(true);
+      setTimeout(() => { setShared(false); onClose(); }, 1500);
+    } catch {
+      // user cancelled — do nothing
+    }
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(prompt).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    });
+  };
+
+  return (
+    <Modal onClose={onClose}>
+      <div className="p-6">
+        <div className="flex items-center justify-between mb-1">
+          <h3 className="text-2xl font-extrabold" style={{ color: C.textPrimary, letterSpacing: '-0.02em' }}>
+            Log in Google Health
+          </h3>
+          <button onClick={onClose} style={{ color: C.textMuted }}><X size={20} /></button>
+        </div>
+        <p className="text-sm mb-4" style={{ color: C.textSecondary }}>
+          {canShare
+            ? 'Share directly to Google Health, or copy to paste manually into Gemini.'
+            : 'Copy this and paste it into Google Health\'s Gemini agent.'}
+        </p>
+
+        <div className="rounded-xl p-3 mb-4 overflow-y-auto max-h-56 text-xs mono whitespace-pre-wrap"
+          style={{ background: C.inputBg, border: `1px solid ${C.border}`, color: C.textPrimary, lineHeight: 1.6 }}>
+          {prompt}
+        </div>
+
+        <div className={canShare ? 'flex flex-col gap-2' : ''}>
+          {canShare && (
+            <button
+              onClick={handleShare}
+              className="w-full py-3.5 rounded-xl font-bold uppercase text-xs tracking-wider flex items-center justify-center gap-2 text-white transition-all"
+              style={{ background: shared ? '#16A34A' : C.accent }}>
+              {shared ? <><CheckCheck size={16} /> Sent!</> : <><Share2 size={16} /> Share to Google Health</>}
+            </button>
+          )}
+          <button
+            onClick={handleCopy}
+            className="w-full py-3.5 rounded-xl font-bold uppercase text-xs tracking-wider flex items-center justify-center gap-2 transition-all"
+            style={canShare
+              ? { background: C.inputBg, color: copied ? '#16A34A' : C.textPrimary, border: `1px solid ${C.border}` }
+              : { background: copied ? '#16A34A' : C.accent, color: 'white' }}>
+            {copied ? <><CheckCheck size={16} /> Copied!</> : <><Copy size={16} /> Copy to Clipboard</>}
+          </button>
+        </div>
+
+        {canShare && (
+          <p className="text-[10px] text-center mt-3" style={{ color: C.textMuted }}>
+            On iOS: tap Share → find Google Health in the sheet
+          </p>
+        )}
+      </div>
+    </Modal>
+  );
+}
+
 function WorkoutDetail({ workout, exercises, onBack, onDelete }) {
   const C = useContext(ThemeContext);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [showGemini, setShowGemini] = useState(false);
+  const [copiedInline, setCopiedInline] = useState(false);
+  const canShare = typeof navigator !== 'undefined' && !!navigator.share;
+
+  const handleInlineAction = async () => {
+    const prompt = buildGeminiPrompt(workout, exercises);
+    if (canShare) {
+      try {
+        await navigator.share({ title: `Workout: ${workout.name}`, text: prompt });
+      } catch { /* cancelled */ }
+    } else {
+      navigator.clipboard.writeText(prompt).then(() => {
+        setCopiedInline(true);
+        setTimeout(() => setCopiedInline(false), 2500);
+      });
+    }
+  };
   return (
     <div className="px-5 pt-8">
       <div className="flex items-center justify-between mb-4">
@@ -1475,6 +1628,17 @@ function WorkoutDetail({ workout, exercises, onBack, onDelete }) {
         ))}
       </div>
 
+      <button
+        onClick={handleInlineAction}
+        className="mt-5 w-full py-3.5 rounded-xl font-bold uppercase text-xs tracking-wider flex items-center justify-center gap-2 text-white transition-all"
+        style={{ background: copiedInline ? '#16A34A' : C.accent }}>
+        {copiedInline
+          ? <><CheckCheck size={16} /> Copied!</>
+          : canShare
+            ? <><Share2 size={16} /> Share to Google Health</>
+            : <><Copy size={16} /> Copy for Google Health</>}
+      </button>
+
       {confirmDelete && (
         <Modal onClose={() => setConfirmDelete(false)}>
           <div className="p-6">
@@ -1487,6 +1651,8 @@ function WorkoutDetail({ workout, exercises, onBack, onDelete }) {
           </div>
         </Modal>
       )}
+
+      {showGemini && <GeminiCopyModal workout={workout} exercises={exercises} onClose={() => setShowGemini(false)} />}
     </div>
   );
 }
