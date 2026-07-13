@@ -16,6 +16,7 @@ const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const LIGHT = {
   pageBg: '#F5F5F3',
   cardBg: '#FFFFFF',
+  cardSolid: '#FFFFFF',
   border: '#E8E8E6',
   inputBg: '#F5F5F3',
   textPrimary: '#1A1A1A',
@@ -25,26 +26,39 @@ const LIGHT = {
   accent: '#7C8471',
   accentHover: '#697060',
   accentTint: '#F2F3F1',
+  accentGlow: 'rgba(124,132,113,0.14)',
   superset: '#34C759',
+  strainLow: '#7C8471',
+  strainMid: '#D4A72C',
+  strainHigh: '#C4432F',
+  warmRed: '#C4432F',
+  warmOrange: '#D4772C',
   navBg: 'rgba(255,255,255,0.95)',
   stickyBg: 'rgba(245,245,243,0.95)',
 };
 
 const DARK = {
-  pageBg: '#111211',
-  cardBg: '#1C1D1B',
-  border: '#2E2F2C',
-  inputBg: '#161714',
-  textPrimary: '#F0F0EE',
-  textSecondary: '#9CA3AF',
-  textMuted: '#6B7280',
-  textFaint: '#374151',
-  accent: '#7C8471',
-  accentHover: '#8E9882',
-  accentTint: '#1E201C',
-  superset: '#34C759',
-  navBg: 'rgba(28,29,27,0.95)',
-  stickyBg: 'rgba(17,18,17,0.95)',
+  pageBg: '#0C0E0B',
+  cardBg: 'rgba(22, 26, 18, 0.72)',
+  cardSolid: '#14170F',
+  border: 'rgba(255,255,255,0.07)',
+  inputBg: '#0A0B08',
+  textPrimary: '#F2F4EE',
+  textSecondary: '#A9B09E',
+  textMuted: '#8A9080',
+  textFaint: '#565C4E',
+  accent: '#B4D97E',
+  accentHover: '#C8E88F',
+  accentTint: 'rgba(180,217,126,0.12)',
+  accentGlow: 'rgba(180,217,126,0.18)',
+  superset: '#B4D97E',
+  strainLow: '#B4D97E',
+  strainMid: '#E8923E',
+  strainHigh: '#E8543E',
+  warmRed: '#E8543E',
+  warmOrange: '#E8923E',
+  navBg: 'rgba(9,10,8,0.9)',
+  stickyBg: 'rgba(0,0,0,0.9)',
 };
 
 const ThemeContext = React.createContext(LIGHT);
@@ -216,6 +230,183 @@ const NIPPARD_ROUTINES = [
 ];
 
 // ============================================================
+//  NIPPARD LEGS/PUSH/PULL — 16-week periodized programme
+//  (2 blocks x 8 weeks, weekly-varying sets/reps/RPE/%1RM)
+// ============================================================
+// Primary lifts (squat/bench/deadlift/ohp) are prescribed as %1RM.
+// `pctOf1RM` is an array indexed by week (0-7) and `lift` names which
+// oneRepMaxes key to multiply against. Everything else uses a fixed
+// rep range + RPE/RIR text that doesn't change week to week, except
+// where `setsOverride`/`repsOverride` arrays are given for weeks that
+// deviate (e.g. extra sets added in later weeks).
+const LPP_PROGRAMME = {
+  id: 'nip_lpp',
+  name: 'Nippard Legs/Push/Pull',
+  note: 'Nippard LPP Hypertrophy · 16-week periodized programme',
+  blocks: [
+    {
+      label: 'Block 1 · Technique Phase',
+      weeks: 8,
+      days: [
+        {
+          id: 'b1_legs1', name: 'Legs 1', scheduledDay: 0,
+          exercises: [
+            { exerciseId: 'ex_bsquat', name: 'Back Squat', lift: 'squat', sets: 3, setsOverride: { 5: 4, 6: 4 }, reps: '5', repsOverride: { 6: '6', 7: '6' }, pctOf1RM: [70, 75, 77.5, 80, 72.5, 72.5, 77.5, 80], rest: 210, notes: 'Sit back and down, 15° toe flare, drive your knees out laterally.' },
+            { exerciseId: 'ex_rdl', name: 'Romanian Deadlift', sets: 2, setsOverride: { 4: 3, 5: 3, 6: 3, 7: 3 }, reps: '8-10', rir: '7', rest: 210, notes: 'Keep your back flat, feel the stretch in your hamstrings on the eccentric.' },
+            { exerciseId: 'ex_seatdeadl', name: 'Cable Pull Through', sets: 2, reps: '10-12', rir: '6→8', rest: 150, notes: 'Thrust your hips forward and squeeze your glutes.' },
+            { exerciseId: 'ex_bulg', name: 'Dumbbell Walking Lunge', sets: 2, reps: '20 each leg', rir: '7→9', rest: 90, notes: 'Medium strides, minimize push-off from your rear leg.' },
+            { exerciseId: 'ex_lege', name: 'Leg Extension', sets: 2, reps: '15', rir: '8→9', rest: 0, superset: 'b1_legs1_a', notes: 'Squeeze your quads to move the weight.' },
+            { exerciseId: 'ex_seatlegc', name: 'Seated Leg Curl', sets: 2, reps: '15', rir: '8→9', rest: 90, superset: 'b1_legs1_a', notes: 'Squeeze your hamstrings to move the weight.' },
+            { exerciseId: 'ex_stcalf', name: 'Standing Calf Raise', sets: 3, reps: '10', rir: '7', rest: 90, notes: 'Press all the way up, stretch at the bottom, no bouncing.' },
+          ],
+        },
+        {
+          id: 'b1_push1', name: 'Push 1', scheduledDay: 1,
+          exercises: [
+            { exerciseId: 'ex_bench', name: 'Barbell Bench Press', lift: 'bench', sets: 3, reps: '4', repsOverride: { 7: '5' }, pctOf1RM: [75, 80, 80, 85, 85, 85, 85, 85], rest: 150, notes: 'Tuck elbows 45°, squeeze shoulder blades, stay firm on the bench.' },
+            { exerciseId: 'ex_dbohp', name: 'Dumbbell Seated Shoulder Press', sets: 3, reps: '8-10', rir: '7→8', rest: 150, notes: 'Bring the dumbbell all the way down, keep your torso upright.' },
+            { exerciseId: 'ex_dip', name: 'Weighted Dip', sets: 2, reps: '6-10', rir: '7', rest: 90, notes: 'Tuck elbows 45°, lean torso forward 15°.' },
+            { exerciseId: 'ex_cabfly', name: 'Low-to-High Cable Flye', sets: 2, setsOverride: { 6: 3 }, reps: '12-15', rir: '8→9', rest: 90, notes: 'Palms face ceiling to start; pull elbows up and in, rotating palms to face floor.' },
+            { exerciseId: 'ex_skull', name: 'Dumbbell Isolateral Skull Crusher', sets: 3, setsOverride: { 4: 4, 5: 4, 6: 4, 7: 4 }, reps: '12', rir: '8→9', rest: 90, notes: 'Elbows fixed in line with top of head, press over head, not over face.' },
+            { exerciseId: 'ex_latr', name: 'Dumbbell Lateral Raise', sets: 3, reps: '15', rir: '8', rest: 90, notes: 'Raise the dumbbell "out" not "up" — mind-muscle connection with middle delts.' },
+            { exerciseId: 'ex_abwh', name: 'Ab Wheel Rollout', sets: 3, reps: '6', rir: '7→8', rest: 90, notes: 'Squeeze glutes, keep lower back flat, cut ROM short if you lose position.' },
+          ],
+        },
+        {
+          id: 'b1_pull1', name: 'Pull 1', scheduledDay: 2,
+          exercises: [
+            { exerciseId: 'ex_1armcab', name: '1 Arm Lat Pull-In', sets: 2, reps: '15-20', rir: '5', rest: 90, notes: 'Light sets — drive elbow down and in toward your side.' },
+            { exerciseId: 'ex_pullup', name: 'Pull-Up', sets: 4, reps: '6-8', rir: '8', rest: 150, notes: 'Pull elbows down and in, minimize swinging.' },
+            { exerciseId: 'ex_brow', name: 'Pendlay Row', sets: 3, reps: '8-10', rir: '8', rest: 150, notes: 'Initiate by squeezing shoulder blades, pull to lower chest, avoid momentum.' },
+            { exerciseId: 'ex_closelatpd', name: 'Machine High Row', sets: 3, reps: '10-12', rir: '8→9', rest: 90, notes: 'Focus on squeezing your lats.' },
+            { exerciseId: 'ex_rdelt', name: 'Seated Face Pull', sets: 3, reps: '20', rir: '8→9', rest: 90, notes: 'Pull elbows up and out, squeeze shoulder blades together.' },
+            { exerciseId: 'ex_ezcurl', name: 'Reverse Grip EZ Bar Curl', sets: 3, reps: '20', rir: '9→10', rest: 0, superset: 'b1_pull1_a', notes: 'Arc the bar "out" not "up" — focus on squeezing forearms.' },
+            { exerciseId: 'ex_bcurl', name: 'Supinated EZ Bar Curl', sets: 3, reps: '15', rir: '9→10', rest: 90, superset: 'b1_pull1_a', notes: 'Arc the bar "out" not "up" — focus on squeezing biceps.' },
+            { exerciseId: 'ex_dbpreach', name: 'Dumbbell Preacher Curl', sets: 3, reps: '12', rir: '7→8', rest: 90, notes: 'Squeeze your biceps to move the weight.' },
+          ],
+        },
+        {
+          id: 'b1_legs2', name: 'Legs 2', scheduledDay: 3,
+          exercises: [
+            { exerciseId: 'ex_dead', name: 'Deadlift', lift: 'deadlift', sets: 4, setsOverride: { 7: 3 }, reps: '4', repsOverride: { 5: '5', 6: '5', 7: '6' }, pctOf1RM: [72.5, 77.5, 80, 82.5, 72.5, 75, 77.5, 80], rest: 210, notes: 'Brace lats, chest tall, hips high — pull the slack out of the bar before it moves.' },
+            { exerciseId: 'ex_fsquat', name: 'Front Squat', sets: 3, reps: '6-8', rir: '6-7', rest: 150, notes: 'Sit down, 15° toe flare, drive knees out laterally.' },
+            { exerciseId: 'ex_legp', name: 'Single-Leg Leg Press', sets: 2, reps: '10-12', rir: '7→8', rest: 90, notes: 'High foot placement.' },
+            { exerciseId: 'ex_lege', name: 'Single-Leg Leg Extension', sets: 3, reps: '15', rir: '7→8', rest: 90, notes: 'Start with your weaker leg — squeeze your quads to move the weight.' },
+            { exerciseId: 'ex_nordic', name: 'Swiss Ball Single-Leg Leg Curl', sets: 3, reps: '12', rir: '7→8', rest: 90, notes: 'Start with weaker leg, keep hips off the ground.' },
+            { exerciseId: 'ex_stcalf', name: 'Seated Calf Raise', sets: 3, reps: '15', rir: '7→8', rest: 90, notes: 'Press all the way up, stretch at the bottom, no bouncing.' },
+          ],
+        },
+        {
+          id: 'b1_push2', name: 'Push 2', scheduledDay: 4,
+          exercises: [
+            { exerciseId: 'ex_closebench', name: 'Close-Grip Bench Press', sets: 3, reps: '6-8', rir: '7-8', rest: 150, notes: 'Shoulder-width grip, elbows down at your sides.' },
+            { exerciseId: 'ex_ohp', name: 'Overhead Press', lift: 'ohp', sets: 3, reps: '5-6', pctOf1RM: [80, 80.5, 81, 81.5, 82, 82, 82.5, 82.5], rest: 150, notes: 'Squeeze glutes to stay upright, clear your head, press up and slightly back.' },
+            { exerciseId: 'ex_dbincbench', name: 'Dumbbell Incline Press', sets: 3, reps: '10-12', rir: '7-8', rest: 90, notes: '~45° incline — mind-muscle connection with upper pecs.' },
+            { exerciseId: 'ex_pecdeck', name: 'Pec Deck', sets: 2, setsOverride: { 4: 3, 5: 3, 6: 3, 7: 3 }, reps: '15', rir: '7-8', rest: 90, notes: 'Bring your inner elbows together, not your hands.' },
+            { exerciseId: 'ex_cablatr', name: 'Cable Lateral Raise', sets: 3, setsOverride: { 4: 4, 5: 4, 6: 4, 7: 4 }, reps: '8', rir: '8-9', rest: 90, notes: 'Squeeze your lateral delt to move the weight.' },
+            { exerciseId: 'ex_cabkickback', name: 'Cable Triceps Kickback', sets: 3, reps: '20', rir: '8-9', rest: 90, notes: 'Stand upright, elbows behind your torso.' },
+            { exerciseId: 'ex_cabcrunch', name: 'Bicycle Crunch', sets: 3, reps: '12', rir: '7-8', rest: 90, notes: 'Opposite knee to elbow, focus on flexing your spine.' },
+          ],
+        },
+        {
+          id: 'b1_pull2', name: 'Pull 2', scheduledDay: 5,
+          exercises: [
+            { exerciseId: 'ex_closelatpd', name: 'Neutral-Grip Pulldown', sets: 3, setsOverride: { 4: 4, 5: 4, 6: 4, 7: 4 }, reps: '10-12', rir: '8', rest: 150, notes: 'Pull your elbows down against your sides.' },
+            { exerciseId: 'ex_seatcabrow', name: 'Cable Seated Elbows-Out Row', sets: 3, reps: '10', rir: '8', rest: 0, superset: 'b1_pull2_a', notes: 'Squeeze shoulder blades together, pull with elbows up and out.' },
+            { exerciseId: 'ex_seatcabrow', name: 'Cable Seated Row', sets: 3, reps: '10', rir: '8', rest: 150, superset: 'b1_pull2_a', notes: 'Squeeze shoulder blades together, pull with elbows down and in.' },
+            { exerciseId: 'ex_dbfly', name: 'Kneeling Straight-Arm Cable Pull-Over', sets: 3, reps: '15', rir: '7', rest: 90, notes: 'Lean torso 45°, pull the weight straight down, not "in".' },
+            { exerciseId: 'ex_bbshrug', name: 'Snatch Grip Barbell Shrug', sets: 3, reps: '15', rir: '8', rest: 90, notes: '1.5x shoulder-width grip — "shrug up to your ears".' },
+            { exerciseId: 'ex_rdelt', name: 'Cable Reverse Flye', sets: 3, reps: '20', rir: '8', rest: 90, notes: 'Sweep the weight out laterally.' },
+            { exerciseId: 'ex_bayesian', name: 'Single-Arm Cable Curl', sets: 3, reps: '12', rir: '7→9', rest: 90, notes: 'Stand upright, keep elbow behind your torso.' },
+            { exerciseId: 'ex_hcurl', name: 'Hammer Curl', sets: 3, reps: '8', rir: '7→9', rest: 90, notes: 'Squeeze your biceps to move the weight.' },
+          ],
+        },
+      ],
+    },
+    {
+      label: 'Block 2 · Peaking Phase (Week 1 = Deload)',
+      weeks: 8,
+      days: [
+        {
+          id: 'b2_legs1', name: 'Legs 1', scheduledDay: 0,
+          exercises: [
+            { exerciseId: 'ex_dead', name: 'Deadlift', lift: 'deadlift', sets: 4, setsOverride: { 1: 5, 2: 5, 3: 5, 4: 5, 5: 5, 6: 5, 7: 5 }, reps: '3', repsOverride: { 7: 'RPE9 test, 1 rep' }, pctOf1RM: [75, 80, 80, 82.5, 82.5, 85, 85, 90], rest: 210, notes: 'Wk8: load 90% and do an RPE9 test — leave 1 in the tank, perfect form.' },
+            { exerciseId: 'ex_bsquat', name: 'Tempo Back Squat', sets: 2, reps: '6', pctOf1RM: [60, 60, 65, 65, 67.5, 67.5, 70, 70], rest: 210, notes: 'Full 2-second lowering phase. Sit back and down, 15° toe flare.' },
+            { exerciseId: 'ex_45hyp', name: 'Round-Back DB 45° Hyperextension', sets: 2, reps: '20', rir: '7-8', rest: 90, notes: 'Upper back rounded, drive hips into the pad like a hip thrust.' },
+            { exerciseId: 'ex_smithlunge', name: 'Smith Machine Reverse Lunge', sets: 2, setsOverride: { 1: 3, 2: 3, 3: 3, 4: 3, 5: 3, 6: 3, 7: 3 }, reps: '15', rir: '7-9', rest: 90, notes: 'Sit back, start with your weaker leg.' },
+            { exerciseId: 'ex_lege', name: 'Enhanced-Eccentric Leg Extension', sets: 2, setsOverride: { 1: 3, 2: 3, 3: 3, 4: 3, 5: 3, 6: 3, 7: 3 }, reps: '12', rir: '6-9', rest: 90, notes: 'Partner pushes down on the pad during the eccentric.' },
+            { exerciseId: 'ex_lylegc', name: 'Enhanced-Eccentric Lying Leg Curl', sets: 2, setsOverride: { 1: 3, 2: 3, 3: 3, 4: 3, 5: 3, 6: 3, 7: 3 }, reps: '12', rir: '6-9', rest: 90, notes: 'Partner pushes down on the pad during the eccentric.' },
+            { exerciseId: 'ex_machabd', name: 'Lateral Band Walk', sets: 2, reps: '15', rir: '8', rest: 90, notes: 'Or machine hip abduction — drive your knees out.' },
+            { exerciseId: 'ex_stcalf', name: 'Tempo Standing Calf Raise', sets: 2, setsOverride: { 1: 3, 2: 3, 3: 3, 4: 3, 5: 3, 6: 3, 7: 3 }, reps: '8', rir: '6-8', rest: 90, notes: '2-second lowering phase. Press all the way up, stretch at bottom.' },
+          ],
+        },
+        {
+          id: 'b2_push1', name: 'Push 1', scheduledDay: 1,
+          exercises: [
+            { exerciseId: 'ex_bench', name: 'Barbell Bench Press', lift: 'bench', sets: 2, setsOverride: { 4: 4, 5: 4, 6: 4, 7: 4 }, reps: '8', repsOverride: { 7: 'AMRAP, 1 set' }, pctOf1RM: [75, 72.5, 75, 75, 77.5, 77.5, 77.5, 85], rest: 150, notes: 'Wk8: AMRAP — always use a spotter and good form.' },
+            { exerciseId: 'ex_ohp', name: 'Arnold Press', sets: 2, reps: '12', rir: '7-9', rest: 90, notes: 'Start palms in, rotate to face out as you press up.' },
+            { exerciseId: 'ex_closebench', name: 'Close-Grip Smith Machine Press', sets: 2, reps: '15', rir: '7-9', rest: 90, notes: 'Shoulder-width grip, elbows down at your sides.' },
+            { exerciseId: 'ex_cabfly', name: 'Low-to-High Cable Flye', sets: 2, reps: '15-20', rir: '8-10', rest: 90, notes: 'Palms face ceiling to start, pull elbows up and in.' },
+            { exerciseId: 'ex_skull', name: 'Barbell Floor Skull Crusher', sets: 2, reps: '8-10', rir: '7-9', rest: 90, notes: 'Push shoulder blades forward, elbows fixed, only move at the elbow.' },
+            { exerciseId: 'ex_latr', name: 'Egyptian Lateral Raise', sets: 2, reps: '12-15', rir: '8', rest: 90, notes: 'Lean away from the cable, squeeze your delts.' },
+            { exerciseId: 'ex_ohtriext', name: 'Rope Overhead Triceps Extension', sets: 2, reps: '12-15', rir: '7-9', rest: 90, notes: 'Stretch your triceps at the bottom of the movement.' },
+            { exerciseId: 'ex_hang', name: 'Hanging Leg Raise', sets: 3, reps: '6', rir: '6-7', rest: 90, notes: 'Focus on flexing your spine.' },
+          ],
+        },
+        {
+          id: 'b2_pull1', name: 'Pull 1', scheduledDay: 2,
+          exercises: [
+            { exerciseId: 'ex_1armcab', name: '1 Arm Lat Pull-In', sets: 2, reps: '15-20', rir: '5', rest: 90, notes: 'Light sets — drive elbow down and in toward your side.' },
+            { exerciseId: 'ex_pullup', name: 'Pull-Up', sets: 3, reps: '12', rir: '7→9', rest: 150, notes: 'Add weight or use assistance as needed.' },
+            { exerciseId: 'ex_dbrow', name: 'Dumbbell One-Arm Row', sets: 2, setsOverride: { 1: 3, 2: 3, 3: 3, 4: 3, 5: 3, 6: 3, 7: 3 }, reps: '6-8', rir: '7→9', rest: 90, notes: 'Brace with your non-working arm, pull back at your sides.' },
+            { exerciseId: 'ex_csuptbar', name: 'Chest-Supported T-Bar Row w/ Band', sets: 2, setsOverride: { 1: 3, 2: 3, 3: 3, 4: 3, 5: 3, 6: 3, 7: 3 }, reps: '10-12', rir: '7→9', rest: 90, notes: 'Loop a band around the weight for extra tension at the top.' },
+            { exerciseId: 'ex_rdelt', name: 'Cable Reverse Flye', sets: 2, setsOverride: { 1: 3, 2: 3, 3: 3, 4: 3, 5: 3, 6: 3, 7: 3 }, reps: '12-15', rir: '8-9', rest: 90, notes: 'Sweep out and back, mind-muscle connection with rear delts.' },
+            { exerciseId: 'ex_revcabxo', name: 'Rope Upright Row', sets: 2, setsOverride: { 1: 3, 2: 3, 3: 3, 4: 3, 5: 3, 6: 3, 7: 3 }, reps: '20', rir: '8-9', rest: 90, notes: 'Squeeze your upper traps at the top, initiate the movement "out".' },
+            { exerciseId: 'ex_dbcurl', name: 'Dumbbell Supinated Curl', sets: 2, setsOverride: { 1: 3, 2: 3, 3: 3, 4: 3, 5: 3, 6: 3, 7: 3 }, reps: '12-15', rir: '7-9', rest: 90, notes: 'Drive your pinky toward your lateral delt.' },
+            { exerciseId: 'ex_dbpreach', name: 'Spider Curl', sets: 3, reps: '15-20', rir: '8', rest: 90, notes: 'Brace your chest against an incline bench, elbows slightly in front.' },
+          ],
+        },
+        {
+          id: 'b2_legs2', name: 'Legs 2', scheduledDay: 3,
+          exercises: [
+            { exerciseId: 'ex_bsquat', name: 'Back Squat', lift: 'squat', sets: 3, setsOverride: { 1: 4, 2: 4, 3: 4, 4: 4, 5: 4, 6: 4, 7: 4 }, reps: '4-5', pctOf1RM: [75, 75, 77.5, 77.5, 80, 80, 82.5, 82.5], rest: 210, notes: 'Sit back and down, 15° toe flare, drive knees out laterally.' },
+            { exerciseId: 'ex_rdl', name: 'Romanian Deadlift', sets: 3, reps: '10-12', rir: '7-8', rest: 150, notes: 'Keep your back flat, feel the hamstring stretch on the eccentric.' },
+            { exerciseId: 'ex_bbhipth', name: 'Pause Barbell Hip Thrust', sets: 2, reps: '10', rir: '7-9', rest: 150, notes: '3-second pause, tuck chin/ribs down, only move your hips, use a pad.' },
+            { exerciseId: 'ex_sissy', name: 'Slow Eccentric Goblet Squat', sets: 2, reps: '12', rir: '6-8', rest: 90, notes: '3-second lowering phase, sit down, knees out, torso upright.' },
+            { exerciseId: 'ex_seatlegc', name: 'Seated Leg Curl', sets: 2, reps: '15', rir: '8-9', rest: 90, notes: 'Squeeze your hamstrings to move the weight.' },
+            { exerciseId: 'ex_seatdeadl', name: 'Cable Rope Pullthrough', sets: 2, reps: '20', rir: '8', rest: 90, notes: 'Squeeze your glutes to move the weight.' },
+            { exerciseId: 'ex_stcalf', name: 'Standing Calf Raise', sets: 3, reps: '12', rir: '7-8', rest: 90, notes: 'Press all the way up, stretch at bottom, no bouncing.' },
+          ],
+        },
+        {
+          id: 'b2_push2', name: 'Push 2', scheduledDay: 4,
+          exercises: [
+            { exerciseId: 'ex_bench', name: 'Barbell Bench Press', lift: 'bench', sets: 3, setsOverride: { 1: 4, 2: 4, 3: 4, 4: 4, 5: 4, 6: 4, 7: 4 }, reps: '4-5', pctOf1RM: [75, 75, 76, 76, 77, 77, 77.5, 77.5], rest: 150, notes: 'Tuck elbows 45°, squeeze shoulder blades, stay firm on the bench.' },
+            { exerciseId: 'ex_ohp', name: 'Overhead Press / Push Press Complex', lift: 'ohp', sets: 3, reps: '4+4', pctOf1RM: [72.5, 72.5, 77.5, 77.5, 80, 80, 82.5, 82.5], rest: 150, notes: 'First 4 reps strict overhead press, last 4 reps push press (use leg drive).' },
+            { exerciseId: 'ex_dip', name: 'Slow Eccentric Dip', sets: 2, setsOverride: { 1: 3, 2: 3, 3: 3, 4: 3, 5: 3, 6: 3, 7: 3 }, reps: '8-10', rir: '6-8', rest: 90, notes: '3-second lowering phase, tuck elbows 45°, lean forward 15°.' },
+            { exerciseId: 'ex_tpush', name: 'Triceps V-Bar Pressdown', sets: 3, reps: '12-15', rir: '7-9', rest: 90, notes: 'Squeeze your triceps to move the weight.' },
+            { exerciseId: 'ex_machlatr', name: 'Machine Lateral Raise', sets: 3, reps: '15-20', rir: '8-9', rest: 90, notes: 'Squeeze your lateral delt to move the weight.' },
+            { exerciseId: 'ex_plank', name: 'Plank', sets: 3, reps: '30 sec', rir: '7', rest: 90, notes: 'Keep your back flat, squeeze your glutes and abs.' },
+          ],
+        },
+        {
+          id: 'b2_pull2', name: 'Pull 2', scheduledDay: 5,
+          exercises: [
+            { exerciseId: 'ex_1armcab', name: 'Single-Arm Pulldown', sets: 3, reps: '12', rir: '7→9', rest: 150, notes: 'Start with your weaker side, stretch your lat at the top.' },
+            { exerciseId: 'ex_dbrow', name: 'Seal Row', sets: 3, reps: '8-10', rir: '7-8', rest: 150, notes: 'Dumbbells or barbell — squeeze glutes to keep your torso stable.' },
+            { exerciseId: 'ex_dbfly', name: 'Kneeling Straight-Arm Cable Pull-Over', sets: 3, reps: '15-20', rir: '8-9', rest: 90, notes: 'Lean torso 45°, pull the weight straight down, not "in".' },
+            { exerciseId: 'ex_rpec1', name: 'Reverse Pec Deck', sets: 3, reps: '15', rir: '7-9', rest: 90, notes: 'Sweep your arms out laterally — mind-muscle connection with rear delts.' },
+            { exerciseId: 'ex_dbcurl', name: 'Dumbbell Pronated Curl', sets: 3, setsOverride: { 1: 4, 2: 4, 3: 4, 4: 4, 5: 4, 6: 4, 7: 4 }, reps: '8', rir: '9→10', rest: 0, superset: 'b2_pull2_a', notes: 'Arc the dumbbell "out" not "up" — squeeze forearms.' },
+            { exerciseId: 'ex_hcurl', name: 'Dumbbell Hammer Curl', sets: 3, setsOverride: { 1: 4, 2: 4, 3: 4, 4: 4, 5: 4, 6: 4, 7: 4 }, reps: '8', rir: '9→10', rest: 0, superset: 'b2_pull2_a', notes: 'Arc the dumbbell "out" not "up" — squeeze forearms.' },
+            { exerciseId: 'ex_dbcurl', name: 'Dumbbell Supinated Curl', sets: 3, setsOverride: { 1: 4, 2: 4, 3: 4, 4: 4, 5: 4, 6: 4, 7: 4 }, reps: '8', rir: '9→10', rest: 90, superset: 'b2_pull2_a', notes: 'Arc the dumbbell "out" not "up" — squeeze biceps.' },
+          ],
+        },
+      ],
+    },
+  ],
+};
+
+// ============================================================
 //  UTILS
 // ============================================================
 const storage = {
@@ -370,6 +561,28 @@ const calculatePlates = (targetWeight, barWeight) => {
   return { plates: result, perSide: loaded, achievable: barWeight + loaded * 2 };
 };
 
+// Round to nearest usable plate increment (2.5kg)
+const roundToPlate = (kg) => Math.round(kg / 2.5) * 2.5;
+
+// Resolves a programme day's exercise prescriptions for a specific week (0-indexed) into
+// concrete weights, given the athlete's 1RMs. Returns objects shaped like RoutineEditor's
+// exercise entries so they can flow through the same startFromRoutine path.
+const resolveProgrammeDay = (day, weekIdx, oneRepMaxes = {}) => {
+  return day.exercises.map((ex) => {
+    const sets = ex.setsOverride?.[weekIdx] ?? ex.sets;
+    const reps = ex.repsOverride?.[weekIdx] ?? ex.reps;
+    let weightHint = null;
+    let rirText = ex.rir || '';
+    if (ex.pctOf1RM) {
+      const pct = ex.pctOf1RM[weekIdx];
+      const oneRM = oneRepMaxes[ex.lift];
+      weightHint = oneRM ? roundToPlate((pct / 100) * oneRM) : null;
+      rirText = `${pct}% 1RM`;
+    }
+    return { ...ex, sets, reps, rirText, weightHint };
+  });
+};
+
 const findLastSetsFor = (workouts, exerciseId) => {
   for (const w of workouts) {
     const ex = w.exercises.find((e) => e.exerciseId === exerciseId);
@@ -411,6 +624,65 @@ const bestPRFor = (workouts, exerciseId) => {
   return best;
 };
 
+// Parses "6-8" -> {min:6,max:8}, "8" -> {min:8,max:8}. Non-numeric (e.g. "Time", "AMRAP") -> null.
+const parseRepRange = (repRange) => {
+  if (!repRange) return null;
+  const match = String(repRange).match(/(\d+)\s*-\s*(\d+)/);
+  if (match) return { min: parseInt(match[1]), max: parseInt(match[2]) };
+  const single = String(repRange).match(/^\d+$/);
+  return single ? { min: parseInt(single[0]), max: parseInt(single[0]) } : null;
+};
+
+// Parses the lowest (hardest/most-fatigued) RIR target from strings like "2/1/0", "1-0", "7-8" (RPE-style, ignored), "0".
+// Only handles small RIR-scale numbers (0-4); returns null if it can't confidently parse one.
+const parseTargetRIR = (rirText) => {
+  if (!rirText) return null;
+  const nums = String(rirText).match(/\d+(\.\d+)?/g);
+  if (!nums) return null;
+  const vals = nums.map(Number).filter(n => n <= 4);
+  return vals.length ? Math.min(...vals) : null;
+};
+
+// Weight increment suggested per bump, by broad exercise category.
+const suggestIncrement = (equipment) => (equipment === 'Barbell' || equipment === 'Machine') ? 2.5 : 2.5;
+
+// Looks at the last few sessions of an exercise and suggests progress/back-off/hold.
+// Only applies to fixed rep-range work (repRange + rirTarget) — %1RM-prescribed programme
+// lifts carry their own periodized progression and are deliberately excluded by callers
+// (they won't have a usable repRange/rirTarget from resolveProgrammeDay's pctOf1RM path).
+const suggestProgression = (workouts, exerciseId, repRange, rirTarget, equipment) => {
+  const range = parseRepRange(repRange);
+  const targetRIR = parseTargetRIR(rirTarget);
+  if (!range || targetRIR == null) return null;
+
+  const sessions = [];
+  for (const w of workouts) {
+    const ex = w.exercises.find(e => e.exerciseId === exerciseId);
+    if (!ex) continue;
+    const working = ex.sets.filter(isStatSet);
+    if (working.length === 0) continue;
+    sessions.push(working);
+    if (sessions.length === 2) break;
+  }
+  if (sessions.length === 0) return null;
+
+  const hitTop = (sets) => sets.every(s => (s.reps || 0) >= range.max && (s.rir ?? 99) <= targetRIR);
+  const missedBottom = (sets) => sets.some(s => (s.reps || 0) < range.min);
+  const groundHarder = (sets) => sets.some(s => s.rir != null && s.rir < targetRIR - 1 && s.rir <= 0);
+
+  const latest = sessions[0];
+  const latestWeight = Math.max(...latest.map(s => s.weight || 0));
+
+  if (sessions.length >= 2 && sessions.every(hitTop)) {
+    const inc = suggestIncrement(equipment);
+    return { type: 'progress', suggestedWeight: roundToPlate(latestWeight + inc), reason: `Beat top of range at target RIR for ${sessions.length} sessions straight` };
+  }
+  if (missedBottom(latest) || groundHarder(latest)) {
+    return { type: 'back-off', reason: missedBottom(latest) ? 'Missed the bottom of the rep range last session' : 'Ground out harder than target RIR last session' };
+  }
+  return null;
+};
+
 const groupByMonth = (workouts) => {
   const out = {};
   for (const w of workouts) {
@@ -450,7 +722,7 @@ const DEFAULT_SETTINGS = {
   soundEnabled: true,
   notificationsEnabled: false,
   notificationTime: '08:00',
-  darkMode: false,
+  darkMode: true,
 };
 
 export default function App() {
@@ -463,15 +735,19 @@ export default function App() {
   const [completedWorkout, setCompletedWorkout] = useState(null);
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const [showSettings, setShowSettings] = useState(false);
+  const [activeProgramme, setActiveProgramme] = useState(null); // { programmeId, block, week } (block/week 0-indexed)
+  const [oneRepMaxes, setOneRepMaxes] = useState({});
 
   useEffect(() => {
     (async () => {
-      const [ex, rt, wk, act, set] = await Promise.all([
+      const [ex, rt, wk, act, set, prog, orms] = await Promise.all([
         storage.get('gym:exercises', null),
         storage.get('gym:routines', []),
         storage.get('gym:workouts', []),
         storage.get('gym:active', null),
         storage.get('gym:settings', DEFAULT_SETTINGS),
+        storage.get('gym:programme', null),
+        storage.get('gym:oneRepMaxes', {}),
       ]);
       const saved = ex || [];
       const merged = [...saved];
@@ -480,6 +756,7 @@ export default function App() {
       if (!ex) storage.set('gym:exercises', merged);
       setRoutines(rt); setWorkouts(wk); setActiveWorkout(act);
       setSettings({ ...DEFAULT_SETTINGS, ...set });
+      setActiveProgramme(prog); setOneRepMaxes(orms);
       setLoading(false);
     })();
   }, []);
@@ -489,6 +766,8 @@ export default function App() {
   useEffect(() => { if (!loading) storage.set('gym:workouts', workouts); }, [workouts, loading]);
   useEffect(() => { if (!loading) storage.set('gym:active', activeWorkout); }, [activeWorkout, loading]);
   useEffect(() => { if (!loading) storage.set('gym:settings', settings); }, [settings, loading]);
+  useEffect(() => { if (!loading) storage.set('gym:programme', activeProgramme); }, [activeProgramme, loading]);
+  useEffect(() => { if (!loading) storage.set('gym:oneRepMaxes', oneRepMaxes); }, [oneRepMaxes, loading]);
 
   // Notification scheduler: checks once a minute whether to fire today's reminder
   useEffect(() => {
@@ -552,6 +831,35 @@ export default function App() {
     });
   };
 
+  const startFromProgrammeDay = (day, weekIdx, weekLabel) => {
+    const resolved = resolveProgrammeDay(day, weekIdx, oneRepMaxes);
+    setActiveWorkout({
+      id: uid(), name: `${day.name} · ${weekLabel}`, programmeDayId: day.id,
+      startedAt: new Date().toISOString(),
+      exercises: resolved.map((re) => {
+        const ex = exercises.find((e) => e.id === re.exerciseId);
+        const lastSets = findLastSetsFor(workouts, re.exerciseId);
+        const workingCount = re.sets || 3;
+        const sets = [];
+        for (let i = 0; i < workingCount; i++) {
+          sets.push({
+            type: 'working',
+            weight: re.weightHint ?? (lastSets[i]?.weight || 0),
+            reps: lastSets[i]?.reps || 0,
+            rir: null, completed: false,
+          });
+        }
+        return {
+          exerciseId: re.exerciseId, name: ex?.name || re.name,
+          sets, notes: re.notes || '',
+          repRange: re.reps, rirTarget: re.rirText,
+          restSeconds: re.rest || 90,
+          supersetGroup: re.superset || null,
+        };
+      }),
+    });
+  };
+
   const finishWorkout = () => {
     if (!activeWorkout) return;
     const finishedAt = new Date().toISOString();
@@ -601,7 +909,7 @@ export default function App() {
       <div className="min-h-screen pb-24" style={{ background: C.pageBg, color: C.textPrimary, fontFamily: "'Inter', system-ui, sans-serif" }}>
         <FontLoader />
         <div className="max-w-2xl mx-auto">
-          {tab === 'home' && <HomeTab workouts={workouts} routines={routines} exercises={exercises} settings={settings} setSettings={setSettings} onStartEmpty={startEmptyWorkout} onStartRoutine={startFromRoutine} onCreateRoutine={() => setTab('routines')} onOpenSettings={() => setShowSettings(true)} />}
+          {tab === 'home' && <HomeTab workouts={workouts} routines={routines} exercises={exercises} settings={settings} setSettings={setSettings} onStartEmpty={startEmptyWorkout} onStartRoutine={startFromRoutine} onCreateRoutine={() => setTab('routines')} onOpenSettings={() => setShowSettings(true)} activeProgramme={activeProgramme} setActiveProgramme={setActiveProgramme} oneRepMaxes={oneRepMaxes} setOneRepMaxes={setOneRepMaxes} onStartProgrammeDay={startFromProgrammeDay} />}
           {tab === 'history' && <HistoryTab workouts={workouts} exercises={exercises} setWorkouts={setWorkouts} settings={settings} />}
           {tab === 'exercises' && <ExercisesTab exercises={exercises} setExercises={setExercises} />}
           {tab === 'progress' && <ProgressTab workouts={workouts} exercises={exercises} settings={settings} />}
@@ -644,7 +952,6 @@ function FontLoader() {
         font-size: 3.25rem;
         letter-spacing: 0.06em;
         line-height: 1;
-        background: linear-gradient(135deg, #7C8471 0%, #4E5C47 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -689,8 +996,37 @@ function StatCard({ label, value, unit }) {
   return (
     <div className="rounded-2xl p-3" style={{ background: C.cardBg, border: `1px solid ${C.border}` }}>
       <div className="text-[10px] uppercase tracking-wider mb-1" style={{ color: C.textMuted }}>{label}</div>
-      <div className="text-3xl font-bold leading-none" style={{ color: C.textPrimary }}>{value}</div>
+      <div className="text-3xl font-bold leading-none num" style={{ color: C.textPrimary }}>{value}</div>
       <div className="text-[10px] mt-1" style={{ color: C.textMuted }}>{unit}</div>
+    </div>
+  );
+}
+
+// Whoop-style circular progress ring. `pct` is 0-100.
+function RingGauge({ pct, size = 168, stroke = 14, color, label, value, unit }) {
+  const C = useContext(ThemeContext);
+  const clamped = Math.max(0, Math.min(100, pct));
+  const r = (size - stroke) / 2;
+  const circumference = 2 * Math.PI * r;
+  const offset = circumference * (1 - clamped / 100);
+  const ringColor = color || C.accent;
+
+  return (
+    <div className="relative shrink-0" style={{ width: size, height: size }}>
+      <svg width={size} height={size} className="-rotate-90 block">
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={C.border} strokeWidth={stroke} />
+        <circle
+          cx={size / 2} cy={size / 2} r={r} fill="none"
+          stroke={ringColor} strokeWidth={stroke} strokeLinecap="round"
+          strokeDasharray={circumference} strokeDashoffset={offset}
+          style={{ transition: 'stroke-dashoffset 0.6s ease, stroke 0.3s ease', filter: `drop-shadow(0 0 10px ${ringColor}88)` }}
+        />
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <div className="font-extrabold leading-none num" style={{ color: C.textPrimary, letterSpacing: '-0.03em', fontSize: size * 0.3 }}>{value}</div>
+        {unit && <div className="mt-1 uppercase tracking-wider" style={{ color: C.textMuted, fontSize: size * 0.065 }}>{unit}</div>}
+        {label && <div className="mt-2 uppercase tracking-[0.2em] font-bold" style={{ color: ringColor, fontSize: size * 0.06 }}>{label}</div>}
+      </div>
     </div>
   );
 }
@@ -712,141 +1048,417 @@ function Modal({ children, onClose, fullscreen }) {
 }
 
 // ============================================================
-//  HOME TAB (with Today's Plan banner)
+//  HOME TAB — dark charcoal + aura-glow dashboard
 // ============================================================
-function HomeTab({ workouts, routines, exercises, settings, setSettings, onStartEmpty, onStartRoutine, onCreateRoutine, onOpenSettings }) {
+function MetricCard({ children, className = '', as = 'div', style = {}, ...rest }) {
   const C = useContext(ThemeContext);
+  const Tag = as;
+  return (
+    <Tag
+      className={`rounded-3xl p-5 ${className}`}
+      style={{ background: C.cardBg, backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: `1px solid ${C.border}`, ...style }}
+      {...rest}
+    >
+      {children}
+    </Tag>
+  );
+}
+
+function CardLabel({ dot, children }) {
+  const C = useContext(ThemeContext);
+  return (
+    <div className="flex items-center gap-2 mb-3 text-[10.5px] uppercase tracking-[0.16em]" style={{ color: C.textMuted }}>
+      {dot && <span className="w-[7px] h-[7px] rounded-full shrink-0" style={{ background: dot }} />}
+      {children}
+    </div>
+  );
+}
+
+function MetricTile({ dot, label, value, unit }) {
+  const C = useContext(ThemeContext);
+  return (
+    <MetricCard className="flex-1">
+      <CardLabel dot={dot}>{label}</CardLabel>
+      <div className="num font-extrabold leading-none" style={{ color: C.textPrimary, fontSize: 26, letterSpacing: '-0.02em' }}>
+        {value}{unit && <span className="font-semibold ml-1" style={{ color: C.textMuted, fontSize: 13 }}>{unit}</span>}
+      </div>
+    </MetricCard>
+  );
+}
+
+function PrimaryCTA({ C, onClick, label }) {
+  return (
+    <button
+      onClick={onClick}
+      className="w-full py-4 rounded-2xl font-extrabold text-base flex items-center justify-center gap-2 active:scale-[0.99] transition"
+      style={{ background: `linear-gradient(160deg, ${C.accentHover}, ${C.accent})`, color: '#10140C', boxShadow: `0 12px 30px -12px ${C.accentGlow}` }}
+    >
+      <Play size={16} fill="currentColor" /> {label}
+    </button>
+  );
+}
+
+function HomeTab({ workouts, routines, exercises, settings, setSettings, onStartEmpty, onStartRoutine, onCreateRoutine, onOpenSettings, activeProgramme, setActiveProgramme, oneRepMaxes, setOneRepMaxes, onStartProgrammeDay }) {
+  const C = useContext(ThemeContext);
+  const [showProgrammeSetup, setShowProgrammeSetup] = useState(false);
   const totalVolume = workouts.reduce((s, w) => s + volumeOf(w, exercises, settings.bodyweight), 0);
   const lastWorkout = workouts[0];
   const thisWeek = workouts.filter((w) => (Date.now() - new Date(w.startedAt)) / (1000 * 60 * 60 * 24) < 7).length;
+
+  const programmeBlock = activeProgramme ? LPP_PROGRAMME.blocks[activeProgramme.block] : null;
+  const programmeDay = programmeBlock ? programmeBlock.days.find(d => d.scheduledDay === getTodayIdx()) : null;
+  const weekLabel = programmeBlock ? `Block ${activeProgramme.block + 1} · Week ${activeProgramme.week + 1}` : '';
+
+  // Weekly Load ring: sessions completed this week vs. days scheduled across active routines (Whoop-style strain ring)
+  const scheduledDaysThisWeek = new Set();
+  routines.forEach(r => (r.scheduledDays || []).forEach(d => scheduledDaysThisWeek.add(d)));
+  if (programmeBlock) programmeBlock.days.forEach(d => scheduledDaysThisWeek.add(d.scheduledDay));
+  const weeklyTarget = scheduledDaysThisWeek.size || 5;
+  const loadPct = Math.round((thisWeek / weeklyTarget) * 100);
+  // Compare sessions-done to days-elapsed-this-week (not the full week) so early-week is neutral, not "behind"
+  const daysElapsed = getTodayIdx() + 1;
+  const expectedByNow = Math.round((weeklyTarget * daysElapsed) / 7);
+  const ringColor = thisWeek >= weeklyTarget ? C.strainLow
+    : thisWeek >= expectedByNow ? C.accent
+    : thisWeek >= Math.max(expectedByNow - 1, 0) ? C.strainMid
+    : C.strainHigh;
 
   const todayIdx = getTodayIdx();
   const todaysRoutines = routines.filter(r => (r.scheduledDays || []).includes(todayIdx));
   const notifStatus = getNotificationStatus();
   const showNotifFallback = settings.notificationsEnabled && (notifStatus === 'denied' || notifStatus === 'unsupported');
 
-  return (
-    <div className="px-5 pt-8">
-      <header className="mb-6 flex items-start justify-between">
-        <div>
-          <div className="text-xs uppercase tracking-[0.25em] mb-2" style={{ color: C.textMuted }}>
-            {new Date().toLocaleDateString('en-IE', { weekday: 'long', day: 'numeric', month: 'long' })}
-          </div>
-          <h1 className="app-title">Smacht</h1>
-        </div>
-        <button onClick={onOpenSettings} className="p-2 mt-2" style={{ color: C.textMuted }}>
-          <Settings size={20} />
-        </button>
-      </header>
+  // ---- Extra metrics for the redesigned hero ----
+  const weekAgoMs = Date.now() - 7 * 86400000;
+  const thisWeekWorkouts = workouts.filter(w => new Date(w.startedAt).getTime() >= weekAgoMs);
+  const weekVolume = thisWeekWorkouts.reduce((s, w) => s + volumeOf(w, exercises, settings.bodyweight), 0);
+  const weekVolumeT = weekVolume / 1000;
+  const volumeTargetT = Math.max(1, Math.round((settings.weeklyVolumeTargetT || 18)));
+  const volumePct = Math.min(100, Math.round((weekVolumeT / volumeTargetT) * 100));
+  const weekSets = thisWeekWorkouts.reduce((n, w) => n + w.exercises.reduce((m, ex) => m + ex.sets.filter(isStatSet).length, 0), 0);
 
-      {/* Today's Plan banner */}
-      {todaysRoutines.length > 0 && (
-        <div className="rounded-2xl p-4 mb-6 text-white" style={{ background: C.accent }}>
-          <div className="text-[10px] uppercase tracking-[0.25em] mb-1 opacity-80">Today · {DAYS[todayIdx]}</div>
-          {todaysRoutines.map((r, i) => (
-            <div key={r.id} className={`flex items-center justify-between ${i > 0 ? 'mt-3 pt-3 border-t border-white/20' : ''}`}>
-              <div>
-                <div className="text-2xl font-bold">{r.name}</div>
-                {r.note && <div className="text-xs opacity-80 mt-0.5">{r.note}</div>}
+  // Prior week volume for the delta chip
+  const prevWeekWorkouts = workouts.filter(w => {
+    const t = new Date(w.startedAt).getTime();
+    return t >= weekAgoMs - 7 * 86400000 && t < weekAgoMs;
+  });
+  const prevWeekVolume = prevWeekWorkouts.reduce((s, w) => s + volumeOf(w, exercises, settings.bodyweight), 0);
+  const volumeDelta = prevWeekVolume > 0 ? Math.round(((weekVolume - prevWeekVolume) / prevWeekVolume) * 100) : null;
+
+  // Best squat PR (from programme's squat 1RM key -> Back Squat exercise)
+  const bestSquat = bestPRFor(workouts, 'ex_bsquat');
+
+  // Avg RIR over last 7 days
+  const recentRIRs = [];
+  thisWeekWorkouts.forEach(w => w.exercises.forEach(ex => ex.sets.forEach(s => { if (isStatSet(s) && s.rir != null) recentRIRs.push(s.rir); })));
+  const avgRIR = recentRIRs.length ? (recentRIRs.reduce((a, b) => a + b, 0) / recentRIRs.length) : null;
+
+  // Streak: consecutive days (working back from today) with at least one workout
+  const workoutDays = new Set(workouts.map(w => new Date(w.startedAt).toDateString()));
+  let streak = 0;
+  for (let i = 0; i < 400; i++) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    if (workoutDays.has(d.toDateString())) streak++;
+    else if (i > 0) break; // today with no workout yet doesn't break a prior streak
+  }
+
+  const advanceWeek = () => {
+    if (!activeProgramme) return;
+    const block = LPP_PROGRAMME.blocks[activeProgramme.block];
+    if (activeProgramme.week + 1 < block.weeks) {
+      setActiveProgramme({ ...activeProgramme, week: activeProgramme.week + 1 });
+    } else if (activeProgramme.block + 1 < LPP_PROGRAMME.blocks.length) {
+      setActiveProgramme({ ...activeProgramme, block: activeProgramme.block + 1, week: 0 });
+    }
+  };
+  const isProgrammeComplete = activeProgramme
+    && activeProgramme.block === LPP_PROGRAMME.blocks.length - 1
+    && activeProgramme.week === LPP_PROGRAMME.blocks[activeProgramme.block].weeks - 1;
+
+  const isDark = C.pageBg === '#0C0E0B';
+
+  return (
+    <div className="px-4 pt-6 relative">
+      {/* Signature aura glow (dark theme only) */}
+      {isDark && (
+        <div
+          className="pointer-events-none fixed left-1/2 top-[44%] -translate-x-1/2 -translate-y-1/2 z-0"
+          style={{ width: 460, height: 460, filter: 'blur(60px)', opacity: 0.85 }}
+        >
+          <div className="absolute inset-0 rounded-full" style={{ background: `radial-gradient(circle at 38% 34%, ${C.accentHover} 0%, transparent 42%), radial-gradient(circle at 66% 44%, ${C.warmRed} 0%, transparent 46%), radial-gradient(circle at 54% 70%, ${C.warmOrange} 0%, transparent 44%)` }} />
+        </div>
+      )}
+
+      <div className="relative z-10">
+        <header className="mb-5 flex items-start justify-between">
+          <div>
+            <div className="text-[11px] uppercase tracking-[0.22em] mb-1.5" style={{ color: C.textMuted }}>
+              {new Date().toLocaleDateString('en-IE', { weekday: 'long', day: 'numeric', month: 'long' })}
+            </div>
+            <h1 className="app-title" style={{ backgroundImage: `linear-gradient(135deg, ${C.accentHover} 0%, ${C.accent} 100%)` }}>Smacht</h1>
+          </div>
+          <button onClick={onOpenSettings} className="w-10 h-10 rounded-full grid place-items-center" style={{ background: C.cardSolid, border: `1px solid ${C.border}`, color: C.textMuted }}>
+            <Settings size={18} />
+          </button>
+        </header>
+
+        <div className="flex flex-col gap-3">
+
+          {/* HERO — this week's volume vs target */}
+          <MetricCard>
+            <CardLabel dot={C.accent}>This Week's Volume</CardLabel>
+            <div className="flex items-baseline gap-2.5 flex-wrap">
+              <span className="num font-extrabold leading-[0.9]" style={{ color: C.textPrimary, fontSize: 52, letterSpacing: '-0.035em' }}>{weekVolumeT.toFixed(1)}</span>
+              <span className="font-semibold" style={{ color: C.textMuted, fontSize: 18 }}>/ {volumeTargetT}t target</span>
+              {volumeDelta != null && (
+                <span className="text-xs font-bold px-2.5 py-1 rounded-full inline-flex items-center gap-0.5" style={{ background: C.accentTint, color: volumeDelta >= 0 ? C.accent : C.warmRed }}>
+                  {volumeDelta >= 0 ? '↑' : '↓'} {Math.abs(volumeDelta)}%
+                </span>
+              )}
+            </div>
+            <div className="flex justify-between text-xs mt-4 mb-2" style={{ color: C.textMuted }}>
+              <span><b style={{ color: C.textPrimary }}>{volumePct}%</b> of target</span>
+              <span><b style={{ color: C.textPrimary }}>{Math.max(0, (volumeTargetT - weekVolumeT)).toFixed(1)}t</b> to go</span>
+            </div>
+            <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
+              <div className="h-full rounded-full" style={{ width: `${volumePct}%`, background: `linear-gradient(90deg, ${C.warmOrange}, ${C.accentHover})` }} />
+            </div>
+          </MetricCard>
+
+          {/* Weekly Load arc + two stat tiles */}
+          <div className="grid grid-cols-2 gap-3">
+            <MetricCard className="flex items-center justify-center">
+              <RingGauge size={150} stroke={13} pct={loadPct} color={ringColor} value={thisWeek} unit={`/ ${weeklyTarget}`} label="Weekly Load" />
+            </MetricCard>
+            <div className="flex flex-col gap-3">
+              <MetricTile dot={C.warmOrange} label="Working Sets" value={weekSets} unit="this wk" />
+              <MetricTile dot={C.accent} label="Total Workouts" value={workouts.length} />
+            </div>
+          </div>
+
+          {/* Notification fallback banner */}
+          {showNotifFallback && (
+            <div className="rounded-xl p-3 flex items-start gap-2 text-xs" style={{ background: '#2A2410', border: `1px solid ${C.warmOrange}55`, color: '#E8C87A' }}>
+              <BellOff size={14} className="mt-0.5 shrink-0" />
+              <div className="flex-1">
+                {notifStatus === 'denied'
+                  ? 'Notifications are blocked in your browser. Enable in site settings to get reminders.'
+                  : "Your browser doesn't support notifications. Today's session shows here when you open the app."}
               </div>
-              <button
-                onClick={() => onStartRoutine(r)}
-                className="px-4 py-2 rounded-xl font-semibold text-sm flex items-center gap-1.5"
-                style={{ background: 'white', color: C.accent }}
-              >
-                <Play size={12} fill="currentColor" /> Start
+            </div>
+          )}
+
+          {/* Programme — This Week / today's session */}
+          {activeProgramme && (
+            <MetricCard className="p-0 overflow-hidden">
+              <div className="flex items-center justify-between px-5 pt-4 pb-3">
+                <div>
+                  <div className="text-[10px] uppercase tracking-[0.16em]" style={{ color: C.textMuted }}>{LPP_PROGRAMME.name}</div>
+                  <div className="text-base font-bold" style={{ color: C.textPrimary }}>{weekLabel} of 8</div>
+                </div>
+                {!isProgrammeComplete ? (
+                  <button onClick={advanceWeek} className="px-3 py-2 rounded-xl font-bold uppercase text-[11px] tracking-wider" style={{ background: C.accentTint, color: C.accent }}>
+                    Advance <ArrowRight size={11} className="inline ml-0.5" />
+                  </button>
+                ) : (
+                  <span className="px-3 py-2 rounded-xl font-bold uppercase text-[11px] tracking-wider" style={{ background: C.accentTint, color: C.accent }}>Final Week</span>
+                )}
+              </div>
+              {programmeDay ? (
+                <div className="flex items-center gap-3.5 px-5 py-4" style={{ borderTop: `1px solid ${C.border}` }}>
+                  <div className="w-11 h-11 rounded-2xl grid place-items-center shrink-0" style={{ background: `linear-gradient(160deg, ${C.accentTint}, transparent)`, border: `1px solid ${C.border}`, color: C.accent }}>
+                    <Dumbbell size={20} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[11px] uppercase tracking-[0.1em]" style={{ color: C.textMuted }}>Today · {DAYS[todayIdx]}</div>
+                    <div className="text-lg font-bold leading-tight" style={{ color: C.textPrimary }}>{programmeDay.name} <span className="text-sm font-medium" style={{ color: C.textMuted }}>· {programmeDay.exercises.length} exercises</span></div>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-xs px-5 py-4" style={{ borderTop: `1px solid ${C.border}`, color: C.textMuted }}>Rest day — nothing scheduled today.</div>
+              )}
+            </MetricCard>
+          )}
+
+          {/* Today's routine banner (non-programme) */}
+          {todaysRoutines.length > 0 && (
+            <MetricCard className="p-0 overflow-hidden">
+              <div className="text-[10px] uppercase tracking-[0.16em] px-5 pt-4" style={{ color: C.textMuted }}>Today · {DAYS[todayIdx]}</div>
+              {todaysRoutines.map((r, i) => (
+                <div key={r.id} className="flex items-center justify-between px-5 py-3" style={i > 0 ? { borderTop: `1px solid ${C.border}` } : {}}>
+                  <div>
+                    <div className="text-lg font-bold" style={{ color: C.textPrimary }}>{r.name}</div>
+                    {r.note && <div className="text-xs mt-0.5" style={{ color: C.textMuted }}>{r.note}</div>}
+                  </div>
+                  <button onClick={() => onStartRoutine(r)} className="px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-1.5" style={{ background: C.accent, color: '#10140C' }}>
+                    <Play size={12} fill="currentColor" /> Start
+                  </button>
+                </div>
+              ))}
+            </MetricCard>
+          )}
+
+          {/* Primary CTA */}
+          {programmeDay ? (
+            <PrimaryCTA C={C} onClick={() => onStartProgrammeDay(programmeDay, activeProgramme.week, weekLabel)} label={`Start ${programmeDay.name}`} />
+          ) : (
+            <PrimaryCTA C={C} onClick={onStartEmpty} label="Start Empty Workout" />
+          )}
+
+          {/* PR + Avg RIR tiles */}
+          <div className="grid grid-cols-2 gap-3">
+            <MetricTile dot={C.accent} label="Best Squat" value={bestSquat.weight > 0 ? bestSquat.weight : '—'} unit={bestSquat.weight > 0 ? `kg × ${bestSquat.reps}` : ''} />
+            <MetricTile dot={C.warmRed} label="Avg RIR" value={avgRIR != null ? avgRIR.toFixed(1) : '—'} unit={avgRIR != null ? 'last 7d' : ''} />
+          </div>
+
+          {/* Programme card + streak */}
+          <div className="grid grid-cols-2 gap-3">
+            {activeProgramme ? (
+              <div className="relative rounded-3xl overflow-hidden min-h-[150px] flex items-end" style={{ border: `1px solid ${C.border}` }}>
+                <div className="absolute inset-0" style={{ background: `linear-gradient(180deg, rgba(12,14,11,0) 30%, rgba(12,14,11,0.92) 100%), linear-gradient(120deg, #6b5533, #8a6a3d 40%, #3a4a2a)` }} />
+                <div className="absolute top-3 left-3 text-[10px] font-bold uppercase tracking-[0.12em] px-2.5 py-1 rounded-full" style={{ background: 'rgba(0,0,0,0.5)', color: C.textPrimary }}>Programme</div>
+                <div className="relative p-4">
+                  <div className="text-lg font-extrabold leading-tight" style={{ color: '#fff', letterSpacing: '-0.02em' }}>Legs/Push/Pull</div>
+                  <div className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.75)' }}>16 weeks · Advanced</div>
+                </div>
+              </div>
+            ) : (
+              <button onClick={() => setShowProgrammeSetup(true)} className="relative rounded-3xl overflow-hidden min-h-[150px] flex flex-col items-start justify-end text-left p-4" style={{ border: `1px solid ${C.border}`, background: `linear-gradient(160deg, ${C.accentTint}, transparent), ${C.cardBg}` }}>
+                <Zap size={18} style={{ color: C.accent }} />
+                <div className="text-base font-extrabold mt-auto pt-2" style={{ color: C.textPrimary }}>Start a Programme</div>
+                <div className="text-xs mt-0.5" style={{ color: C.textMuted }}>Nippard LPP · 16 weeks</div>
               </button>
+            )}
+            <div className="rounded-3xl flex flex-col items-center justify-center gap-3 py-6" style={{ background: `radial-gradient(circle at 50% 35%, ${C.accentGlow}, transparent 60%), ${C.cardBg}`, border: `1px solid ${C.border}` }}>
+              <Flame size={40} style={{ color: C.accent, filter: `drop-shadow(0 0 10px ${C.accentGlow})` }} />
+              <div className="num font-extrabold leading-none" style={{ color: C.textPrimary, fontSize: 38, letterSpacing: '-0.03em' }}>{streak}</div>
+              <div className="text-xs uppercase tracking-[0.24em] font-bold" style={{ color: C.accent }}>Streak</div>
+            </div>
+          </div>
+
+          {/* Secondary: quiet empty-workout link (primary CTA is the programme/routine start above) */}
+          {(programmeDay || todaysRoutines.length > 0) && (
+            <button onClick={onStartEmpty} className="w-full py-3 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2" style={{ background: 'transparent', border: `1px solid ${C.border}`, color: C.textSecondary }}>
+              <Plus size={15} /> Start empty workout instead
+            </button>
+          )}
+
+          {/* Your Routines */}
+          <div className="mt-4">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-[11px] uppercase tracking-[0.22em]" style={{ color: C.textMuted }}>Your Routines</h2>
+              <button onClick={onCreateRoutine} className="text-[11px] uppercase tracking-wider font-bold flex items-center gap-1" style={{ color: C.accent }}>
+                Manage <ArrowRight size={12} />
+              </button>
+            </div>
+            {routines.length === 0 ? (
+              <div className="rounded-3xl p-6 text-center" style={{ border: `1px dashed ${C.textFaint}` }}>
+                <Dumbbell size={24} className="mx-auto mb-2" style={{ color: C.textFaint }} />
+                <div className="text-sm mb-3" style={{ color: C.textSecondary }}>No routines yet</div>
+                <button onClick={onCreateRoutine} className="text-xs uppercase tracking-wider font-bold" style={{ color: C.accent }}>
+                  + Add or Import Routines
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2.5">
+                {routines.map((r) => (
+                  <MetricCard key={r.id} as="button" onClick={() => onStartRoutine(r)} className="w-full text-left flex items-center justify-between">
+                    <div>
+                      <div className="text-lg font-bold" style={{ color: C.textPrimary }}>{r.name}</div>
+                      <div className="text-xs mt-1 flex items-center gap-2 flex-wrap" style={{ color: C.textMuted }}>
+                        {r.note && <span style={{ color: C.accent }}>{r.note}</span>}
+                        <span>{r.exercises.length} exercise{r.exercises.length !== 1 ? 's' : ''}</span>
+                        {(r.scheduledDays || []).length > 0 && (
+                          <span>· {(r.scheduledDays || []).map(d => DAYS[d]).join(', ')}</span>
+                        )}
+                      </div>
+                    </div>
+                    <Play size={18} style={{ color: C.accent }} fill="currentColor" />
+                  </MetricCard>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Last Session */}
+          {lastWorkout && (
+            <div className="mt-4">
+              <h2 className="text-[11px] uppercase tracking-[0.22em] mb-3" style={{ color: C.textMuted }}>Last Session</h2>
+              <MetricCard>
+                <div className="flex items-baseline justify-between mb-3">
+                  <div className="text-lg font-bold" style={{ color: C.textPrimary }}>{lastWorkout.name}</div>
+                  <div className="text-xs uppercase tracking-wider" style={{ color: C.textMuted }}>{fmtDate(lastWorkout.startedAt)}</div>
+                </div>
+                <div className="flex gap-4 text-xs" style={{ color: C.textSecondary }}>
+                  <span className="flex items-center gap-1"><Clock size={12} /> {fmtDuration(lastWorkout.duration)}</span>
+                  <span className="flex items-center gap-1"><Dumbbell size={12} /> {lastWorkout.exercises.length} exercises</span>
+                  <span className="flex items-center gap-1 num"><Flame size={12} /> {Math.round(volumeOf(lastWorkout, exercises, settings.bodyweight))} kg</span>
+                </div>
+              </MetricCard>
+            </div>
+          )}
+
+        </div>
+      </div>
+
+      {showProgrammeSetup && (
+        <ProgrammeSetupModal
+          oneRepMaxes={oneRepMaxes}
+          onStart={(orms) => {
+            setOneRepMaxes(orms);
+            setActiveProgramme({ programmeId: LPP_PROGRAMME.id, block: 0, week: 0 });
+            setShowProgrammeSetup(false);
+          }}
+          onClose={() => setShowProgrammeSetup(false)}
+        />
+      )}
+    </div>
+  );
+}
+
+function ProgrammeSetupModal({ oneRepMaxes, onStart, onClose }) {
+  const C = useContext(ThemeContext);
+  const [orms, setOrms] = useState({
+    squat: oneRepMaxes.squat || '', bench: oneRepMaxes.bench || '',
+    deadlift: oneRepMaxes.deadlift || '', ohp: oneRepMaxes.ohp || '',
+  });
+  const LIFTS = [
+    { key: 'squat', label: 'Back Squat' },
+    { key: 'bench', label: 'Bench Press' },
+    { key: 'deadlift', label: 'Deadlift' },
+    { key: 'ohp', label: 'Overhead Press' },
+  ];
+  const canStart = LIFTS.every(l => parseFloat(orms[l.key]) > 0);
+
+  return (
+    <Modal onClose={onClose}>
+      <div className="p-6">
+        <h3 className="text-2xl font-extrabold mb-1" style={{ color: C.textPrimary, letterSpacing: '-0.02em' }}>Start Programme</h3>
+        <p className="text-sm mb-5" style={{ color: C.textSecondary }}>Enter your current 1-rep max for each lift. The programme uses these to calculate weekly working weights (e.g. 75% of your squat 1RM).</p>
+        <div className="space-y-3 mb-6">
+          {LIFTS.map(l => (
+            <div key={l.key}>
+              <label className="text-[10px] uppercase tracking-wider mb-1 block" style={{ color: C.textMuted }}>{l.label} (kg)</label>
+              <input
+                type="number" inputMode="decimal" placeholder="0"
+                value={orms[l.key]}
+                onChange={(e) => setOrms({ ...orms, [l.key]: e.target.value })}
+                className="w-full px-3 py-2.5 rounded-xl text-base mono"
+                style={{ background: C.inputBg, color: C.textPrimary, border: `1px solid ${C.border}` }}
+              />
             </div>
           ))}
         </div>
-      )}
-
-      {/* Notification fallback banner */}
-      {showNotifFallback && (
-        <div className="rounded-xl p-3 mb-4 flex items-start gap-2 text-xs" style={{ background: '#FEF3C7', border: '1px solid #FCD34D', color: '#92400E' }}>
-          <BellOff size={14} className="mt-0.5 shrink-0" />
-          <div className="flex-1">
-            {notifStatus === 'denied'
-              ? 'Notifications are blocked in your browser. Enable in site settings to get reminders, or use the in-app banner above.'
-              : "Your browser doesn't support notifications. Today's session is shown above when you open the app."}
-          </div>
-        </div>
-      )}
-
-      <div className="grid grid-cols-3 gap-2 mb-6">
-        <StatCard label="This Week" value={thisWeek} unit="sessions" />
-        <StatCard label="Total" value={workouts.length} unit="workouts" />
-        <StatCard label="Volume" value={Math.round(totalVolume / 1000)} unit="t lifted" />
+        <button
+          onClick={() => onStart({ squat: parseFloat(orms.squat), bench: parseFloat(orms.bench), deadlift: parseFloat(orms.deadlift), ohp: parseFloat(orms.ohp) })}
+          disabled={!canStart}
+          className="w-full py-3 rounded-xl font-semibold uppercase text-xs tracking-wider text-white disabled:opacity-40"
+          style={{ background: C.accent }}
+        >
+          Begin Week 1
+        </button>
       </div>
-
-      <button
-        onClick={onStartEmpty}
-        className="w-full active:scale-[0.99] transition text-white font-semibold py-4 rounded-2xl flex items-center justify-center gap-2"
-        style={{ background: C.accent }}
-        onMouseOver={(e) => e.currentTarget.style.background = C.accentHover}
-        onMouseOut={(e) => e.currentTarget.style.background = C.accent}
-      >
-        <Play size={18} fill="currentColor" />
-        <span className="text-base tracking-wide">Start Empty Workout</span>
-      </button>
-
-      <div className="mt-10">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-xs uppercase tracking-[0.25em]" style={{ color: C.textSecondary }}>Your Routines</h2>
-          <button onClick={onCreateRoutine} className="text-xs uppercase tracking-wider font-semibold flex items-center gap-1" style={{ color: C.accent }}>
-            Manage <ArrowRight size={12} />
-          </button>
-        </div>
-        {routines.length === 0 ? (
-          <div className="rounded-2xl p-6 text-center" style={{ border: `1px dashed ${C.textFaint}` }}>
-            <Dumbbell size={24} className="mx-auto mb-2" style={{ color: C.textFaint }} />
-            <div className="text-sm mb-3" style={{ color: C.textSecondary }}>No routines yet</div>
-            <button onClick={onCreateRoutine} className="text-xs uppercase tracking-wider font-semibold" style={{ color: C.accent }}>
-              + Add or Import Routines
-            </button>
-          </div>
-        ) : (
-          <div className="space-y-2">
-            {routines.map((r) => (
-              <button
-                key={r.id} onClick={() => onStartRoutine(r)}
-                className="w-full rounded-2xl p-4 text-left flex items-center justify-between transition hover:shadow-sm"
-                style={{ background: C.cardBg, border: `1px solid ${C.border}` }}
-              >
-                <div>
-                  <div className="text-lg font-bold" style={{ color: C.textPrimary }}>{r.name}</div>
-                  <div className="text-xs mt-1 flex items-center gap-2 flex-wrap" style={{ color: C.textMuted }}>
-                    {r.note && <span style={{ color: C.accent }}>{r.note}</span>}
-                    <span>{r.exercises.length} exercise{r.exercises.length !== 1 ? 's' : ''}</span>
-                    {(r.scheduledDays || []).length > 0 && (
-                      <span>· {(r.scheduledDays || []).map(d => DAYS[d]).join(', ')}</span>
-                    )}
-                  </div>
-                </div>
-                <Play size={18} style={{ color: C.accent }} fill="currentColor" />
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {lastWorkout && (
-        <div className="mt-10">
-          <h2 className="text-xs uppercase tracking-[0.25em] mb-3" style={{ color: C.textSecondary }}>Last Session</h2>
-          <div className="rounded-2xl p-4" style={{ background: C.cardBg, border: `1px solid ${C.border}` }}>
-            <div className="flex items-baseline justify-between mb-3">
-              <div className="text-lg font-bold" style={{ color: C.textPrimary }}>{lastWorkout.name}</div>
-              <div className="text-xs uppercase tracking-wider" style={{ color: C.textMuted }}>{fmtDate(lastWorkout.startedAt)}</div>
-            </div>
-            <div className="flex gap-4 text-xs" style={{ color: C.textSecondary }}>
-              <span className="flex items-center gap-1"><Clock size={12} /> {fmtDuration(lastWorkout.duration)}</span>
-              <span className="flex items-center gap-1"><Dumbbell size={12} /> {lastWorkout.exercises.length} exercises</span>
-              <span className="flex items-center gap-1 num"><Flame size={12} /> {Math.round(volumeOf(lastWorkout, exercises, settings.bodyweight))} kg</span>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+    </Modal>
   );
 }
 
@@ -942,6 +1554,19 @@ function ActiveWorkoutView({ workout, setWorkout, exercises, workouts, onFinish,
     setWorkout(next);
   };
 
+  // Duplicate the set at setIdx, inserting the clone directly after it (weight/reps carried over)
+  const duplicateSetAt = (exIdx, setIdx) => {
+    const ex = workout.exercises[exIdx];
+    const src = ex.sets[setIdx];
+    const cloned = { type: src.type === 'warmup' ? 'working' : src.type, weight: src.weight || 0, reps: src.reps || 0, rir: null, completed: false };
+    const sets = [...ex.sets];
+    sets.splice(setIdx + 1, 0, cloned);
+    const next = { ...workout };
+    next.exercises = [...next.exercises];
+    next.exercises[exIdx] = { ...next.exercises[exIdx], sets };
+    setWorkout(next);
+  };
+
   const removeExercise = (exIdx) => setWorkout({ ...workout, exercises: workout.exercises.filter((_, i) => i !== exIdx) });
 
   const setSupersetGroup = (exIdx, otherIdx) => {
@@ -1009,11 +1634,13 @@ function ActiveWorkoutView({ workout, setWorkout, exercises, workouts, onFinish,
               exercise={ex} exIdx={exIdx}
               allExercises={workout.exercises}
               workouts={workouts}
+              exerciseDefs={exercises}
               onToggleSet={(setIdx) => toggleSetComplete(exIdx, setIdx)}
               onUpdateSet={(setIdx, patch) => updateSet(exIdx, setIdx, patch)}
               onChangeSetType={(setIdx, type) => changeSetType(exIdx, setIdx, type)}
               onAddSet={() => addSetTo(exIdx)}
               onRemoveSet={(setIdx) => removeSet(exIdx, setIdx)}
+              onDuplicateSet={(setIdx) => duplicateSetAt(exIdx, setIdx)}
               onRemove={() => removeExercise(exIdx)}
               onPlateCalc={(weight) => setPlateCalcFor({ exIdx, weight })}
               onSuperset={() => setSupersetPicker(exIdx)}
@@ -1060,12 +1687,13 @@ function ActiveWorkoutView({ workout, setWorkout, exercises, workouts, onFinish,
 }
 
 function ExerciseBlock({
-  exercise, exIdx, allExercises, workouts, onToggleSet, onUpdateSet, onChangeSetType,
-  onAddSet, onRemoveSet, onRemove, onPlateCalc, onSuperset, onClearSuperset, onEditRest, unit
+  exercise, exIdx, allExercises, workouts, exerciseDefs, onToggleSet, onUpdateSet, onChangeSetType,
+  onAddSet, onRemoveSet, onDuplicateSet, onRemove, onPlateCalc, onSuperset, onClearSuperset, onEditRest, unit
 }) {
   const C = useContext(ThemeContext);
   const [showTypeMenu, setShowTypeMenu] = useState(null);
   const [showRestEdit, setShowRestEdit] = useState(false);
+  const [dismissedSuggestion, setDismissedSuggestion] = useState(false);
 
   const lastSets = findLastSetsFor(workouts, exercise.exerciseId);
   const isSuperset = !!exercise.supersetGroup;
@@ -1078,6 +1706,14 @@ function ExerciseBlock({
     .filter(s => s.completed && s.type !== 'warmup' && s.type !== 'drop')
     .reduce((max, s) => Math.max(max, s.weight || 0), 0);
   const isPR = sessionBest > 0 && sessionBest > historicalBest;
+
+  // No sets logged yet this session (weight/reps not typed in) means this is effectively "starting"
+  // this exercise for today — that's when a stale suggestion is most useful, before you've overwritten it.
+  const hasLoggedThisSession = exercise.sets.some(s => s.completed);
+  const equipment = exerciseDefs?.find(e => e.id === exercise.exerciseId)?.equipment;
+  const suggestion = (!hasLoggedThisSession && !dismissedSuggestion)
+    ? suggestProgression(workouts, exercise.exerciseId, exercise.repRange, exercise.rirTarget, equipment)
+    : null;
 
   return (
     <div
@@ -1124,6 +1760,27 @@ function ExerciseBlock({
         </div>
       </div>
 
+      {suggestion && (
+        <div
+          className="flex items-center justify-between gap-2 px-4 py-2 text-xs"
+          style={{
+            background: suggestion.type === 'progress' ? C.accentTint : '#3A1F1F',
+            color: suggestion.type === 'progress' ? C.accent : '#F0A0A0',
+            borderBottom: `1px solid ${C.border}`,
+          }}
+        >
+          <div className="flex items-center gap-1.5 min-w-0">
+            {suggestion.type === 'progress' ? <TrendingUp size={13} className="shrink-0" /> : <Flame size={13} className="shrink-0" />}
+            <span className="truncate">
+              {suggestion.type === 'progress'
+                ? <>Try <span className="mono font-bold">{suggestion.suggestedWeight} {unit}</span> — {suggestion.reason}</>
+                : <>Hold or ease back — {suggestion.reason}</>}
+            </span>
+          </div>
+          <button onClick={() => setDismissedSuggestion(true)} className="shrink-0 opacity-70"><X size={13} /></button>
+        </div>
+      )}
+
       <div className="grid grid-cols-[1.75rem_1.25rem_1fr_1fr_2.25rem_2.25rem] gap-1.5 px-3 py-2 text-[10px] uppercase tracking-wider font-semibold" style={{ color: C.textMuted, borderBottom: `1px solid ${C.border}` }}>
         <div>Set</div><div></div><div>{unit}</div><div>Reps</div>
         <div className="text-center">RIR</div><div></div>
@@ -1146,6 +1803,7 @@ function ExerciseBlock({
             onUpdate={(patch) => onUpdateSet(i, patch)}
             onChangeType={(type) => { onChangeSetType(i, type); setShowTypeMenu(null); }}
             onRemove={() => onRemoveSet(i)}
+            onDuplicate={() => onDuplicateSet(i)}
             onShowTypeMenu={() => setShowTypeMenu(showTypeMenu === i ? null : i)}
             typeMenuOpen={showTypeMenu === i}
             onPlateCalc={() => onPlateCalc(set.weight)}
@@ -1191,8 +1849,49 @@ function ExerciseBlock({
   );
 }
 
-function SetRow({ index, set, previous, onToggle, onUpdate, onChangeType, onRemove, onShowTypeMenu, typeMenuOpen, onPlateCalc }) {
+const SWIPE_COMMIT_PX = 72;
+const SWIPE_MAX_PX = 96;
+
+function SetRow({ index, set, previous, onToggle, onUpdate, onChangeType, onRemove, onDuplicate, onShowTypeMenu, typeMenuOpen, onPlateCalc }) {
   const C = useContext(ThemeContext);
+  const [dragX, setDragX] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const dragState = useRef(null); // { startX, startY, axis }
+
+  // Track every pointer-down (including on inputs/buttons), but only hijack the
+  // gesture once horizontal intent is confirmed past a deadzone — taps and
+  // vertical scrolls fall through to native input/button behavior untouched.
+  const onPointerDown = (e) => {
+    dragState.current = { startX: e.clientX, startY: e.clientY, axis: null, pointerId: e.pointerId };
+  };
+  const onPointerMove = (e) => {
+    if (!dragState.current) return;
+    const dx = e.clientX - dragState.current.startX;
+    const dy = e.clientY - dragState.current.startY;
+    if (!dragState.current.axis) {
+      if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
+      dragState.current.axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+      if (dragState.current.axis === 'x') {
+        setDragging(true);
+        e.currentTarget.setPointerCapture?.(dragState.current.pointerId);
+        e.target.blur?.();
+      }
+    }
+    if (dragState.current.axis !== 'x') return;
+    e.preventDefault();
+    const clamped = Math.max(-SWIPE_MAX_PX, Math.min(SWIPE_MAX_PX, dx));
+    setDragX(clamped);
+  };
+  const endDrag = () => {
+    if (dragState.current?.axis === 'x') {
+      if (dragX <= -SWIPE_COMMIT_PX) onRemove();
+      else if (dragX >= SWIPE_COMMIT_PX) onDuplicate();
+    }
+    setDragX(0);
+    setDragging(false);
+    dragState.current = null;
+  };
+
   // Subtle row tints when completed
   const rowBg = !set.completed ? 'transparent'
     : set.type === 'warmup' ? '#FEF9C3'
@@ -1215,8 +1914,25 @@ function SetRow({ index, set, previous, onToggle, onUpdate, onChangeType, onRemo
   const checkColor = set.completed ? 'white' : C.textMuted;
 
   return (
-    <div>
-      <div className="relative grid grid-cols-[1.75rem_1.25rem_1fr_1fr_2.25rem_2.25rem] gap-1.5 px-3 py-2 items-center transition" style={{ background: rowBg }}>
+    <div className="relative overflow-hidden">
+      {/* Swipe reveal layer */}
+      <div className="absolute inset-0 flex items-center justify-between px-4" style={{ background: dragX < 0 ? '#DC2626' : dragX > 0 ? C.accent : 'transparent' }}>
+        <div className="flex items-center gap-1.5 text-white text-xs font-semibold" style={{ opacity: Math.min(1, dragX / SWIPE_COMMIT_PX) }}>
+          <Plus size={14} /> Duplicate
+        </div>
+        <div className="flex items-center gap-1.5 text-white text-xs font-semibold ml-auto" style={{ opacity: Math.min(1, -dragX / SWIPE_COMMIT_PX) }}>
+          Delete <Trash2 size={14} />
+        </div>
+      </div>
+
+      <div
+        className="relative grid grid-cols-[1.75rem_1.25rem_1fr_1fr_2.25rem_2.25rem] gap-1.5 px-3 py-2 items-center"
+        style={{ background: rowBg, transform: `translateX(${dragX}px)`, transition: dragging ? 'none' : 'transform 0.2s ease' }}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+      >
         <button onClick={onShowTypeMenu} className="mono font-bold text-sm" style={{ color: badgeColor }}>{index}</button>
         <button onClick={onPlateCalc} title="Plate calculator" style={{ color: C.textMuted }}><Calculator size={12} /></button>
         <input
@@ -1252,7 +1968,6 @@ function SetRow({ index, set, previous, onToggle, onUpdate, onChangeType, onRemo
         />
         <button
           onClick={onToggle}
-          onContextMenu={(e) => { e.preventDefault(); onRemove(); }}
           className="flex items-center justify-center rounded-lg transition h-8"
           style={{ background: checkBg, color: checkColor }}
         >
@@ -1457,6 +2172,7 @@ function HistoryTab({ workouts, exercises, setWorkouts, settings }) {
         workout={selected} exercises={exercises}
         onBack={() => setSelectedId(null)}
         onDelete={() => { setWorkouts((prev) => prev.filter((w) => w.id !== selected.id)); setSelectedId(null); }}
+        onUpdate={(patch) => setWorkouts((prev) => prev.map((w) => w.id === selected.id ? { ...w, ...patch } : w))}
       />
     );
   }
@@ -1571,11 +2287,12 @@ function GeminiCopyModal({ workout, exercises, onClose }) {
   );
 }
 
-function WorkoutDetail({ workout, exercises, onBack, onDelete }) {
+function WorkoutDetail({ workout, exercises, onBack, onDelete, onUpdate }) {
   const C = useContext(ThemeContext);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [showGemini, setShowGemini] = useState(false);
   const [copiedInline, setCopiedInline] = useState(false);
+  const [editDuration, setEditDuration] = useState(false);
   const canShare = typeof navigator !== 'undefined' && !!navigator.share;
 
   const handleInlineAction = async () => {
@@ -1603,7 +2320,10 @@ function WorkoutDetail({ workout, exercises, onBack, onDelete }) {
       <div className="text-sm mb-6" style={{ color: C.textMuted }}>{fmtDate(workout.startedAt)}</div>
 
       <div className="grid grid-cols-3 gap-2 mb-6">
-        <StatCard label="Duration" value={fmtDuration(workout.duration)} unit="time" />
+        <button onClick={() => onUpdate && setEditDuration(true)} className="text-left relative rounded-2xl" style={onUpdate ? { outline: 'none' } : {}}>
+          <StatCard label="Duration" value={fmtDuration(workout.duration)} unit="time" />
+          {onUpdate && <Edit3 size={11} className="absolute top-2.5 right-2.5" style={{ color: C.textMuted }} />}
+        </button>
         <StatCard label="Volume" value={Math.round(volumeOf(workout, exercises))} unit="kg" />
         <StatCard label="Sets" value={workout.exercises.reduce((s, e) => s + e.sets.filter(x => x.type !== 'warmup').length, 0)} unit="working" />
       </div>
@@ -1653,7 +2373,51 @@ function WorkoutDetail({ workout, exercises, onBack, onDelete }) {
       )}
 
       {showGemini && <GeminiCopyModal workout={workout} exercises={exercises} onClose={() => setShowGemini(false)} />}
+
+      {editDuration && (
+        <DurationEditModal
+          duration={workout.duration}
+          onSave={(seconds) => { onUpdate({ duration: seconds }); setEditDuration(false); }}
+          onClose={() => setEditDuration(false)}
+        />
+      )}
     </div>
+  );
+}
+
+function DurationEditModal({ duration, onSave, onClose }) {
+  const C = useContext(ThemeContext);
+  const [h, setH] = useState(Math.floor((duration || 0) / 3600));
+  const [m, setM] = useState(Math.floor(((duration || 0) % 3600) / 60));
+
+  return (
+    <Modal onClose={onClose}>
+      <div className="p-6">
+        <h3 className="text-2xl font-extrabold mb-1" style={{ color: C.textPrimary, letterSpacing: '-0.02em' }}>Edit duration</h3>
+        <p className="text-sm mb-5" style={{ color: C.textSecondary }}>Adjust the length of this session — useful if you forgot to hit Finish at the end.</p>
+        <div className="flex items-end gap-3 mb-6">
+          <div className="flex-1">
+            <label className="text-[10px] uppercase tracking-wider mb-1 block" style={{ color: C.textMuted }}>Hours</label>
+            <input type="number" inputMode="numeric" min="0" max="12" value={h}
+              onChange={(e) => setH(Math.max(0, parseInt(e.target.value) || 0))}
+              className="w-full px-3 py-2.5 rounded-xl text-lg mono text-center"
+              style={{ background: C.inputBg, color: C.textPrimary, border: `1px solid ${C.border}` }} />
+          </div>
+          <div className="text-2xl font-bold pb-2.5" style={{ color: C.textMuted }}>:</div>
+          <div className="flex-1">
+            <label className="text-[10px] uppercase tracking-wider mb-1 block" style={{ color: C.textMuted }}>Minutes</label>
+            <input type="number" inputMode="numeric" min="0" max="59" value={m}
+              onChange={(e) => setM(Math.min(59, Math.max(0, parseInt(e.target.value) || 0)))}
+              className="w-full px-3 py-2.5 rounded-xl text-lg mono text-center"
+              style={{ background: C.inputBg, color: C.textPrimary, border: `1px solid ${C.border}` }} />
+          </div>
+        </div>
+        <div className="flex gap-3">
+          <button onClick={onClose} className="flex-1 py-3 rounded-xl font-semibold uppercase text-xs tracking-wider" style={{ background: C.inputBg, color: C.textPrimary }}>Cancel</button>
+          <button onClick={() => onSave(h * 3600 + m * 60)} className="flex-1 py-3 rounded-xl font-semibold uppercase text-xs tracking-wider" style={{ background: C.accent, color: '#10140C' }}>Save</button>
+        </div>
+      </div>
+    </Modal>
   );
 }
 
@@ -1974,6 +2738,12 @@ function RoutinesTab({ routines, setRoutines, exercises, setExercises, onStart }
     setRoutines([...routines, ...newOnes]);
   };
 
+  const importNippardPPL = () => {
+    const existing = new Set(routines.map(r => r.id));
+    const newOnes = NIPPARD_PPL_ROUTINES.filter(r => !existing.has(r.id));
+    setRoutines([...routines, ...newOnes]);
+  };
+
   if (editing !== null) {
     return (
       <RoutineEditor
@@ -1987,7 +2757,8 @@ function RoutinesTab({ routines, setRoutines, exercises, setExercises, onStart }
     );
   }
 
-  const hasNippard = routines.some(r => r.id.startsWith('nip_'));
+  const hasNippard = routines.some(r => r.id.startsWith('nip_') && !r.id.startsWith('nip_ppl'));
+  const hasNippardPPL = routines.some(r => r.id.startsWith('nip_ppl'));
 
   return (
     <div className="px-5 pt-8">
@@ -2004,16 +2775,32 @@ function RoutinesTab({ routines, setRoutines, exercises, setExercises, onStart }
         </div>
       </div>
 
-      {!hasNippard && (
-        <div className="rounded-2xl p-4 mb-6" style={{ background: `linear-gradient(to bottom right, ${C.accentTint}, transparent)`, border: `1px solid ${C.border}` }}>
-          <div className="flex items-center gap-2 mb-2">
-            <Zap size={16} style={{ color: C.accent }} />
-            <div className="text-base font-bold" style={{ color: C.textPrimary }}>Load Nippard Min-Max</div>
-          </div>
-          <div className="text-xs mb-3" style={{ color: C.textSecondary }}>5-day Upper/Lower/Arms split, scheduled Mon/Tue/Thu/Fri/Sat, with warm-ups, RIR targets, and coaching notes.</div>
-          <button onClick={importNippard} className="px-4 py-2 rounded-xl font-semibold uppercase text-xs tracking-wider text-white" style={{ background: C.accent }}>
-            Import 5 Routines
-          </button>
+      {(!hasNippard || !hasNippardPPL) && (
+        <div className="space-y-3 mb-6">
+          {!hasNippard && (
+            <div className="rounded-2xl p-4" style={{ background: `linear-gradient(to bottom right, ${C.accentTint}, transparent)`, border: `1px solid ${C.border}` }}>
+              <div className="flex items-center gap-2 mb-2">
+                <Zap size={16} style={{ color: C.accent }} />
+                <div className="text-base font-bold" style={{ color: C.textPrimary }}>Nippard Min-Max</div>
+              </div>
+              <div className="text-xs mb-3" style={{ color: C.textSecondary }}>5-day Upper/Lower/Arms split (Block 1), Mon/Tue/Thu/Fri/Sat, with warm-ups, RIR targets, and coaching notes.</div>
+              <button onClick={importNippard} className="px-4 py-2 rounded-xl font-semibold uppercase text-xs tracking-wider text-white" style={{ background: C.accent }}>
+                Import 5 Routines
+              </button>
+            </div>
+          )}
+          {!hasNippardPPL && (
+            <div className="rounded-2xl p-4" style={{ background: `linear-gradient(to bottom right, ${C.accentTint}, transparent)`, border: `1px solid ${C.border}` }}>
+              <div className="flex items-center gap-2 mb-2">
+                <Zap size={16} style={{ color: C.accent }} />
+                <div className="text-base font-bold" style={{ color: C.textPrimary }}>Nippard PPL Hypertrophy</div>
+              </div>
+              <div className="text-xs mb-3" style={{ color: C.textSecondary }}>6-day Push/Pull/Legs split, Mon–Sat, with chest & shoulder days, vertical & horizontal pull days, and quad/hamstring leg days.</div>
+              <button onClick={importNippardPPL} className="px-4 py-2 rounded-xl font-semibold uppercase text-xs tracking-wider text-white" style={{ background: C.accent }}>
+                Import 6 Routines
+              </button>
+            </div>
+          )}
         </div>
       )}
 
