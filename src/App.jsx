@@ -437,6 +437,13 @@ const fmtDateShort = (iso) => { const d = new Date(iso); return `${d.getDate()}/
 // Monday = 0, Sunday = 6
 const getTodayIdx = () => { const d = new Date().getDay(); return d === 0 ? 6 : d - 1; };
 
+// Millisecond timestamp of Monday 00:00 for the week containing `ref` (default now).
+const startOfWeekMs = (ref = new Date()) => {
+  const d = new Date(ref); const wd = d.getDay() || 7;
+  d.setDate(d.getDate() - wd + 1); d.setHours(0, 0, 0, 0);
+  return d.getTime();
+};
+
 const e1rm = (weight, reps) => {
   if (!weight || !reps) return 0;
   if (reps === 1) return weight;
@@ -778,8 +785,22 @@ export default function App() {
     const tick = async () => {
       const todayIdx = getTodayIdx();
       const todayKey = new Date().toISOString().slice(0, 10);
-      const matched = routines.find(r => (r.scheduledDays || []).includes(todayIdx));
-      if (!matched) return;
+
+      // Prefer the active programme's session for today; fall back to a scheduled routine.
+      let sessionName = null;
+      if (activeProgramme) {
+        const block = LPP_PROGRAMME.blocks[activeProgramme.block];
+        const day = block?.days.find(d => d.scheduledDay === todayIdx);
+        if (day) {
+          const doneThisWeek = workouts.some(w => w.programmeDayId === day.id && new Date(w.startedAt).getTime() >= startOfWeekMs());
+          if (!doneThisWeek) sessionName = day.name;
+        }
+      }
+      if (!sessionName) {
+        const matched = routines.find(r => (r.scheduledDays || []).includes(todayIdx));
+        if (matched) sessionName = matched.name;
+      }
+      if (!sessionName) return;
 
       const [hh, mm] = (settings.notificationTime || '08:00').split(':').map(Number);
       const now = new Date();
@@ -789,14 +810,14 @@ export default function App() {
       const lastFired = await storage.get('gym:lastNotified', null);
       if (lastFired === todayKey) return;
 
-      const ok = fireNotification('Smacht', `Today's session: ${matched.name}`);
+      const ok = fireNotification('Smacht', `Today's session: ${sessionName}`);
       if (ok) await storage.set('gym:lastNotified', todayKey);
     };
 
     tick();
     const id = setInterval(tick, 60000);
     return () => clearInterval(id);
-  }, [loading, routines, settings.notificationsEnabled, settings.notificationTime]);
+  }, [loading, routines, activeProgramme, workouts, settings.notificationsEnabled, settings.notificationTime]);
 
   const startEmptyWorkout = () => {
     setActiveWorkout({ id: uid(), name: 'Workout', startedAt: new Date().toISOString(), exercises: [] });
@@ -1133,17 +1154,18 @@ function HomeTab({ workouts, routines, exercises, settings, setSettings, onStart
   const [showProgrammeSetup, setShowProgrammeSetup] = useState(false);
   const totalVolume = workouts.reduce((s, w) => s + volumeOf(w, exercises, settings.bodyweight), 0);
   const lastWorkout = workouts[0];
-  const thisWeek = workouts.filter((w) => (Date.now() - new Date(w.startedAt)) / (1000 * 60 * 60 * 24) < 7).length;
+
+  // Everything "this week" is measured from Monday 00:00 (calendar week), consistently
+  const startOfWeek = startOfWeekMs();
+  const thisWeekWorkouts = workouts.filter(w => new Date(w.startedAt).getTime() >= startOfWeek);
+  const thisWeek = thisWeekWorkouts.length;
 
   const programmeBlock = activeProgramme ? LPP_PROGRAMME.blocks[activeProgramme.block] : null;
   const weekLabel = programmeBlock ? `Block ${activeProgramme.block + 1} · Week ${activeProgramme.week + 1}` : '';
 
-  // Which programme days have been completed since the start of this calendar week (Mon)
-  const startOfWeek = (() => { const d = new Date(); const wd = d.getDay() || 7; d.setDate(d.getDate() - wd + 1); d.setHours(0, 0, 0, 0); return d.getTime(); })();
+  // Which programme days have been completed this calendar week (Mon reset)
   const completedDayIds = new Set(
-    workouts
-      .filter(w => w.programmeDayId && new Date(w.startedAt).getTime() >= startOfWeek)
-      .map(w => w.programmeDayId)
+    thisWeekWorkouts.filter(w => w.programmeDayId).map(w => w.programmeDayId)
   );
 
   // Weekly Load ring: sessions completed this week vs. days scheduled across active routines (Whoop-style strain ring)
@@ -1165,22 +1187,22 @@ function HomeTab({ workouts, routines, exercises, settings, setSettings, onStart
   const notifStatus = getNotificationStatus();
   const showNotifFallback = settings.notificationsEnabled && (notifStatus === 'denied' || notifStatus === 'unsupported');
 
-  // ---- Extra metrics for the redesigned hero ----
-  const weekAgoMs = Date.now() - 7 * 86400000;
-  const thisWeekWorkouts = workouts.filter(w => new Date(w.startedAt).getTime() >= weekAgoMs);
+  // ---- Extra metrics for the redesigned hero (all calendar-week based) ----
   const weekVolume = thisWeekWorkouts.reduce((s, w) => s + volumeOf(w, exercises, settings.bodyweight), 0);
   const weekVolumeT = weekVolume / 1000;
-  const volumeTargetT = Math.max(1, Math.round((settings.weeklyVolumeTargetT || 18)));
-  const volumePct = Math.min(100, Math.round((weekVolumeT / volumeTargetT) * 100));
   const weekSets = thisWeekWorkouts.reduce((n, w) => n + w.exercises.reduce((m, ex) => m + ex.sets.filter(isStatSet).length, 0), 0);
 
-  // Prior week volume for the delta chip
-  const prevWeekWorkouts = workouts.filter(w => {
-    const t = new Date(w.startedAt).getTime();
-    return t >= weekAgoMs - 7 * 86400000 && t < weekAgoMs;
+  // Best-ever completed week's tonnage (excluding the current, in-progress week) — shown once there's history to compare against
+  const volumeByWeek = {};
+  workouts.forEach(w => {
+    const wk = startOfWeekMs(new Date(w.startedAt));
+    if (wk === startOfWeek) return; // skip the current week
+    volumeByWeek[wk] = (volumeByWeek[wk] || 0) + volumeOf(w, exercises, settings.bodyweight);
   });
-  const prevWeekVolume = prevWeekWorkouts.reduce((s, w) => s + volumeOf(w, exercises, settings.bodyweight), 0);
-  const volumeDelta = prevWeekVolume > 0 ? Math.round(((weekVolume - prevWeekVolume) / prevWeekVolume) * 100) : null;
+  const bestWeekVolume = Object.values(volumeByWeek).reduce((m, v) => Math.max(m, v), 0);
+  const bestWeekVolumeT = bestWeekVolume / 1000;
+  const volumeVsBest = bestWeekVolume > 0 ? Math.round(((weekVolume - bestWeekVolume) / bestWeekVolume) * 100) : null;
+  const isRecordWeek = bestWeekVolume > 0 && weekVolume > bestWeekVolume;
 
   // Best squat PR (from programme's squat 1RM key -> Back Squat exercise)
   const bestSquat = bestPRFor(workouts, 'ex_bsquat');
@@ -1241,25 +1263,31 @@ function HomeTab({ workouts, routines, exercises, settings, setSettings, onStart
 
         <div className="flex flex-col gap-3">
 
-          {/* HERO — this week's volume vs target */}
+          {/* HERO — this week's tonnage, compared to your best week once there's history */}
           <MetricCard>
-            <CardLabel dot={C.accent}>This Week's Volume</CardLabel>
-            <div className="flex items-baseline gap-2.5 flex-wrap">
+            <CardLabel dot={C.accent}>This Week's Tonnage {isRecordWeek && <span className="ml-1" style={{ color: C.accent }}>· RECORD</span>}</CardLabel>
+            <div className="flex items-baseline gap-2 flex-wrap">
               <span className="num font-extrabold leading-[0.9]" style={{ color: C.textPrimary, fontSize: 52, letterSpacing: '-0.035em' }}>{weekVolumeT.toFixed(1)}</span>
-              <span className="font-semibold" style={{ color: C.textMuted, fontSize: 18 }}>/ {volumeTargetT}t target</span>
-              {volumeDelta != null && (
-                <span className="text-xs font-bold px-2.5 py-1 rounded-full inline-flex items-center gap-0.5" style={{ background: C.accentTint, color: volumeDelta >= 0 ? C.accent : C.warmRed }}>
-                  {volumeDelta >= 0 ? '↑' : '↓'} {Math.abs(volumeDelta)}%
+              <span className="font-semibold" style={{ color: C.textMuted, fontSize: 20 }}>t lifted</span>
+              {volumeVsBest != null && (
+                <span className="text-xs font-bold px-2.5 py-1 rounded-full inline-flex items-center gap-0.5 ml-auto" style={{ background: C.accentTint, color: volumeVsBest >= 0 ? C.accent : C.warmRed }}>
+                  {volumeVsBest >= 0 ? '↑' : '↓'} {Math.abs(volumeVsBest)}% vs best
                 </span>
               )}
             </div>
-            <div className="flex justify-between text-xs mt-4 mb-2" style={{ color: C.textMuted }}>
-              <span><b style={{ color: C.textPrimary }}>{volumePct}%</b> of target</span>
-              <span><b style={{ color: C.textPrimary }}>{Math.max(0, (volumeTargetT - weekVolumeT)).toFixed(1)}t</b> to go</span>
-            </div>
-            <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
-              <div className="h-full rounded-full" style={{ width: `${volumePct}%`, background: `linear-gradient(90deg, ${C.warmOrange}, ${C.accentHover})` }} />
-            </div>
+            {bestWeekVolume > 0 ? (
+              <>
+                <div className="flex justify-between text-xs mt-4 mb-2" style={{ color: C.textMuted }}>
+                  <span>{isRecordWeek ? 'New best week' : 'Best week'}: <b style={{ color: C.textPrimary }}>{bestWeekVolumeT.toFixed(1)}t</b></span>
+                  {!isRecordWeek && <span><b style={{ color: C.textPrimary }}>{Math.max(0, (bestWeekVolumeT - weekVolumeT)).toFixed(1)}t</b> to beat it</span>}
+                </div>
+                <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
+                  <div className="h-full rounded-full" style={{ width: `${Math.min(100, Math.round((weekVolume / bestWeekVolume) * 100))}%`, background: `linear-gradient(90deg, ${C.warmOrange}, ${C.accentHover})` }} />
+                </div>
+              </>
+            ) : (
+              <div className="text-xs mt-3" style={{ color: C.textMuted }}>Log a full week and your best week shows here to beat.</div>
+            )}
           </MetricCard>
 
           {/* Weekly Load arc + two stat tiles */}
