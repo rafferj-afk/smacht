@@ -1134,8 +1134,15 @@ function HomeTab({ workouts, routines, exercises, settings, setSettings, onStart
   const thisWeek = workouts.filter((w) => (Date.now() - new Date(w.startedAt)) / (1000 * 60 * 60 * 24) < 7).length;
 
   const programmeBlock = activeProgramme ? LPP_PROGRAMME.blocks[activeProgramme.block] : null;
-  const programmeDay = programmeBlock ? programmeBlock.days.find(d => d.scheduledDay === getTodayIdx()) : null;
   const weekLabel = programmeBlock ? `Block ${activeProgramme.block + 1} · Week ${activeProgramme.week + 1}` : '';
+
+  // Which programme days have been completed since the start of this calendar week (Mon)
+  const startOfWeek = (() => { const d = new Date(); const wd = d.getDay() || 7; d.setDate(d.getDate() - wd + 1); d.setHours(0, 0, 0, 0); return d.getTime(); })();
+  const completedDayIds = new Set(
+    workouts
+      .filter(w => w.programmeDayId && new Date(w.startedAt).getTime() >= startOfWeek)
+      .map(w => w.programmeDayId)
+  );
 
   // Weekly Load ring: sessions completed this week vs. days scheduled across active routines (Whoop-style strain ring)
   const scheduledDaysThisWeek = new Set();
@@ -1276,7 +1283,7 @@ function HomeTab({ workouts, routines, exercises, settings, setSettings, onStart
             </div>
           )}
 
-          {/* Programme — This Week / today's session */}
+          {/* Programme — pick any session for this week */}
           {activeProgramme && (
             <MetricCard className="p-0 overflow-hidden">
               <div className="flex items-center justify-between px-5 pt-4 pb-3">
@@ -1292,19 +1299,29 @@ function HomeTab({ workouts, routines, exercises, settings, setSettings, onStart
                   <span className="px-3 py-2 rounded-xl font-bold uppercase text-[11px] tracking-wider" style={{ background: C.accentTint, color: C.accent }}>Final Week</span>
                 )}
               </div>
-              {programmeDay ? (
-                <div className="flex items-center gap-3.5 px-5 py-4" style={{ borderTop: `1px solid ${C.border}` }}>
-                  <div className="w-11 h-11 rounded-2xl grid place-items-center shrink-0" style={{ background: `linear-gradient(160deg, ${C.accentTint}, transparent)`, border: `1px solid ${C.border}`, color: C.accent }}>
-                    <Dumbbell size={20} />
+              {programmeBlock.days.map((day) => {
+                const done = completedDayIds.has(day.id);
+                return (
+                  <div key={day.id} className="flex items-center gap-3 px-5 py-3" style={{ borderTop: `1px solid ${C.border}` }}>
+                    <div className="w-8 h-8 rounded-xl grid place-items-center shrink-0" style={{ background: done ? C.accent : C.accentTint, color: done ? '#10140C' : C.accent }}>
+                      {done ? <Check size={15} strokeWidth={3} /> : <Dumbbell size={15} />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[15px] font-bold leading-tight" style={{ color: done ? C.textMuted : C.textPrimary }}>{day.name}</div>
+                      <div className="text-[11px]" style={{ color: C.textFaint }}>{day.exercises.length} exercises{done ? ' · done this week' : ''}</div>
+                    </div>
+                    <button
+                      onClick={() => onStartProgrammeDay(day, activeProgramme.week, weekLabel)}
+                      className="px-3.5 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 shrink-0"
+                      style={done
+                        ? { background: 'transparent', border: `1px solid ${C.border}`, color: C.textSecondary }
+                        : { background: C.accent, color: '#10140C' }}
+                    >
+                      <Play size={11} fill="currentColor" /> {done ? 'Again' : 'Start'}
+                    </button>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-[11px] uppercase tracking-[0.1em]" style={{ color: C.textMuted }}>Today · {DAYS[todayIdx]}</div>
-                    <div className="text-lg font-bold leading-tight" style={{ color: C.textPrimary }}>{programmeDay.name} <span className="text-sm font-medium" style={{ color: C.textMuted }}>· {programmeDay.exercises.length} exercises</span></div>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-xs px-5 py-4" style={{ borderTop: `1px solid ${C.border}`, color: C.textMuted }}>Rest day — nothing scheduled today.</div>
-              )}
+                );
+              })}
             </MetricCard>
           )}
 
@@ -1326,9 +1343,12 @@ function HomeTab({ workouts, routines, exercises, settings, setSettings, onStart
             </MetricCard>
           )}
 
-          {/* Primary CTA */}
-          {programmeDay ? (
-            <PrimaryCTA C={C} onClick={() => onStartProgrammeDay(programmeDay, activeProgramme.week, weekLabel)} label={`Start ${programmeDay.name}`} />
+          {/* Primary CTA — when a programme is active, sessions start from the picker above,
+              so the big CTA is empty-workout. Otherwise it's the main entry point. */}
+          {activeProgramme ? (
+            <button onClick={onStartEmpty} className="w-full py-3.5 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2" style={{ background: 'transparent', border: `1px solid ${C.border}`, color: C.textSecondary }}>
+              <Plus size={15} /> Start empty workout
+            </button>
           ) : (
             <PrimaryCTA C={C} onClick={onStartEmpty} label="Start Empty Workout" />
           )}
@@ -1364,8 +1384,8 @@ function HomeTab({ workouts, routines, exercises, settings, setSettings, onStart
             </div>
           </div>
 
-          {/* Secondary: quiet empty-workout link (primary CTA is the programme/routine start above) */}
-          {(programmeDay || todaysRoutines.length > 0) && (
+          {/* Secondary empty-workout link — only for the routine case (programme already shows one above) */}
+          {!activeProgramme && todaysRoutines.length > 0 && (
             <button onClick={onStartEmpty} className="w-full py-3 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2" style={{ background: 'transparent', border: `1px solid ${C.border}`, color: C.textSecondary }}>
               <Plus size={15} /> Start empty workout instead
             </button>
