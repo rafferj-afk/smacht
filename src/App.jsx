@@ -644,7 +644,8 @@ const parseTargetRIR = (rirText) => {
 };
 
 // Weight increment suggested per bump, by broad exercise category.
-const suggestIncrement = (equipment) => (equipment === 'Barbell' || equipment === 'Machine') ? 2.5 : 2.5;
+// Barbell compounds tolerate bigger jumps; dumbbells/cables/machines climb in smaller steps.
+const suggestIncrement = (equipment) => equipment === 'Barbell' ? 5 : 2.5;
 
 // Looks at the last few sessions of an exercise and suggests progress/back-off/hold.
 // Only applies to fixed rep-range work (repRange + rirTarget) — %1RM-prescribed programme
@@ -1501,8 +1502,8 @@ function ProgrammeSetupModal({ oneRepMaxes, onStart, onClose }) {
         <button
           onClick={() => onStart({ squat: parseFloat(orms.squat), bench: parseFloat(orms.bench), deadlift: parseFloat(orms.deadlift), ohp: parseFloat(orms.ohp) })}
           disabled={!canStart}
-          className="w-full py-3 rounded-xl font-semibold uppercase text-xs tracking-wider text-white disabled:opacity-40"
-          style={{ background: C.accent }}
+          className="w-full py-3 rounded-xl font-semibold uppercase text-xs tracking-wider disabled:opacity-40"
+          style={{ background: C.accent, color: '#10140C' }}
         >
           Begin Week 1
         </button>
@@ -1674,7 +1675,7 @@ function ActiveWorkoutView({ workout, setWorkout, exercises, workouts, onFinish,
         </div>
 
         {restRemaining > 0 && (
-          <div className="px-4 py-2 max-w-2xl mx-auto text-white" style={{ background: C.accent }}>
+          <div className="px-4 py-2 max-w-2xl mx-auto" style={{ background: C.accent, color: '#10140C' }}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 font-semibold text-sm"><Timer size={16} /> REST</div>
               <div className="text-2xl mono font-bold leading-none">{fmtTime(restRemaining)}</div>
@@ -1823,7 +1824,7 @@ function ExerciseBlock({
           <div className="flex items-baseline gap-2 flex-wrap">
             <h3 className="text-lg font-bold" style={{ color: C.textPrimary }}>{exercise.name}</h3>
             {isPR && (
-              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full" style={{ background: C.accent, color: 'white' }}>
+              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full" style={{ background: C.accent, color: '#10140C' }}>
                 PR
               </span>
             )}
@@ -1926,7 +1927,7 @@ function ExerciseBlock({
                   className="py-3 rounded-xl font-semibold mono"
                   style={
                     exercise.restSeconds === s
-                      ? { background: C.accent, color: 'white' }
+                      ? { background: C.accent, color: '#10140C' }
                       : { background: C.inputBg, color: C.textPrimary }
                   }
                 >
@@ -1985,32 +1986,36 @@ function SetRow({ index, set, previous, onToggle, onUpdate, onChangeType, onRemo
     dragState.current = null;
   };
 
-  // Subtle row tints when completed
+  const dark = C.pageBg === '#0C0E0B';
+  // Subtle row tints when completed — theme-aware so dark mode doesn't flash bright pastels
   const rowBg = !set.completed ? 'transparent'
-    : set.type === 'warmup' ? '#FEF9C3'
-    : set.type === 'failure' ? '#FEE2E2'
-    : set.type === 'drop' ? '#F3E8FF'
+    : set.type === 'warmup' ? (dark ? 'rgba(234,179,8,0.12)' : '#FEF9C3')
+    : set.type === 'failure' ? (dark ? 'rgba(220,38,38,0.14)' : '#FEE2E2')
+    : set.type === 'drop' ? (dark ? 'rgba(147,51,234,0.16)' : '#F3E8FF')
     : C.accentTint; // working
 
   const badgeColor =
-    set.type === 'warmup' ? '#A16207'
-    : set.type === 'failure' ? '#DC2626'
-    : set.type === 'drop' ? '#9333EA'
+    set.type === 'warmup' ? (dark ? '#EAB308' : '#A16207')
+    : set.type === 'failure' ? '#EF4444'
+    : set.type === 'drop' ? (dark ? '#C084FC' : '#9333EA')
     : set.completed ? C.accent : C.textSecondary;
 
-  const checkBg = !set.completed ? '#E5E5E3'
+  const checkBg = !set.completed ? (dark ? 'rgba(255,255,255,0.09)' : '#E5E5E3')
     : set.type === 'warmup' ? '#EAB308'
     : set.type === 'failure' ? '#DC2626'
     : set.type === 'drop' ? '#9333EA'
     : C.accent;
 
-  const checkColor = set.completed ? 'white' : C.textMuted;
+  // Checkmark on a completed set: dark text on the bright lime accent, white on the colored types
+  const checkColor = !set.completed ? C.textMuted
+    : (set.type === 'working' || !set.type) ? '#10140C'
+    : 'white';
 
   return (
     <div className="relative overflow-hidden">
       {/* Swipe reveal layer */}
       <div className="absolute inset-0 flex items-center justify-between px-4" style={{ background: dragX < 0 ? '#DC2626' : dragX > 0 ? C.accent : 'transparent' }}>
-        <div className="flex items-center gap-1.5 text-white text-xs font-semibold" style={{ opacity: Math.min(1, dragX / SWIPE_COMMIT_PX) }}>
+        <div className="flex items-center gap-1.5 text-xs font-semibold" style={{ color: '#10140C', opacity: Math.min(1, dragX / SWIPE_COMMIT_PX) }}>
           <Plus size={14} /> Duplicate
         </div>
         <div className="flex items-center gap-1.5 text-white text-xs font-semibold ml-auto" style={{ opacity: Math.min(1, -dragX / SWIPE_COMMIT_PX) }}>
@@ -2221,7 +2226,7 @@ function ExercisePicker({ exercises, onPick, onClose, excludeIds = [] }) {
           {['All', ...MUSCLE_GROUPS].map((m) => (
             <button key={m} onClick={() => setMuscle(m)}
               className="px-3 py-1.5 rounded-full text-xs uppercase tracking-wider font-semibold whitespace-nowrap transition"
-              style={muscle === m ? { background: C.accent, color: 'white' } : { background: C.inputBg, color: C.textSecondary, border: `1px solid ${C.border}` }}>
+              style={muscle === m ? { background: C.accent, color: '#10140C' } : { background: C.inputBg, color: C.textSecondary, border: `1px solid ${C.border}` }}>
               {m}
             </button>
           ))}
@@ -2366,7 +2371,7 @@ function GeminiCopyModal({ workout, exercises, onClose }) {
             className="w-full py-3.5 rounded-xl font-bold uppercase text-xs tracking-wider flex items-center justify-center gap-2 transition-all"
             style={canShare
               ? { background: C.inputBg, color: copied ? '#16A34A' : C.textPrimary, border: `1px solid ${C.border}` }
-              : { background: copied ? '#16A34A' : C.accent, color: 'white' }}>
+              : { background: copied ? '#16A34A' : C.accent, color: copied ? 'white' : '#10140C' }}>
             {copied ? <><CheckCheck size={16} /> Copied!</> : <><Copy size={16} /> Copy to Clipboard</>}
           </button>
         </div>
@@ -2603,7 +2608,7 @@ function AddExerciseModal({ onClose, onAdd }) {
         <div className="flex gap-3">
           <button onClick={onClose} className="flex-1 py-3 rounded-xl font-semibold uppercase text-xs tracking-wider" style={{ background: C.inputBg, color: C.textPrimary }}>Cancel</button>
           <button disabled={!name.trim()} onClick={() => onAdd({ id: uid(), name: name.trim(), muscle, equipment })}
-            className="flex-1 py-3 rounded-xl font-semibold uppercase text-xs tracking-wider text-white disabled:opacity-40" style={{ background: C.accent }}>Save</button>
+            className="flex-1 py-3 rounded-xl font-semibold uppercase text-xs tracking-wider disabled:opacity-40" style={{ background: C.accent, color: '#10140C' }}>Save</button>
         </div>
       </div>
     </Modal>
@@ -2971,7 +2976,7 @@ function ImportRoutineModal({ onClose, onImport, exercises }) {
         {error && <div className="text-xs mt-2" style={{ color: '#DC2626' }}>{error}</div>}
         <div className="flex gap-3 mt-4">
           <button onClick={onClose} className="flex-1 py-3 rounded-xl font-semibold uppercase text-xs tracking-wider" style={{ background: C.inputBg, color: C.textPrimary }}>Cancel</button>
-          <button onClick={handleImport} disabled={!json.trim()} className="flex-1 py-3 rounded-xl font-semibold uppercase text-xs tracking-wider text-white disabled:opacity-40" style={{ background: C.accent }}>Import</button>
+          <button onClick={handleImport} disabled={!json.trim()} className="flex-1 py-3 rounded-xl font-semibold uppercase text-xs tracking-wider disabled:opacity-40" style={{ background: C.accent, color: '#10140C' }}>Import</button>
         </div>
       </div>
     </Modal>
@@ -3031,7 +3036,7 @@ function RoutineEditor({ routine, exercises, onSave, onCancel, onDelete, isNew }
                   key={day} onClick={() => toggleDay(idx)}
                   className="flex-1 py-2 rounded-lg text-xs font-semibold transition"
                   style={selected
-                    ? { background: C.accent, color: 'white' }
+                    ? { background: C.accent, color: '#10140C' }
                     : { background: C.cardBg, color: C.textSecondary, border: `1px solid ${C.border}` }}
                 >
                   {day}
@@ -3096,8 +3101,8 @@ function RoutineEditor({ routine, exercises, onSave, onCancel, onDelete, isNew }
           <button
             onClick={() => { if (!name.trim() || items.length === 0) return; onSave({ ...routine, name: name.trim(), note: note.trim(), scheduledDays, exercises: items }); }}
             disabled={!name.trim() || items.length === 0}
-            className="w-full py-4 rounded-2xl font-bold uppercase text-sm tracking-wider text-white disabled:opacity-40"
-            style={{ background: C.accent }}
+            className="w-full py-4 rounded-2xl font-bold uppercase text-sm tracking-wider disabled:opacity-40"
+            style={{ background: C.accent, color: '#10140C' }}
           >
             Save Routine
           </button>
@@ -3280,7 +3285,7 @@ function SettingsModal({ settings, setSettings, workouts, routines, exercises, s
           </button>
         </div>
 
-        <button onClick={onClose} className="w-full py-3 rounded-xl font-semibold uppercase text-xs tracking-wider text-white" style={{ background: C.accent }}>Done</button>
+        <button onClick={onClose} className="w-full py-3 rounded-xl font-semibold uppercase text-xs tracking-wider" style={{ background: C.accent, color: '#10140C' }}>Done</button>
       </div>
     </Modal>
   );
