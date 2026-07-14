@@ -1098,6 +1098,34 @@ function PrimaryCTA({ C, onClick, label }) {
   );
 }
 
+// Subtle top-anchored aura for secondary screens (dark theme only)
+function ScreenAura() {
+  const C = useContext(ThemeContext);
+  if (C.pageBg !== '#0C0E0B') return null;
+  return (
+    <div
+      className="pointer-events-none fixed left-1/2 -top-24 -translate-x-1/2 z-0"
+      style={{ width: 420, height: 320, filter: 'blur(70px)', opacity: 0.5 }}
+    >
+      <div className="absolute inset-0 rounded-full" style={{ background: `radial-gradient(circle at 40% 40%, ${C.accentHover} 0%, transparent 46%), radial-gradient(circle at 68% 50%, ${C.warmOrange} 0%, transparent 48%)` }} />
+    </div>
+  );
+}
+
+// Shared screen title with eyebrow + gradient wordmark treatment
+function TabTitle({ eyebrow, children, action }) {
+  const C = useContext(ThemeContext);
+  return (
+    <div className="flex items-end justify-between mb-6">
+      <div>
+        {eyebrow && <div className="text-[11px] uppercase tracking-[0.22em] mb-1.5" style={{ color: C.textMuted }}>{eyebrow}</div>}
+        <h1 className="text-3xl font-extrabold leading-none" style={{ color: C.textPrimary, letterSpacing: '-0.02em' }}>{children}</h1>
+      </div>
+      {action}
+    </div>
+  );
+}
+
 function HomeTab({ workouts, routines, exercises, settings, setSettings, onStartEmpty, onStartRoutine, onCreateRoutine, onOpenSettings, activeProgramme, setActiveProgramme, oneRepMaxes, setOneRepMaxes, onStartProgrammeDay }) {
   const C = useContext(ThemeContext);
   const [showProgrammeSetup, setShowProgrammeSetup] = useState(false);
@@ -2180,8 +2208,10 @@ function HistoryTab({ workouts, exercises, setWorkouts, settings }) {
   const grouped = groupByMonth(workouts);
 
   return (
-    <div className="px-5 pt-8">
-      <h1 className="text-3xl font-extrabold mb-6" style={{ color: C.textPrimary, letterSpacing: '-0.02em' }}>History</h1>
+    <div className="px-5 pt-8 relative">
+      <ScreenAura />
+      <div className="relative z-10">
+      <TabTitle eyebrow="Every session">History</TabTitle>
       {workouts.length === 0 && (
         <div className="text-center py-16">
           <History size={32} className="mx-auto mb-3" style={{ color: C.textFaint }} />
@@ -2190,12 +2220,10 @@ function HistoryTab({ workouts, exercises, setWorkouts, settings }) {
       )}
       {Object.entries(grouped).map(([month, list]) => (
         <div key={month} className="mb-6">
-          <div className="text-xs uppercase tracking-[0.25em] mb-2" style={{ color: C.textMuted }}>{month}</div>
-          <div className="space-y-2">
+          <div className="text-[11px] uppercase tracking-[0.22em] mb-2.5" style={{ color: C.textMuted }}>{month}</div>
+          <div className="flex flex-col gap-2.5">
             {list.map((w) => (
-              <button key={w.id} onClick={() => setSelectedId(w.id)}
-                className="w-full rounded-2xl p-4 text-left transition"
-                style={{ background: C.cardBg, border: `1px solid ${C.border}` }}>
+              <MetricCard key={w.id} as="button" onClick={() => setSelectedId(w.id)} className="w-full text-left">
                 <div className="flex items-baseline justify-between mb-2">
                   <div className="text-lg font-bold" style={{ color: C.textPrimary }}>{w.name}</div>
                   <div className="text-xs" style={{ color: C.textMuted }}>{fmtDate(w.startedAt)}</div>
@@ -2205,11 +2233,12 @@ function HistoryTab({ workouts, exercises, setWorkouts, settings }) {
                   <span className="flex items-center gap-1"><Dumbbell size={12} /> {w.exercises.length}</span>
                   <span className="flex items-center gap-1 num"><Flame size={12} /> {Math.round(volumeOf(w, exercises, settings?.bodyweight ?? 0))} kg</span>
                 </div>
-              </button>
+              </MetricCard>
             ))}
           </div>
         </div>
       ))}
+      </div>
     </div>
   );
 }
@@ -2432,13 +2461,14 @@ function ExercisesTab({ exercises, setExercises }) {
   const filtered = exercises.filter((e) => e.name.toLowerCase().includes(q.toLowerCase()) && (muscle === 'All' || e.muscle === muscle));
 
   return (
-    <div className="px-5 pt-8">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-extrabold" style={{ color: C.textPrimary, letterSpacing: '-0.02em' }}>Library</h1>
-        <button onClick={() => setShowAdd(true)} className="px-3 py-2 rounded-xl font-semibold uppercase text-xs tracking-wider flex items-center gap-1 text-white" style={{ background: C.accent }}>
+    <div className="px-5 pt-8 relative">
+      <ScreenAura />
+      <div className="relative z-10">
+      <TabTitle eyebrow="Exercise database" action={(
+        <button onClick={() => setShowAdd(true)} className="px-3 py-2 rounded-xl font-bold uppercase text-xs tracking-wider flex items-center gap-1" style={{ background: C.accent, color: '#10140C' }}>
           <Plus size={14} /> New
         </button>
-      </div>
+      )}>Library</TabTitle>
       <div className="relative mb-3">
         <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: C.textMuted }} />
         <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search exercises…"
@@ -2449,7 +2479,7 @@ function ExercisesTab({ exercises, setExercises }) {
         {['All', ...MUSCLE_GROUPS].map((m) => (
           <button key={m} onClick={() => setMuscle(m)}
             className="px-3 py-1.5 rounded-full text-xs uppercase tracking-wider font-semibold whitespace-nowrap transition"
-            style={muscle === m ? { background: C.accent, color: 'white' } : { background: C.cardBg, color: C.textSecondary, border: `1px solid ${C.border}` }}>
+            style={muscle === m ? { background: C.accent, color: '#10140C' } : { background: C.cardBg, color: C.textSecondary, border: `1px solid ${C.border}` }}>
             {m}
           </button>
         ))}
@@ -2467,6 +2497,7 @@ function ExercisesTab({ exercises, setExercises }) {
         ))}
       </div>
       {showAdd && <AddExerciseModal onClose={() => setShowAdd(false)} onAdd={(ex) => { setExercises((prev) => [...prev, ex]); setShowAdd(false); }} />}
+      </div>
     </div>
   );
 }
@@ -2530,24 +2561,26 @@ function ProgressTab({ workouts, exercises, settings }) {
   const weeklyVolume = computeWeeklyVolume(workouts, 12, exercises, settings.bodyweight);
 
   return (
-    <div className="px-5 pt-8">
-      <h1 className="text-3xl font-extrabold mb-6" style={{ color: C.textPrimary, letterSpacing: '-0.02em' }}>Progress</h1>
+    <div className="px-5 pt-8 relative">
+      <ScreenAura />
+      <div className="relative z-10">
+      <TabTitle eyebrow="Your trends">Progress</TabTitle>
 
       {workouts.length >= 2 && (
-        <div className="rounded-2xl p-4 mb-6" style={{ background: C.cardBg, border: `1px solid ${C.border}` }}>
-          <div className="text-xs uppercase tracking-wider mb-3" style={{ color: C.textSecondary }}>Weekly Volume</div>
+        <MetricCard className="mb-6">
+          <CardLabel dot={C.accent}>Weekly Volume</CardLabel>
           <div style={{ width: '100%', height: 160 }}>
             <ResponsiveContainer>
               <BarChart data={weeklyVolume} margin={{ top: 5, right: 10, bottom: 5, left: -20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
                 <XAxis dataKey="week" stroke={C.textMuted} fontSize={10} />
                 <YAxis stroke={C.textMuted} fontSize={10} />
-                <Tooltip contentStyle={{ background: C.cardBg, border: `1px solid ${C.border}`, borderRadius: 8, fontSize: 12 }} labelStyle={{ color: C.textSecondary }} />
+                <Tooltip contentStyle={{ background: C.cardSolid, border: `1px solid ${C.border}`, borderRadius: 8, fontSize: 12 }} labelStyle={{ color: C.textSecondary }} />
                 <Bar dataKey="volume" fill={C.accent} radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
-        </div>
+        </MetricCard>
       )}
 
       {exercisesWithData.length === 0 ? (
@@ -2628,6 +2661,7 @@ function ProgressTab({ workouts, exercises, settings }) {
           })}
         </>
       )}
+      </div>
     </div>
   );
 }
@@ -2738,12 +2772,6 @@ function RoutinesTab({ routines, setRoutines, exercises, setExercises, onStart }
     setRoutines([...routines, ...newOnes]);
   };
 
-  const importNippardPPL = () => {
-    const existing = new Set(routines.map(r => r.id));
-    const newOnes = NIPPARD_PPL_ROUTINES.filter(r => !existing.has(r.id));
-    setRoutines([...routines, ...newOnes]);
-  };
-
   if (editing !== null) {
     return (
       <RoutineEditor
@@ -2758,62 +2786,46 @@ function RoutinesTab({ routines, setRoutines, exercises, setExercises, onStart }
   }
 
   const hasNippard = routines.some(r => r.id.startsWith('nip_') && !r.id.startsWith('nip_ppl'));
-  const hasNippardPPL = routines.some(r => r.id.startsWith('nip_ppl'));
 
   return (
-    <div className="px-5 pt-8">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-extrabold" style={{ color: C.textPrimary, letterSpacing: '-0.02em' }}>Routines</h1>
+    <div className="px-5 pt-8 relative">
+      <ScreenAura />
+      <div className="relative z-10">
+      <TabTitle eyebrow="Your training" action={(
         <div className="flex items-center gap-2">
           <button onClick={() => setShowImport(true)} className="px-3 py-2 rounded-xl font-semibold uppercase text-xs tracking-wider flex items-center gap-1"
             style={{ background: C.cardBg, border: `1px solid ${C.border}`, color: C.textSecondary }}>
             <Upload size={12} /> Import
           </button>
-          <button onClick={() => setEditing('new')} className="px-3 py-2 rounded-xl font-semibold uppercase text-xs tracking-wider flex items-center gap-1 text-white" style={{ background: C.accent }}>
+          <button onClick={() => setEditing('new')} className="px-3 py-2 rounded-xl font-bold uppercase text-xs tracking-wider flex items-center gap-1" style={{ background: C.accent, color: '#10140C' }}>
             <Plus size={14} /> New
           </button>
         </div>
-      </div>
+      )}>Routines</TabTitle>
 
-      {(!hasNippard || !hasNippardPPL) && (
-        <div className="space-y-3 mb-6">
-          {!hasNippard && (
-            <div className="rounded-2xl p-4" style={{ background: `linear-gradient(to bottom right, ${C.accentTint}, transparent)`, border: `1px solid ${C.border}` }}>
-              <div className="flex items-center gap-2 mb-2">
-                <Zap size={16} style={{ color: C.accent }} />
-                <div className="text-base font-bold" style={{ color: C.textPrimary }}>Nippard Min-Max</div>
-              </div>
-              <div className="text-xs mb-3" style={{ color: C.textSecondary }}>5-day Upper/Lower/Arms split (Block 1), Mon/Tue/Thu/Fri/Sat, with warm-ups, RIR targets, and coaching notes.</div>
-              <button onClick={importNippard} className="px-4 py-2 rounded-xl font-semibold uppercase text-xs tracking-wider text-white" style={{ background: C.accent }}>
-                Import 5 Routines
-              </button>
-            </div>
-          )}
-          {!hasNippardPPL && (
-            <div className="rounded-2xl p-4" style={{ background: `linear-gradient(to bottom right, ${C.accentTint}, transparent)`, border: `1px solid ${C.border}` }}>
-              <div className="flex items-center gap-2 mb-2">
-                <Zap size={16} style={{ color: C.accent }} />
-                <div className="text-base font-bold" style={{ color: C.textPrimary }}>Nippard PPL Hypertrophy</div>
-              </div>
-              <div className="text-xs mb-3" style={{ color: C.textSecondary }}>6-day Push/Pull/Legs split, Mon–Sat, with chest & shoulder days, vertical & horizontal pull days, and quad/hamstring leg days.</div>
-              <button onClick={importNippardPPL} className="px-4 py-2 rounded-xl font-semibold uppercase text-xs tracking-wider text-white" style={{ background: C.accent }}>
-                Import 6 Routines
-              </button>
-            </div>
-          )}
-        </div>
+      {!hasNippard && (
+        <MetricCard className="mb-6" style={{ background: `linear-gradient(to bottom right, ${C.accentTint}, ${C.cardBg})` }}>
+          <div className="flex items-center gap-2 mb-2">
+            <Zap size={16} style={{ color: C.accent }} />
+            <div className="text-base font-bold" style={{ color: C.textPrimary }}>Nippard Min-Max</div>
+          </div>
+          <div className="text-xs mb-3" style={{ color: C.textSecondary }}>5-day Upper/Lower/Arms split (Block 1), Mon/Tue/Thu/Fri/Sat, with warm-ups, RIR targets, and coaching notes.</div>
+          <button onClick={importNippard} className="px-4 py-2 rounded-xl font-bold uppercase text-xs tracking-wider" style={{ background: C.accent, color: '#10140C' }}>
+            Import 5 Routines
+          </button>
+        </MetricCard>
       )}
 
       {routines.length === 0 ? (
         <div className="text-center py-8">
           <Dumbbell size={32} className="mx-auto mb-3" style={{ color: C.textFaint }} />
           <div className="text-sm mb-4" style={{ color: C.textMuted }}>Build a routine, import one, or load the Nippard program above.</div>
-          <button onClick={() => setEditing('new')} className="px-4 py-2 rounded-xl font-semibold uppercase text-xs tracking-wider text-white" style={{ background: C.accent }}>Create First Routine</button>
+          <button onClick={() => setEditing('new')} className="px-4 py-2 rounded-xl font-bold uppercase text-xs tracking-wider" style={{ background: C.accent, color: '#10140C' }}>Create First Routine</button>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="flex flex-col gap-3">
           {routines.map((r) => (
-            <div key={r.id} className="rounded-2xl p-4" style={{ background: C.cardBg, border: `1px solid ${C.border}` }}>
+            <MetricCard key={r.id}>
               <div className="flex items-baseline justify-between mb-2">
                 <div>
                   <div className="text-lg font-bold" style={{ color: C.textPrimary }}>{r.name}</div>
@@ -2848,10 +2860,10 @@ function RoutinesTab({ routines, setRoutines, exercises, setExercises, onStart }
                 })}
                 {r.exercises.length > 5 && <div className="text-xs italic" style={{ color: C.textFaint }}>+{r.exercises.length - 5} more…</div>}
               </div>
-              <button onClick={() => onStart(r)} className="w-full py-2 rounded-xl font-semibold uppercase text-xs tracking-wider flex items-center justify-center gap-2 text-white" style={{ background: C.accent }}>
+              <button onClick={() => onStart(r)} className="w-full py-2.5 rounded-xl font-bold uppercase text-xs tracking-wider flex items-center justify-center gap-2" style={{ background: C.accent, color: '#10140C' }}>
                 <Play size={12} fill="currentColor" /> Start
               </button>
-            </div>
+            </MetricCard>
           ))}
         </div>
       )}
@@ -2863,6 +2875,7 @@ function RoutinesTab({ routines, setRoutines, exercises, setExercises, onStart }
           exercises={exercises}
         />
       )}
+      </div>
     </div>
   );
 }
