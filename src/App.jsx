@@ -860,13 +860,14 @@ export default function App() {
     });
   };
 
-  const finishWorkout = () => {
-    if (!activeWorkout) return;
+  const finishWorkout = (override) => {
+    const src = override || activeWorkout;
+    if (!src) return;
     const finishedAt = new Date().toISOString();
-    const duration = Math.floor((new Date(finishedAt) - new Date(activeWorkout.startedAt)) / 1000);
+    const duration = Math.floor((new Date(finishedAt) - new Date(src.startedAt)) / 1000);
     const completed = {
-      ...activeWorkout, finishedAt, duration,
-      exercises: activeWorkout.exercises
+      ...src, finishedAt, duration,
+      exercises: src.exercises
         .map((ex) => ({ ...ex, sets: ex.sets.filter((s) => s.completed) }))
         .filter((ex) => ex.sets.length > 0),
     };
@@ -1519,9 +1520,28 @@ function ActiveWorkoutView({ workout, setWorkout, exercises, workouts, onFinish,
   const [restEndAt, setRestEndAt] = useState(null);
   const [now, setNow] = useState(Date.now());
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [showFinishWarning, setShowFinishWarning] = useState(false);
   const [plateCalcFor, setPlateCalcFor] = useState(null);
   const [supersetPicker, setSupersetPicker] = useState(null);
   const beepedRef = useRef(false);
+
+  // Count completed sets, and sets that have data typed in but weren't checked off
+  const completedCount = workout.exercises.reduce((n, ex) => n + ex.sets.filter(s => s.completed).length, 0);
+  const filledUncheckedCount = workout.exercises.reduce((n, ex) => n + ex.sets.filter(s => !s.completed && (s.weight > 0 || s.reps > 0)).length, 0);
+
+  // Marks every filled-but-unchecked set complete, then finishes (used by the warning dialog)
+  const finishMarkingAll = () => {
+    const next = { ...workout, exercises: workout.exercises.map(ex => ({
+      ...ex, sets: ex.sets.map(s => (!s.completed && (s.weight > 0 || s.reps > 0)) ? { ...s, completed: true } : s),
+    })) };
+    setShowFinishWarning(false);
+    onFinish(next); // pass the marked-up workout directly to avoid state-timing races
+  };
+
+  const handleFinishClick = () => {
+    if (completedCount === 0) { setShowFinishWarning(true); return; }
+    onFinish();
+  };
 
   useEffect(() => {
     const id = setInterval(() => setNow(Date.now()), 1000);
@@ -1647,7 +1667,7 @@ function ActiveWorkoutView({ workout, setWorkout, exercises, workouts, onFinish,
               <div className="text-2xl font-bold leading-none mono" style={{ color: C.textPrimary }}>{fmtTime(elapsed)}</div>
               <div className="text-[10px] uppercase tracking-widest mt-0.5" style={{ color: C.textMuted }}>{totalSets} working sets</div>
             </div>
-            <button onClick={onFinish} className="font-bold px-4 py-2 rounded-xl text-xs uppercase tracking-wider flex items-center gap-1.5 text-white" style={{ background: C.accent }}>
+            <button onClick={handleFinishClick} className="font-bold px-4 py-2 rounded-xl text-xs uppercase tracking-wider flex items-center gap-1.5" style={{ background: C.accent, color: '#10140C' }}>
               <Square size={12} fill="currentColor" /> Finish
             </button>
           </div>
@@ -1727,6 +1747,31 @@ function ActiveWorkoutView({ workout, setWorkout, exercises, workouts, onFinish,
               <button onClick={() => setShowCancelConfirm(false)} className="flex-1 py-3 rounded-xl font-semibold uppercase text-xs tracking-wider" style={{ background: C.inputBg, color: C.textPrimary }}>Keep going</button>
               <button onClick={() => { setShowCancelConfirm(false); onCancel(); }} className="flex-1 py-3 rounded-xl font-semibold uppercase text-xs tracking-wider text-white" style={{ background: '#DC2626' }}>Discard</button>
             </div>
+          </div>
+        </Modal>
+      )}
+      {showFinishWarning && (
+        <Modal onClose={() => setShowFinishWarning(false)}>
+          <div className="p-6">
+            <h3 className="text-2xl font-bold mb-2" style={{ color: C.textPrimary }}>No sets marked done</h3>
+            {filledUncheckedCount > 0 ? (
+              <>
+                <p className="text-sm mb-6" style={{ color: C.textSecondary }}>You have {filledUncheckedCount} set{filledUncheckedCount !== 1 ? 's' : ''} with weight and reps entered but not checked off. Log them so the workout saves and you get your Google Health prompt?</p>
+                <div className="flex flex-col gap-2.5">
+                  <button onClick={finishMarkingAll} className="w-full py-3 rounded-xl font-bold uppercase text-xs tracking-wider" style={{ background: C.accent, color: '#10140C' }}>Log all &amp; finish</button>
+                  <button onClick={() => setShowFinishWarning(false)} className="w-full py-3 rounded-xl font-semibold uppercase text-xs tracking-wider" style={{ background: C.inputBg, color: C.textPrimary }}>Keep going</button>
+                  <button onClick={() => { setShowFinishWarning(false); onCancel(); }} className="w-full py-2.5 rounded-xl font-semibold uppercase text-[11px] tracking-wider" style={{ color: '#DC2626' }}>Discard workout</button>
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="text-sm mb-6" style={{ color: C.textSecondary }}>This workout has no completed sets, so there's nothing to save. Keep going, or discard it?</p>
+                <div className="flex gap-3">
+                  <button onClick={() => setShowFinishWarning(false)} className="flex-1 py-3 rounded-xl font-semibold uppercase text-xs tracking-wider" style={{ background: C.inputBg, color: C.textPrimary }}>Keep going</button>
+                  <button onClick={() => { setShowFinishWarning(false); onCancel(); }} className="flex-1 py-3 rounded-xl font-semibold uppercase text-xs tracking-wider text-white" style={{ background: '#DC2626' }}>Discard</button>
+                </div>
+              </>
+            )}
           </div>
         </Modal>
       )}
