@@ -4,7 +4,7 @@ import {
   Home, History, Dumbbell, TrendingUp, Plus, X, Check, Play, Square,
   ChevronLeft, Clock, Search, Trash2, Edit3, Timer, Flame, ArrowRight,
   Settings, Calculator, Download, Upload, Link2, Zap, Volume2, VolumeX, Bell, BellOff,
-  Moon, Sun, Copy, CheckCheck, Share2,
+  Moon, Sun, Copy, CheckCheck, Share2, ChevronUp, ChevronDown,
 } from 'lucide-react';
 
 // ============================================================
@@ -1666,6 +1666,14 @@ function ActiveWorkoutView({ workout, setWorkout, exercises, workouts, onFinish,
 
   const removeExercise = (exIdx) => setWorkout({ ...workout, exercises: workout.exercises.filter((_, i) => i !== exIdx) });
 
+  const moveExercise = (fromIdx, toIdx) => {
+    if (toIdx < 0 || toIdx >= workout.exercises.length) return;
+    const next = [...workout.exercises];
+    const [moved] = next.splice(fromIdx, 1);
+    next.splice(toIdx, 0, moved);
+    setWorkout({ ...workout, exercises: next });
+  };
+
   const setSupersetGroup = (exIdx, otherIdx) => {
     const group = uid();
     const next = { ...workout };
@@ -1748,7 +1756,12 @@ function ActiveWorkoutView({ workout, setWorkout, exercises, workouts, onFinish,
                 next.exercises[exIdx] = { ...next.exercises[exIdx], restSeconds: sec };
                 setWorkout(next);
               }}
+              onMoveUp={() => moveExercise(exIdx, exIdx - 1)}
+              onMoveDown={() => moveExercise(exIdx, exIdx + 1)}
+              canMoveUp={exIdx > 0}
+              canMoveDown={exIdx < workout.exercises.length - 1}
               unit={settings.unit}
+              bodyweight={settings.bodyweight}
             />
           ))}
         </div>
@@ -1810,7 +1823,8 @@ function ActiveWorkoutView({ workout, setWorkout, exercises, workouts, onFinish,
 
 function ExerciseBlock({
   exercise, exIdx, allExercises, workouts, exerciseDefs, onToggleSet, onUpdateSet, onChangeSetType,
-  onAddSet, onRemoveSet, onDuplicateSet, onRemove, onPlateCalc, onSuperset, onClearSuperset, onEditRest, unit
+  onAddSet, onRemoveSet, onDuplicateSet, onRemove, onPlateCalc, onSuperset, onClearSuperset, onEditRest,
+  onMoveUp, onMoveDown, canMoveUp, canMoveDown, unit, bodyweight,
 }) {
   const C = useContext(ThemeContext);
   const [showTypeMenu, setShowTypeMenu] = useState(null);
@@ -1870,6 +1884,10 @@ function ExerciseBlock({
           {exercise.notes && <div className="text-xs mt-1 italic" style={{ color: C.textMuted }}>{exercise.notes}</div>}
         </div>
         <div className="flex items-center gap-1 shrink-0">
+          <div className="flex flex-col">
+            <button onClick={onMoveUp} disabled={!canMoveUp} className="p-0.5 transition" style={{ color: canMoveUp ? C.textMuted : C.textFaint }}><ChevronUp size={13} /></button>
+            <button onClick={onMoveDown} disabled={!canMoveDown} className="p-0.5 transition" style={{ color: canMoveDown ? C.textMuted : C.textFaint }}><ChevronDown size={13} /></button>
+          </div>
           <button onClick={() => setShowRestEdit(true)} className="p-1 mono text-[10px] uppercase flex items-center gap-0.5" style={{ color: C.textMuted }}>
             <Timer size={12} />{fmtTime(exercise.restSeconds || 90)}
           </button>
@@ -1903,8 +1921,15 @@ function ExerciseBlock({
         </div>
       )}
 
+      {equipment === 'Bodyweight' && (
+        <div className="flex items-center gap-1.5 px-4 py-2 text-[11px]" style={{ background: C.accentTint, borderBottom: `1px solid ${C.border}`, color: C.accent }}>
+          <Dumbbell size={12} />
+          <span>Bodyweight exercise — weight logged is <strong>added</strong> to your BW{bodyweight ? ` (${bodyweight} ${unit})` : ''}</span>
+        </div>
+      )}
+
       <div className="grid grid-cols-[1.75rem_1.25rem_1fr_1fr_2.25rem_2.25rem] gap-1.5 px-3 py-2 text-[10px] uppercase tracking-wider font-semibold" style={{ color: C.textMuted, borderBottom: `1px solid ${C.border}` }}>
-        <div>Set</div><div></div><div>{unit}</div><div>Reps</div>
+        <div>Set</div><div></div><div>{equipment === 'Bodyweight' ? `+${unit}` : unit}</div><div>Reps</div>
         <div className="text-center">RIR</div><div></div>
       </div>
 
