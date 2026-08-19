@@ -109,7 +109,7 @@ const SEED_EXERCISES = [
   { id: 'ex_highcablatr', name: 'High Cable Lateral Raise', muscle: 'Shoulders', equipment: 'Cable' },
   { id: 'ex_incyraise', name: 'Incline DB Y-Raise', muscle: 'Shoulders', equipment: 'Dumbbell' },
   { id: 'ex_rpec1', name: '1-Arm Reverse Pec Deck', muscle: 'Shoulders', equipment: 'Machine' },
-  { id: 'ex_rdelt', name: 'Rear Delt Fly', muscle: 'Shoulders', equipment: 'Dumbbell' },
+  { id: 'ex_rdelt', name: 'Rear Delt Fly (DB)', muscle: 'Shoulders', equipment: 'Dumbbell' },
   { id: 'ex_revcabxo', name: 'Reverse Cable Crossover', muscle: 'Shoulders', equipment: 'Cable' },
   { id: 'ex_pullup', name: 'Pull-Up (Wide Grip)', muscle: 'Back', equipment: 'Bodyweight' },
   { id: 'ex_chin', name: 'Chin-up', muscle: 'Back', equipment: 'Bodyweight' },
@@ -153,6 +153,50 @@ const SEED_EXERCISES = [
   { id: 'ex_hang', name: 'Hanging Leg Raise', muscle: 'Core', equipment: 'Bodyweight' },
   { id: 'ex_abwh', name: 'Ab Wheel Rollout', muscle: 'Core', equipment: 'Other' },
   { id: 'ex_deadhang', name: 'Dead Hang', muscle: 'Other', equipment: 'Bodyweight' },
+
+  // --- Additional exercises ---
+  // Shoulders / Rear Delts
+  { id: 'ex_facepull', name: 'Face Pull', muscle: 'Shoulders', equipment: 'Cable' },
+  { id: 'ex_cabrevfly', name: 'Cable Reverse Fly', muscle: 'Shoulders', equipment: 'Cable' },
+  { id: 'ex_arnoldpress', name: 'Arnold Press', muscle: 'Shoulders', equipment: 'Dumbbell' },
+  { id: 'ex_cabuprightrow', name: 'Cable Upright Row', muscle: 'Shoulders', equipment: 'Cable' },
+  { id: 'ex_dbfrontraise', name: 'DB Front Raise', muscle: 'Shoulders', equipment: 'Dumbbell' },
+
+  // Back
+  { id: 'ex_straightarmpd', name: 'Straight-Arm Pulldown', muscle: 'Back', equipment: 'Cable' },
+  { id: 'ex_meadowsrow', name: 'Meadows Row', muscle: 'Back', equipment: 'Barbell' },
+  { id: 'ex_sealrow', name: 'Seal Row', muscle: 'Back', equipment: 'Dumbbell' },
+  { id: 'ex_inclinerow', name: 'Incline Dumbbell Row', muscle: 'Back', equipment: 'Dumbbell' },
+  { id: 'ex_rackpull', name: 'Rack Pull', muscle: 'Back', equipment: 'Barbell' },
+  { id: 'ex_trapbarshrug', name: 'Trap Bar Shrug', muscle: 'Back', equipment: 'Other' },
+
+  // Chest
+  { id: 'ex_lowcabfly', name: 'Low-to-High Cable Fly', muscle: 'Chest', equipment: 'Cable' },
+  { id: 'ex_highcabfly', name: 'High-to-Low Cable Fly', muscle: 'Chest', equipment: 'Cable' },
+  { id: 'ex_smithbench', name: 'Smith Machine Bench Press', muscle: 'Chest', equipment: 'Machine' },
+
+  // Legs
+  { id: 'ex_gobsquat', name: 'Goblet Squat', muscle: 'Legs', equipment: 'Dumbbell' },
+  { id: 'ex_walkinglunge', name: 'Walking Lunge', muscle: 'Legs', equipment: 'Dumbbell' },
+  { id: 'ex_slrdl', name: 'Single-Leg RDL', muscle: 'Legs', equipment: 'Dumbbell' },
+  { id: 'ex_dbrdl', name: 'Dumbbell RDL', muscle: 'Legs', equipment: 'Dumbbell' },
+  { id: 'ex_glhameraise', name: 'Glute-Ham Raise', muscle: 'Legs', equipment: 'Machine' },
+  { id: 'ex_cabledkick', name: 'Cable Donkey Kick', muscle: 'Legs', equipment: 'Cable' },
+  { id: 'ex_stepup', name: 'Step-Up', muscle: 'Legs', equipment: 'Dumbbell' },
+
+  // Arms
+  { id: 'ex_spidercurl', name: 'Spider Curl', muscle: 'Arms', equipment: 'Dumbbell' },
+  { id: 'ex_revcurl', name: 'Reverse Curl', muscle: 'Arms', equipment: 'Barbell' },
+  { id: 'ex_crossbodycurl', name: 'Cross-Body Hammer Curl', muscle: 'Arms', equipment: 'Dumbbell' },
+  { id: 'ex_conccurl', name: 'Concentration Curl', muscle: 'Arms', equipment: 'Dumbbell' },
+  { id: 'ex_ropepd', name: 'Rope Pushdown', muscle: 'Arms', equipment: 'Cable' },
+  { id: 'ex_jmpress', name: 'JM Press', muscle: 'Arms', equipment: 'Barbell' },
+  { id: 'ex_dbtriext', name: 'DB Tricep Kickback', muscle: 'Arms', equipment: 'Dumbbell' },
+
+  // Core
+  { id: 'ex_pallofpress', name: 'Pallof Press', muscle: 'Core', equipment: 'Cable' },
+  { id: 'ex_sideplank', name: 'Side Plank', muscle: 'Core', equipment: 'Bodyweight' },
+  { id: 'ex_toetobar', name: 'Toes-to-Bar', muscle: 'Core', equipment: 'Bodyweight' },
 ];
 
 const MUSCLE_GROUPS = ['Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Core', 'Other'];
