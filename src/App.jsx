@@ -4,7 +4,7 @@ import {
   Home, History, Dumbbell, TrendingUp, Plus, X, Check, Play, Square,
   ChevronLeft, Clock, Search, Trash2, Edit3, Timer, Flame, ArrowRight,
   Settings, Calculator, Download, Upload, Link2, Zap, Volume2, VolumeX, Bell, BellOff,
-  Moon, Sun, Copy, CheckCheck, Share2, ChevronUp, ChevronDown,
+  Moon, Sun, Copy, CheckCheck, Share2, ChevronUp, ChevronDown, RefreshCw,
 } from 'lucide-react';
 
 // ============================================================
@@ -269,6 +269,80 @@ const NIPPARD_ROUTINES = [
       { exerciseId: 'ex_altdbcurl', warmupRange: '0-1', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 90, notes: 'Slow, controlled reps.' },
       { exerciseId: 'ex_machlatr', warmupRange: '0-1', workingSets: 2, repRange: '8-10', rirText: '1/0', restSeconds: 90, notes: 'Squeeze side delt to move weight.' },
       { exerciseId: 'ex_deadhang', warmupRange: '0-1', workingSets: 2, repRange: 'Time', rirText: '0/0', restSeconds: 90, notes: 'Add a few more seconds each week.' },
+    ],
+  },
+
+  // ── Block 2 ─────────────────────────────────────────────────
+  {
+    id: 'nip_b2_upper1', name: 'Upper 1', note: 'Nippard Min-Max · Block 2',
+    scheduledDays: [0], // Mon
+    exercises: [
+      { exerciseId: 'ex_machchest', warmupRange: '2-4', workingSets: 3, repRange: '8-12', rirText: '2/1/0', restSeconds: 210, notes: 'Pause 1s at bottom. Full pec stretch.' },
+      { exerciseId: 'ex_dbincbench', warmupRange: '1-2', workingSets: 3, repRange: '10-12', rirText: '2/1/0', restSeconds: 120, notes: '~30° incline. Control the eccentric.' },
+      { exerciseId: 'ex_lowcabfly', warmupRange: '0-1', workingSets: 3, repRange: '12-15', rirText: '1/1/0', restSeconds: 90, notes: 'Cable at ankle height. Palms up at bottom, rotate to face down at top.' },
+      { exerciseId: 'ex_closelatpd', warmupRange: '2-3', workingSets: 3, repRange: '10-12', rirText: '2/1/0', restSeconds: 150, notes: 'Lean back 15°. Drive elbows down and back.' },
+      { exerciseId: 'ex_seatcabrow', warmupRange: '1-2', workingSets: 3, repRange: '10-12', rirText: '2/1/0', restSeconds: 120, notes: 'Neutral grip. Squeeze shoulder blades at top.' },
+      { exerciseId: 'ex_machlatr', warmupRange: '0-1', workingSets: 3, repRange: '12-15', rirText: '1/1/0', restSeconds: 90, notes: 'Squeeze lateral delt. Avoid shrugging.' },
+      { exerciseId: 'ex_facepull', warmupRange: '0-1', workingSets: 3, repRange: '15-20', rirText: '1/0/0', restSeconds: 90, notes: 'Pull elbows up and out. External rotate at end range.' },
+      { exerciseId: 'ex_bayesian', warmupRange: '0-1', workingSets: 3, repRange: '10-12', rirText: '1/0/0', restSeconds: 90, notes: 'Lean forward into stretch. Full elbow extension at bottom.' },
+      { exerciseId: 'ex_ropepd', warmupRange: '0-1', workingSets: 3, repRange: '12-15', rirText: '1/0/0', restSeconds: 90, notes: 'Elbows pinned. Spread rope at bottom.' },
+      { exerciseId: 'ex_cabcrunch', warmupRange: '0-1', workingSets: 3, repRange: '10-15', rirText: '1/0/0', restSeconds: 90, notes: 'Round lower back. Pause at bottom.' },
+    ],
+  },
+  {
+    id: 'nip_b2_lower1', name: 'Lower 1', note: 'Nippard Min-Max · Block 2',
+    scheduledDays: [1], // Tue
+    exercises: [
+      { exerciseId: 'ex_seatlegc', warmupRange: '1-2', workingSets: 3, repRange: '10-15', rirText: '2/1/0', restSeconds: 90, notes: 'Full stretch at top of ROM. Control the eccentric.' },
+      { exerciseId: 'ex_legp', warmupRange: '2-4', workingSets: 3, repRange: '10-15', rirText: '2/1/0', restSeconds: 180, notes: 'High and wide foot placement for quad/glute emphasis. Full depth.' },
+      { exerciseId: 'ex_bulg', warmupRange: '1-2', workingSets: 3, repRange: '10-12', rirText: '2/1/0', restSeconds: 180, notes: 'Keep torso upright. Minimize push-off from rear leg.' },
+      { exerciseId: 'ex_lege', warmupRange: '1-2', workingSets: 3, repRange: '12-15', rirText: '1/1/0', restSeconds: 90, notes: 'Full stretch at bottom. Squeeze quads at top.' },
+      { exerciseId: 'ex_lylegc', warmupRange: '0-1', workingSets: 2, repRange: '10-12', rirText: '1/0', restSeconds: 90, notes: 'Biggest stretch at bottom. Curl explosively, lower slowly.' },
+      { exerciseId: 'ex_machabd', warmupRange: '0-1', workingSets: 2, repRange: '12-15', rirText: '1/0', restSeconds: 90, notes: 'Foam pad between knees to increase ROM.' },
+      { exerciseId: 'ex_donkcalf', warmupRange: '0-1', workingSets: 3, repRange: '10-15', rirText: '1/1/0', restSeconds: 90, notes: '1-2s pause at bottom stretch. Full ankle extension.' },
+    ],
+  },
+  {
+    id: 'nip_b2_upper2', name: 'Upper 2', note: 'Nippard Min-Max · Block 2',
+    scheduledDays: [3], // Thu
+    exercises: [
+      { exerciseId: 'ex_bench', warmupRange: '2-4', workingSets: 3, repRange: '8-12', rirText: '2/1/0', restSeconds: 210, notes: 'Tuck elbows 45°. Full ROM — touch chest lightly.' },
+      { exerciseId: 'ex_cabfly', warmupRange: '1-2', workingSets: 3, repRange: '12-15', rirText: '2/1/0', restSeconds: 90, notes: 'Mid-height cables. Full stretch at bottom, squeeze at top.' },
+      { exerciseId: 'ex_dbohp', warmupRange: '2-3', workingSets: 3, repRange: '10-12', rirText: '2/1/0', restSeconds: 150, notes: 'Keep torso upright. Full overhead lockout.' },
+      { exerciseId: 'ex_latpd', warmupRange: '2-3', workingSets: 3, repRange: '10-12', rirText: '2/1/0', restSeconds: 150, notes: 'Lean back 15°. Pull to upper chest, squeeze lats.' },
+      { exerciseId: 'ex_csuptbar', warmupRange: '1-2', workingSets: 3, repRange: '10-12', rirText: '2/1/0', restSeconds: 120, notes: 'Flare elbows ~45°. Squeeze at top.' },
+      { exerciseId: 'ex_cabrevfly', warmupRange: '0-1', workingSets: 3, repRange: '15-20', rirText: '1/1/0', restSeconds: 90, notes: 'Cables crossed. Sweep wide arcs. Squeeze rear delts.' },
+      { exerciseId: 'ex_highcablatr', warmupRange: '0-1', workingSets: 3, repRange: '12-15', rirText: '1/0/0', restSeconds: 90, notes: 'Cable at hip height. Raise "out" not "up".' },
+      { exerciseId: 'ex_inccurl', warmupRange: '0-1', workingSets: 3, repRange: '10-12', rirText: '1/1/0', restSeconds: 90, notes: 'Full stretch at bottom. Slow eccentric.' },
+      { exerciseId: 'ex_ohtriext', warmupRange: '0-1', workingSets: 3, repRange: '12-15', rirText: '1/0/0', restSeconds: 90, notes: 'Full overhead stretch. Elbows fixed.' },
+      { exerciseId: 'ex_hang', warmupRange: '0-1', workingSets: 3, repRange: '10-15', rirText: '1/0/0', restSeconds: 90, notes: 'Posterior tilt, curl hips up. Control the negative.' },
+    ],
+  },
+  {
+    id: 'nip_b2_lower2', name: 'Lower 2', note: 'Nippard Min-Max · Block 2',
+    scheduledDays: [4], // Fri
+    exercises: [
+      { exerciseId: 'ex_rdl', warmupRange: '2-3', workingSets: 3, repRange: '8-12', rirText: '2/1/0', restSeconds: 180, notes: 'Bar close to legs throughout. Feel hamstring stretch at bottom.' },
+      { exerciseId: 'ex_hacksq', warmupRange: '2-4', workingSets: 3, repRange: '10-12', rirText: '2/1/0', restSeconds: 180, notes: 'Feet shoulder-width, slight toe flare. Full depth.' },
+      { exerciseId: 'ex_machhipth', warmupRange: '2-3', workingSets: 3, repRange: '10-15', rirText: '2/1/0', restSeconds: 150, notes: 'Squeeze glutes hard at top. Don\'t hyperextend lumbar.' },
+      { exerciseId: 'ex_nordic', warmupRange: '0-1', workingSets: 3, repRange: '5-8', rirText: '2/1/0', restSeconds: 150, notes: 'Use hands to assist on the way up. Control the eccentric fully.' },
+      { exerciseId: 'ex_seatlegc', warmupRange: '0-1', workingSets: 2, repRange: '12-15', rirText: '1/0', restSeconds: 90, notes: 'Squeeze quads at full extension.' },
+      { exerciseId: 'ex_legpcalf', warmupRange: '0-1', workingSets: 3, repRange: '12-15', rirText: '1/1/0', restSeconds: 90, notes: 'Full plantarflexion. 1-2s pause at bottom.' },
+    ],
+  },
+  {
+    id: 'nip_b2_armsdelts', name: 'Arms / Delts', note: 'Nippard Min-Max · Block 2',
+    scheduledDays: [5], // Sat
+    exercises: [
+      { exerciseId: 'ex_machpreach', warmupRange: '0-1', workingSets: 3, repRange: '10-12', rirText: '1/1/0', restSeconds: 90, notes: 'Full elbow extension at bottom. Squeeze hard at top.' },
+      { exerciseId: 'ex_ohdbtri', warmupRange: '0-1', workingSets: 3, repRange: '10-12', rirText: '1/1/0', restSeconds: 90, notes: 'Full overhead stretch. Elbows fixed beside head.' },
+      { exerciseId: 'ex_hcurl', warmupRange: '0-1', workingSets: 3, repRange: '10-12', rirText: '1/0/0', restSeconds: 90, notes: 'Neutral grip. Arc the dumbbell out, not up.' },
+      { exerciseId: 'ex_seatdip', warmupRange: '0-1', workingSets: 3, repRange: '10-15', rirText: '1/1/0', restSeconds: 90, notes: 'Full elbow extension at bottom. Elbows tracking back.' },
+      { exerciseId: 'ex_crossbodycurl', warmupRange: '0-1', workingSets: 2, repRange: '12-15', rirText: '1/0', restSeconds: 90, notes: 'Pull across body toward opposite shoulder. Control the eccentric.' },
+      { exerciseId: 'ex_cabkickback', warmupRange: '0-1', workingSets: 2, repRange: '12-15', rirText: '1/0', restSeconds: 90, notes: 'Hinge at hip. Upper arm behind torso throughout.' },
+      { exerciseId: 'ex_dbwrcurl', warmupRange: '0-1', workingSets: 2, repRange: '12-15', rirText: '1/0', restSeconds: 60, notes: 'Forearms on thighs. Full ROM.' },
+      { exerciseId: 'ex_machlatr', warmupRange: '0-1', workingSets: 3, repRange: '12-15', rirText: '1/1/0', restSeconds: 90, notes: 'Squeeze side delt. No shrugging.' },
+      { exerciseId: 'ex_facepull', warmupRange: '0-1', workingSets: 3, repRange: '15-20', rirText: '1/0/0', restSeconds: 90, notes: 'Pull elbows up and out. External rotate. Great for shoulder health.' },
     ],
   },
 ];
@@ -1596,6 +1670,7 @@ function ActiveWorkoutView({ workout, setWorkout, exercises, workouts, onFinish,
   const [showFinishWarning, setShowFinishWarning] = useState(false);
   const [plateCalcFor, setPlateCalcFor] = useState(null);
   const [supersetPicker, setSupersetPicker] = useState(null);
+  const [swapIdx, setSwapIdx] = useState(null);
   const beepedRef = useRef(false);
 
   // Count completed sets, and sets that have data typed in but weren't checked off
@@ -1710,6 +1785,14 @@ function ActiveWorkoutView({ workout, setWorkout, exercises, workouts, onFinish,
 
   const removeExercise = (exIdx) => setWorkout({ ...workout, exercises: workout.exercises.filter((_, i) => i !== exIdx) });
 
+  const swapExercise = (exIdx, newEx) => {
+    const next = { ...workout };
+    next.exercises = [...next.exercises];
+    next.exercises[exIdx] = { ...next.exercises[exIdx], exerciseId: newEx.id, name: newEx.name };
+    setWorkout(next);
+    setSwapIdx(null);
+  };
+
   const moveExercise = (fromIdx, toIdx) => {
     if (toIdx < 0 || toIdx >= workout.exercises.length) return;
     const next = [...workout.exercises];
@@ -1791,6 +1874,7 @@ function ActiveWorkoutView({ workout, setWorkout, exercises, workouts, onFinish,
               onRemoveSet={(setIdx) => removeSet(exIdx, setIdx)}
               onDuplicateSet={(setIdx) => duplicateSetAt(exIdx, setIdx)}
               onRemove={() => removeExercise(exIdx)}
+              onSwap={() => setSwapIdx(exIdx)}
               onPlateCalc={(weight) => setPlateCalcFor({ exIdx, weight })}
               onSuperset={() => setSupersetPicker(exIdx)}
               onClearSuperset={() => clearSupersetGroup(exIdx)}
@@ -1822,6 +1906,7 @@ function ActiveWorkoutView({ workout, setWorkout, exercises, workouts, onFinish,
       </div>
 
       {showPicker && <ExercisePicker exercises={exercises} onPick={addExercise} onClose={() => setShowPicker(false)} excludeIds={workout.exercises.map((e) => e.exerciseId)} />}
+      {swapIdx !== null && <ExercisePicker exercises={exercises} onPick={(ex) => swapExercise(swapIdx, ex)} onClose={() => setSwapIdx(null)} excludeIds={workout.exercises.filter((_, i) => i !== swapIdx).map((e) => e.exerciseId)} swapMode />}
       {plateCalcFor !== null && <PlateCalculator initialWeight={plateCalcFor.weight} barWeight={settings.barWeight} onClose={() => setPlateCalcFor(null)} />}
       {supersetPicker !== null && <SupersetPicker exercises={workout.exercises} currentIdx={supersetPicker} onPick={(otherIdx) => setSupersetGroup(supersetPicker, otherIdx)} onClose={() => setSupersetPicker(null)} />}
       {showCancelConfirm && (
@@ -1867,7 +1952,7 @@ function ActiveWorkoutView({ workout, setWorkout, exercises, workouts, onFinish,
 
 function ExerciseBlock({
   exercise, exIdx, allExercises, workouts, exerciseDefs, onToggleSet, onUpdateSet, onChangeSetType,
-  onAddSet, onRemoveSet, onDuplicateSet, onRemove, onPlateCalc, onSuperset, onClearSuperset, onEditRest,
+  onAddSet, onRemoveSet, onDuplicateSet, onRemove, onSwap, onPlateCalc, onSuperset, onClearSuperset, onEditRest,
   onMoveUp, onMoveDown, canMoveUp, canMoveDown, unit, bodyweight,
 }) {
   const C = useContext(ThemeContext);
@@ -1940,6 +2025,7 @@ function ExerciseBlock({
           ) : (
             <button onClick={onSuperset} className="p-1" style={{ color: C.textMuted }}><Link2 size={14} /></button>
           )}
+          <button onClick={onSwap} className="p-1" title="Swap exercise" style={{ color: C.textMuted }}><RefreshCw size={14} /></button>
           <button onClick={onRemove} className="p-1" style={{ color: C.textMuted }}><Trash2 size={14} /></button>
         </div>
       </div>
@@ -2300,7 +2386,7 @@ function PlateCalculator({ initialWeight, barWeight, onClose }) {
   );
 }
 
-function ExercisePicker({ exercises, onPick, onClose, excludeIds = [] }) {
+function ExercisePicker({ exercises, onPick, onClose, excludeIds = [], swapMode = false }) {
   const C = useContext(ThemeContext);
   const [q, setQ] = useState('');
   const [muscle, setMuscle] = useState('All');
@@ -2310,7 +2396,7 @@ function ExercisePicker({ exercises, onPick, onClose, excludeIds = [] }) {
     <Modal onClose={onClose} fullscreen>
       <div className="flex items-center gap-3 p-4" style={{ borderBottom: `1px solid ${C.border}` }}>
         <button onClick={onClose} style={{ color: C.textSecondary }}><ChevronLeft size={24} /></button>
-        <h2 className="text-xl font-bold flex-1" style={{ color: C.textPrimary }}>Add Exercise</h2>
+        <h2 className="text-xl font-bold flex-1" style={{ color: C.textPrimary }}>{swapMode ? 'Swap Exercise' : 'Add Exercise'}</h2>
       </div>
       <div className="p-4 sticky top-0 z-10" style={{ background: C.cardBg }}>
         <div className="relative mb-3">
@@ -2343,7 +2429,7 @@ function ExercisePicker({ exercises, onPick, onClose, excludeIds = [] }) {
                 <div className="text-xs mt-0.5" style={{ color: C.textMuted }}>{ex.muscle} · {ex.equipment}</div>
               </div>
               {already
-                ? <span className="text-[10px] uppercase tracking-wider" style={{ color: C.textMuted }}>Added</span>
+                ? <span className="text-[10px] uppercase tracking-wider" style={{ color: C.textMuted }}>{swapMode ? 'In use' : 'Added'}</span>
                 : <Plus size={18} style={{ color: C.accent }} />}
             </button>
           );
@@ -2933,9 +3019,14 @@ function RoutinesTab({ routines, setRoutines, exercises, setExercises, onStart }
   const [editing, setEditing] = useState(null);
   const [showImport, setShowImport] = useState(false);
 
-  const importNippard = () => {
+  const hasBlock1 = routines.some(r => r.id.startsWith('nip_') && !r.id.startsWith('nip_b2_') && !r.id.startsWith('nip_lpp') && !r.id.startsWith('nip_ppl'));
+  const hasBlock2 = routines.some(r => r.id.startsWith('nip_b2_'));
+
+  const importNippardBlock = (block) => {
+    const prefix = block === 1 ? (id) => id.startsWith('nip_') && !id.startsWith('nip_b2_') && !id.startsWith('nip_lpp') && !id.startsWith('nip_ppl')
+                               : (id) => id.startsWith('nip_b2_');
     const existing = new Set(routines.map(r => r.id));
-    const newOnes = NIPPARD_ROUTINES.filter(r => !existing.has(r.id));
+    const newOnes = NIPPARD_ROUTINES.filter(r => prefix(r.id) && !existing.has(r.id));
     setRoutines([...routines, ...newOnes]);
   };
 
@@ -2951,8 +3042,6 @@ function RoutinesTab({ routines, setRoutines, exercises, setExercises, onStart }
       />
     );
   }
-
-  const hasNippard = routines.some(r => r.id.startsWith('nip_') && !r.id.startsWith('nip_ppl'));
 
   return (
     <div className="px-5 pt-8 relative">
@@ -2970,16 +3059,25 @@ function RoutinesTab({ routines, setRoutines, exercises, setExercises, onStart }
         </div>
       )}>Routines</TabTitle>
 
-      {!hasNippard && (
+      {(!hasBlock1 || !hasBlock2) && (
         <MetricCard className="mb-6" style={{ background: `linear-gradient(to bottom right, ${C.accentTint}, ${C.cardBg})` }}>
           <div className="flex items-center gap-2 mb-2">
             <Zap size={16} style={{ color: C.accent }} />
             <div className="text-base font-bold" style={{ color: C.textPrimary }}>Nippard Min-Max</div>
           </div>
-          <div className="text-xs mb-3" style={{ color: C.textSecondary }}>5-day Upper/Lower/Arms split (Block 1), Mon/Tue/Thu/Fri/Sat, with warm-ups, RIR targets, and coaching notes.</div>
-          <button onClick={importNippard} className="px-4 py-2 rounded-xl font-bold uppercase text-xs tracking-wider" style={{ background: C.accent, color: '#10140C' }}>
-            Import 5 Routines
-          </button>
+          <div className="text-xs mb-3" style={{ color: C.textSecondary }}>5-day Upper/Lower/Arms split, Mon/Tue/Thu/Fri/Sat, with warm-ups, RIR targets, and coaching notes.</div>
+          <div className="flex gap-2">
+            {!hasBlock1 && (
+              <button onClick={() => importNippardBlock(1)} className="px-4 py-2 rounded-xl font-bold uppercase text-xs tracking-wider" style={{ background: C.accent, color: '#10140C' }}>
+                Import Block 1
+              </button>
+            )}
+            {!hasBlock2 && (
+              <button onClick={() => importNippardBlock(2)} className="px-4 py-2 rounded-xl font-bold uppercase text-xs tracking-wider" style={{ background: hasBlock1 ? C.accent : C.inputBg, color: hasBlock1 ? '#10140C' : C.textPrimary, border: hasBlock1 ? 'none' : `1px solid ${C.border}` }}>
+                Import Block 2
+              </button>
+            )}
+          </div>
         </MetricCard>
       )}
 
