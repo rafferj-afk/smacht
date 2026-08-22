@@ -206,143 +206,145 @@ const EQUIPMENT_TYPES = ['Barbell', 'Dumbbell', 'Machine', 'Cable', 'Bodyweight'
 //  NIPPARD MIN-MAX ROUTINES (with default scheduled days)
 // ============================================================
 const NIPPARD_ROUTINES = [
+  // ── Block 1 (Weeks 1–6) ─────────────────────────────────────
+  // RIR targets reflect weeks 2–6 (the hard weeks).
+  // Week 1 is an intro week — back off by 1 RIR on every set.
   {
     id: 'nip_upper1', name: 'Upper 1', note: 'Nippard Min-Max · Block 1',
     scheduledDays: [0], // Mon
     exercises: [
-      { exerciseId: 'ex_bbincbench', warmupRange: '2-4', workingSets: 2, repRange: '6-8', rirText: '2/1', restSeconds: 240, notes: 'Pause 1s at bottom. Maintain tension on pecs.' },
-      { exerciseId: 'ex_pecdeck', warmupRange: '1-2', workingSets: 2, repRange: '6-8', rirText: '1/0', restSeconds: 90, notes: 'Pause 1s at bottom, maintain pec tension.' },
-      { exerciseId: 'ex_incyraise', warmupRange: '0-1', workingSets: 2, repRange: '8-10', rirText: '1/0', restSeconds: 90, notes: '30° incline bench, back against bench.' },
-      { exerciseId: 'ex_pullup', warmupRange: '1-2', workingSets: 2, repRange: '6-8', rirText: '2/1', restSeconds: 150, notes: 'Control the negative. Full ROM.' },
-      { exerciseId: 'ex_kelsoshrug', warmupRange: '1-2', workingSets: 2, repRange: '6-8', rirText: '2/1', restSeconds: 150, notes: 'Pause 1s at top, squeeze shoulder blades.' },
-      { exerciseId: 'ex_ezpreach', warmupRange: '0-1', workingSets: 2, repRange: '6-8', rirText: '1/0', restSeconds: 90, notes: 'Keep triceps pinned against pad.' },
-      { exerciseId: 'ex_tpush', warmupRange: '0-1', workingSets: 2, repRange: '6-8', rirText: '1/0', restSeconds: 90, notes: 'Rope or bar attachment.' },
-      { exerciseId: 'ex_dragflag', warmupRange: '0-1', workingSets: 2, repRange: '6-8', rirText: '1/0', restSeconds: 90, notes: 'Keep body rigid throughout ROM.' },
+      { exerciseId: 'ex_bbincbench', warmupRange: '2-4', workingSets: 2, repRange: '6-8', rirText: '1/0', restSeconds: 240, notes: 'Pause 1s at bottom. Maintain tension on pecs. RIR 0 = confident you had none left but don\'t need to fail the rep.' },
+      { exerciseId: 'ex_pecdeck', warmupRange: '1-2', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 90, notes: 'Pause 1s at bottom. Go to failure — attempt the last rep even if you think you can\'t get it.' },
+      { exerciseId: 'ex_incyraise', warmupRange: '0-1', workingSets: 2, repRange: '8-10', rirText: '0/0', restSeconds: 90, notes: '30° incline bench, back against bench. Lift up and out in a Y shape.' },
+      { exerciseId: 'ex_pullup', warmupRange: '1-2', workingSets: 2, repRange: '6-8', rirText: '1/0', restSeconds: 150, notes: 'Control the negative. Feel lats pulling apart. Full ROM.' },
+      { exerciseId: 'ex_kelsoshrug', warmupRange: '1-2', workingSets: 2, repRange: '6-8', rirText: '1/0', restSeconds: 150, notes: 'Pause 1s at top, let shoulder blades peel apart on the way down.' },
+      { exerciseId: 'ex_ezpreach', warmupRange: '0-1', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 90, notes: 'Keep triceps firmly pinned against pad. Smooth controlled reps.' },
+      { exerciseId: 'ex_tpush', warmupRange: '0-1', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 90, notes: 'Rope or bar attachment. Go to failure.' },
+      { exerciseId: 'ex_dragflag', warmupRange: '0-1', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 90, notes: 'Keep body as rigid as possible throughout the ROM.' },
     ],
   },
   {
     id: 'nip_lower1', name: 'Lower 1', note: 'Nippard Min-Max · Block 1',
     scheduledDays: [1], // Tue
     exercises: [
-      { exerciseId: 'ex_lylegc', warmupRange: '1-2', workingSets: 2, repRange: '6-8', rirText: '1/0', restSeconds: 90, notes: 'Biggest stretch at bottom. Prevent hips popping.' },
-      { exerciseId: 'ex_bsquat', warmupRange: '2-4', workingSets: 2, repRange: '6-8', rirText: '2/2', restSeconds: 240, notes: 'Back, Front, Pendulum, Hack, Belt or Smith squat.' },
-      { exerciseId: 'ex_smithlunge', warmupRange: '1-2', workingSets: 1, repRange: '6-8', rirText: '1', restSeconds: 210, notes: 'Minimize contribution from back leg.' },
-      { exerciseId: 'ex_lege', warmupRange: '1-2', workingSets: 2, repRange: '6-8', rirText: '1/0', restSeconds: 90, notes: 'Set seat back for full stretch.' },
-      { exerciseId: 'ex_machabd', warmupRange: '0-1', workingSets: 1, repRange: '6-8', rirText: '0', restSeconds: 90, notes: 'Foam pads between knees to increase ROM.' },
-      { exerciseId: 'ex_stcalf', warmupRange: '0-1', workingSets: 2, repRange: '6-8', rirText: '1/0', restSeconds: 90, notes: '1-2s pause at bottom. Ankle roll.' },
+      { exerciseId: 'ex_lylegc', warmupRange: '1-2', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 90, notes: 'Biggest stretch possible at bottom. Prevent butt from popping up as you curl.' },
+      { exerciseId: 'ex_bsquat', warmupRange: '2-4', workingSets: 2, repRange: '6-8', rirText: '1/0', restSeconds: 240, notes: 'Back, Front, Pendulum, Hack, Belt or Smith squat. RIR 0 = confident you had zero left but don\'t need to fail the rep.' },
+      { exerciseId: 'ex_smithlunge', warmupRange: '2-4', workingSets: 1, repRange: '6-8', rirText: '0', restSeconds: 210, notes: 'Minimize contribution from your back leg. RIR 0 = confident you had zero reps left.' },
+      { exerciseId: 'ex_lege', warmupRange: '1-2', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 90, notes: 'Set seat back as far as comfortable. Grab handles hard to pull butt into seat.' },
+      { exerciseId: 'ex_machabd', warmupRange: '0-1', workingSets: 1, repRange: '6-8', rirText: '0', restSeconds: 90, notes: 'Place foam pads between outside of knees and pads to increase ROM.' },
+      { exerciseId: 'ex_stcalf', warmupRange: '0-1', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 90, notes: '1-2s pause at bottom. Roll ankle back and forth on balls of feet.' },
     ],
   },
   {
     id: 'nip_upper2', name: 'Upper 2', note: 'Nippard Min-Max · Block 1',
     scheduledDays: [3], // Thu
     exercises: [
-      { exerciseId: 'ex_closelatpd', warmupRange: '2-3', workingSets: 2, repRange: '8-10', rirText: '2/1', restSeconds: 150, notes: 'Lean back 15°, drive elbows down.' },
-      { exerciseId: 'ex_csuptbar', warmupRange: '2-3', workingSets: 2, repRange: '8-10', rirText: '2/1', restSeconds: 150, notes: 'Flare elbows ~45°, squeeze at top.' },
-      { exerciseId: 'ex_machshrug', warmupRange: '1-2', workingSets: 1, repRange: '6-8', rirText: '1', restSeconds: 90, notes: 'Shrug up to your ears. Use straps.' },
-      { exerciseId: 'ex_machchest', warmupRange: '2-4', workingSets: 2, repRange: '8-10', rirText: '2/1', restSeconds: 210, notes: '1s pause at bottom, pec tension.' },
-      { exerciseId: 'ex_highcablatr', warmupRange: '0-1', workingSets: 2, repRange: '8-10', rirText: '1/0', restSeconds: 90, notes: 'Cable at hip height. Hand past midline at bottom.' },
-      { exerciseId: 'ex_rpec1', warmupRange: '0-1', workingSets: 1, repRange: '8-10', rirText: '0', restSeconds: 90, notes: 'Sweep out for largest semi-circle.' },
-      { exerciseId: 'ex_cabcrunch', warmupRange: '0-1', workingSets: 2, repRange: '6-8', rirText: '1/0', restSeconds: 90, notes: 'Round lower back as you crunch.' },
+      { exerciseId: 'ex_closelatpd', warmupRange: '2-3', workingSets: 2, repRange: '8-10', rirText: '1/0', restSeconds: 150, notes: 'Lean back ~15°. Drive elbows down while squeezing shoulder blades together.' },
+      { exerciseId: 'ex_csuptbar', warmupRange: '2-3', workingSets: 2, repRange: '8-10', rirText: '1/0', restSeconds: 150, notes: 'Flare elbows out ~45°. Squeeze shoulder blades hard at top of each rep.' },
+      { exerciseId: 'ex_machshrug', warmupRange: '1-2', workingSets: 1, repRange: '6-8', rirText: '0', restSeconds: 90, notes: 'Shrug up to your ears. Use straps if possible.' },
+      { exerciseId: 'ex_machchest', warmupRange: '2-4', workingSets: 2, repRange: '8-10', rirText: '1/0', restSeconds: 210, notes: '1s pause at bottom while maintaining pec tension. RIR 0 = go to failure.' },
+      { exerciseId: 'ex_highcablatr', warmupRange: '0-1', workingSets: 2, repRange: '8-10', rirText: '0/0', restSeconds: 90, notes: 'Cable at ~hip height. Let hand go past midline at bottom for deep stretch.' },
+      { exerciseId: 'ex_rpec1', warmupRange: '0-1', workingSets: 1, repRange: '8-10', rirText: '0', restSeconds: 90, notes: 'Sweep weight out to create the largest semi-circle possible with your arm.' },
+      { exerciseId: 'ex_cabcrunch', warmupRange: '0-1', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 90, notes: 'Round lower back as you crunch. Mind-muscle connection with abs.' },
     ],
   },
   {
     id: 'nip_lower2', name: 'Lower 2', note: 'Nippard Min-Max · Block 1',
     scheduledDays: [4], // Fri
     exercises: [
-      { exerciseId: 'ex_lege', warmupRange: '1-2', workingSets: 2, repRange: '8-10', rirText: '1/0', restSeconds: 90, notes: 'Full stretch (comfortable).' },
-      { exerciseId: 'ex_rdl', warmupRange: '2-3', workingSets: 2, repRange: '6-8', rirText: '2/2', restSeconds: 120, notes: 'Glutes back, bar down over mid-foot.' },
-      { exerciseId: 'ex_machhipth', warmupRange: '2-4', workingSets: 2, repRange: '6-8', rirText: '2/1', restSeconds: 210, notes: 'Squeeze glutes hard at top.' },
-      { exerciseId: 'ex_legp', warmupRange: '2-4', workingSets: 1, repRange: '6-8', rirText: '1', restSeconds: 150, notes: 'Feet lower for quad focus. Deep.' },
-      { exerciseId: 'ex_stcalf', warmupRange: '0-1', workingSets: 2, repRange: '8-10', rirText: '1/0', restSeconds: 90, notes: '1-2s pause at bottom.' },
+      { exerciseId: 'ex_lege', warmupRange: '1-2', workingSets: 2, repRange: '8-10', rirText: '0/0', restSeconds: 90, notes: 'Set seat back as far as comfortable. Grab handles hard to pull butt into seat.' },
+      { exerciseId: 'ex_rdl', warmupRange: '2-3', workingSets: 2, repRange: '6-8', rirText: '2/1', restSeconds: 150, notes: 'Glutes back, bar straight down over mid-foot. Deep stretch, neutral spine.' },
+      { exerciseId: 'ex_machhipth', warmupRange: '2-4', workingSets: 2, repRange: '6-8', rirText: '1/0', restSeconds: 210, notes: 'Squeeze glutes hard at top. Control the weight on the way down.' },
+      { exerciseId: 'ex_legp', warmupRange: '2-4', workingSets: 1, repRange: '6-8', rirText: '0', restSeconds: 150, notes: 'Feet lower on platform for quad focus. As deep as possible without back rounding.' },
+      { exerciseId: 'ex_stcalf', warmupRange: '0-1', workingSets: 2, repRange: '8-10', rirText: '0/0', restSeconds: 90, notes: '1-2s pause at bottom. Roll ankle back and forth on balls of feet.' },
     ],
   },
   {
     id: 'nip_armsdelts', name: 'Arms / Delts', note: 'Nippard Min-Max · Block 1',
     scheduledDays: [5], // Sat
     exercises: [
-      { exerciseId: 'ex_bayesian', warmupRange: '0-1', workingSets: 2, repRange: '6-8', rirText: '1/0', restSeconds: 90, notes: 'Lean forward. Deep stretch at bottom.' },
-      { exerciseId: 'ex_ohtriext', warmupRange: '0-1', workingSets: 2, repRange: '8-10', rirText: '1/0', restSeconds: 90, notes: 'Deep stretch through entire negative.' },
-      { exerciseId: 'ex_zottman', warmupRange: '0-1', workingSets: 1, repRange: '8-10', rirText: '0', restSeconds: 90, notes: 'Hammer up, palms up on way down.' },
-      { exerciseId: 'ex_cabkickback', warmupRange: '0-1', workingSets: 2, repRange: '8-10', rirText: '1/0', restSeconds: 90, notes: 'Keep upper arm behind torso.' },
-      { exerciseId: 'ex_dbwrcurl', warmupRange: '0-1', workingSets: 2, repRange: '8-10', rirText: '1/0', restSeconds: 90, notes: 'Smooth, controlled reps.' },
-      { exerciseId: 'ex_dbwrext', warmupRange: '0-1', workingSets: 2, repRange: '8-10', rirText: '1/0', restSeconds: 90, notes: 'Smooth, controlled reps.' },
-      { exerciseId: 'ex_altdbcurl', warmupRange: '0-1', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 90, notes: 'Slow, controlled reps.' },
-      { exerciseId: 'ex_machlatr', warmupRange: '0-1', workingSets: 2, repRange: '8-10', rirText: '1/0', restSeconds: 90, notes: 'Squeeze side delt to move weight.' },
-      { exerciseId: 'ex_deadhang', warmupRange: '0-1', workingSets: 2, repRange: 'Time', rirText: '0/0', restSeconds: 90, notes: 'Add a few more seconds each week.' },
+      { exerciseId: 'ex_bayesian', warmupRange: '0-1', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 90, notes: 'Lean forward slightly. Control negative and feel deep stretch at bottom.' },
+      { exerciseId: 'ex_ohtriext', warmupRange: '0-1', workingSets: 2, repRange: '8-10', rirText: '0/0', restSeconds: 90, notes: 'Feel a deep stretch on triceps throughout the entire negative.' },
+      { exerciseId: 'ex_zottman', warmupRange: '0-1', workingSets: 1, repRange: '8-10', rirText: '0', restSeconds: 90, notes: 'Hammer curl on the way up, supinated (palms up) on the way down.' },
+      { exerciseId: 'ex_cabkickback', warmupRange: '0-1', workingSets: 2, repRange: '8-10', rirText: '0/0', restSeconds: 90, notes: 'Keep upper arm behind your torso throughout the ROM.' },
+      { exerciseId: 'ex_dbwrcurl', warmupRange: '0-1', workingSets: 2, repRange: '8-10', rirText: '0/0', restSeconds: 90, notes: 'Smooth, controlled reps.' },
+      { exerciseId: 'ex_dbwrext', warmupRange: '0-1', workingSets: 2, repRange: '8-10', rirText: '0/0', restSeconds: 90, notes: 'Smooth, controlled reps.' },
+      { exerciseId: 'ex_altdbcurl', warmupRange: '0-1', workingSets: 1, repRange: '6-8', rirText: '0', restSeconds: 90, notes: 'Slow, controlled reps.' },
+      { exerciseId: 'ex_machlatr', warmupRange: '0-1', workingSets: 2, repRange: '8-10', rirText: '0/0', restSeconds: 90, notes: 'Focus on squeezing side delt to move the weight.' },
+      { exerciseId: 'ex_deadhang', warmupRange: '0-1', workingSets: 2, repRange: 'Time', rirText: '0/0', restSeconds: 90, notes: 'Try to add a few more seconds each week.' },
     ],
   },
 
-  // ── Block 2 ─────────────────────────────────────────────────
+  // ── Block 2 (Weeks 7–12) — PDF verified ─────────────────────
+  // Same exercises as Block 1. Intensity techniques added on final set.
+  // Week 7 is a deload — back off by 1 RIR on every set.
+  // Drop set = after failure drop weight ~25% and go to failure again (×2).
+  // Myo-reps = after failure, rest 5s, attempt 2 reps, repeat until you can't.
+  // Lengthened partials = after failure, continue partial reps in stretched position.
+  // IDs use nip_mm2_ prefix to keep this separate from the older Block 2 routines above.
   {
-    id: 'nip_b2_upper1', name: 'Upper 1', note: 'Nippard Min-Max · Block 2',
+    id: 'nip_mm2_upper1', name: 'Upper 1', note: 'Nippard Min-Max · Block 2 (PDF)',
     scheduledDays: [0], // Mon
     exercises: [
-      { exerciseId: 'ex_machchest', warmupRange: '2-4', workingSets: 3, repRange: '8-12', rirText: '2/1/0', restSeconds: 210, notes: 'Pause 1s at bottom. Full pec stretch.' },
-      { exerciseId: 'ex_dbincbench', warmupRange: '1-2', workingSets: 3, repRange: '10-12', rirText: '2/1/0', restSeconds: 120, notes: '~30° incline. Control the eccentric.' },
-      { exerciseId: 'ex_lowcabfly', warmupRange: '0-1', workingSets: 3, repRange: '12-15', rirText: '1/1/0', restSeconds: 90, notes: 'Cable at ankle height. Palms up at bottom, rotate to face down at top.' },
-      { exerciseId: 'ex_closelatpd', warmupRange: '2-3', workingSets: 3, repRange: '10-12', rirText: '2/1/0', restSeconds: 150, notes: 'Lean back 15°. Drive elbows down and back.' },
-      { exerciseId: 'ex_seatcabrow', warmupRange: '1-2', workingSets: 3, repRange: '10-12', rirText: '2/1/0', restSeconds: 120, notes: 'Neutral grip. Squeeze shoulder blades at top.' },
-      { exerciseId: 'ex_machlatr', warmupRange: '0-1', workingSets: 3, repRange: '12-15', rirText: '1/1/0', restSeconds: 90, notes: 'Squeeze lateral delt. Avoid shrugging.' },
-      { exerciseId: 'ex_facepull', warmupRange: '0-1', workingSets: 3, repRange: '15-20', rirText: '1/0/0', restSeconds: 90, notes: 'Pull elbows up and out. External rotate at end range.' },
-      { exerciseId: 'ex_bayesian', warmupRange: '0-1', workingSets: 3, repRange: '10-12', rirText: '1/0/0', restSeconds: 90, notes: 'Lean forward into stretch. Full elbow extension at bottom.' },
-      { exerciseId: 'ex_ropepd', warmupRange: '0-1', workingSets: 3, repRange: '12-15', rirText: '1/0/0', restSeconds: 90, notes: 'Elbows pinned. Spread rope at bottom.' },
-      { exerciseId: 'ex_cabcrunch', warmupRange: '0-1', workingSets: 3, repRange: '10-15', rirText: '1/0/0', restSeconds: 90, notes: 'Round lower back. Pause at bottom.' },
+      { exerciseId: 'ex_bbincbench', warmupRange: '2-4', workingSets: 2, repRange: '6-8', rirText: '1/0', restSeconds: 240, notes: 'Last set: lengthened partials after failure (pause at bottom stretch). Pause 1s each rep.' },
+      { exerciseId: 'ex_pecdeck', warmupRange: '1-2', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 90, notes: 'Last set: drop set — drop ~25% and go to failure twice more. Pause 1s at bottom.' },
+      { exerciseId: 'ex_incyraise', warmupRange: '0-1', workingSets: 2, repRange: '8-10', rirText: '0/0', restSeconds: 90, notes: '30° incline. Last set: myo-reps (rest 5s, 2 reps, repeat until failure).' },
+      { exerciseId: 'ex_pullup', warmupRange: '1-2', workingSets: 2, repRange: '6-8', rirText: '1/0', restSeconds: 150, notes: 'Last set: myo-reps. Control the negative. Full ROM.' },
+      { exerciseId: 'ex_kelsoshrug', warmupRange: '1-2', workingSets: 2, repRange: '6-8', rirText: '1/0', restSeconds: 150, notes: 'Last set: lengthened partials. Pause 1s at top, peel shoulder blades apart on descent.' },
+      { exerciseId: 'ex_ezpreach', warmupRange: '0-1', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 90, notes: 'Last set: myo-reps. Triceps firmly pinned against pad.' },
+      { exerciseId: 'ex_tpush', warmupRange: '0-1', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 90, notes: 'Last set: drop set. Rope or bar attachment.' },
+      { exerciseId: 'ex_dragflag', warmupRange: '0-1', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 90, notes: 'Last set: myo-reps. Keep body rigid throughout ROM.' },
     ],
   },
   {
-    id: 'nip_b2_lower1', name: 'Lower 1', note: 'Nippard Min-Max · Block 2',
+    id: 'nip_mm2_lower1', name: 'Lower 1', note: 'Nippard Min-Max · Block 2 (PDF)',
     scheduledDays: [1], // Tue
     exercises: [
-      { exerciseId: 'ex_seatlegc', warmupRange: '1-2', workingSets: 3, repRange: '10-15', rirText: '2/1/0', restSeconds: 90, notes: 'Full stretch at top of ROM. Control the eccentric.' },
-      { exerciseId: 'ex_legp', warmupRange: '2-4', workingSets: 3, repRange: '10-15', rirText: '2/1/0', restSeconds: 180, notes: 'High and wide foot placement for quad/glute emphasis. Full depth.' },
-      { exerciseId: 'ex_bulg', warmupRange: '1-2', workingSets: 3, repRange: '10-12', rirText: '2/1/0', restSeconds: 180, notes: 'Keep torso upright. Minimize push-off from rear leg.' },
-      { exerciseId: 'ex_lege', warmupRange: '1-2', workingSets: 3, repRange: '12-15', rirText: '1/1/0', restSeconds: 90, notes: 'Full stretch at bottom. Squeeze quads at top.' },
-      { exerciseId: 'ex_lylegc', warmupRange: '0-1', workingSets: 2, repRange: '10-12', rirText: '1/0', restSeconds: 90, notes: 'Biggest stretch at bottom. Curl explosively, lower slowly.' },
-      { exerciseId: 'ex_machabd', warmupRange: '0-1', workingSets: 2, repRange: '12-15', rirText: '1/0', restSeconds: 90, notes: 'Foam pad between knees to increase ROM.' },
-      { exerciseId: 'ex_donkcalf', warmupRange: '0-1', workingSets: 3, repRange: '10-15', rirText: '1/1/0', restSeconds: 90, notes: '1-2s pause at bottom stretch. Full ankle extension.' },
+      { exerciseId: 'ex_lylegc', warmupRange: '1-2', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 90, notes: 'Last set: lengthened partials. Biggest stretch at bottom, prevent butt popping.' },
+      { exerciseId: 'ex_bsquat', warmupRange: '2-4', workingSets: 2, repRange: '6-8', rirText: '1/0', restSeconds: 240, notes: 'Last set: lengthened partials (pause in hole). RIR 0 = zero reps left, no need to fail the rep.' },
+      { exerciseId: 'ex_smithlunge', warmupRange: '2-4', workingSets: 1, repRange: '6-8', rirText: '0', restSeconds: 210, notes: 'Last set: myo-reps. Minimize contribution from back leg.' },
+      { exerciseId: 'ex_lege', warmupRange: '1-2', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 90, notes: 'Last set: drop set. Set seat back as far as comfortable.' },
+      { exerciseId: 'ex_machabd', warmupRange: '0-1', workingSets: 1, repRange: '6-8', rirText: '0', restSeconds: 90, notes: 'Last set: myo-reps. Foam pads between knees to increase ROM.' },
+      { exerciseId: 'ex_stcalf', warmupRange: '0-1', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 90, notes: 'Last set: lengthened partials. 1-2s pause at bottom. Roll ankle on balls of feet.' },
     ],
   },
   {
-    id: 'nip_b2_upper2', name: 'Upper 2', note: 'Nippard Min-Max · Block 2',
+    id: 'nip_mm2_upper2', name: 'Upper 2', note: 'Nippard Min-Max · Block 2 (PDF)',
     scheduledDays: [3], // Thu
     exercises: [
-      { exerciseId: 'ex_bench', warmupRange: '2-4', workingSets: 3, repRange: '8-12', rirText: '2/1/0', restSeconds: 210, notes: 'Tuck elbows 45°. Full ROM — touch chest lightly.' },
-      { exerciseId: 'ex_cabfly', warmupRange: '1-2', workingSets: 3, repRange: '12-15', rirText: '2/1/0', restSeconds: 90, notes: 'Mid-height cables. Full stretch at bottom, squeeze at top.' },
-      { exerciseId: 'ex_dbohp', warmupRange: '2-3', workingSets: 3, repRange: '10-12', rirText: '2/1/0', restSeconds: 150, notes: 'Keep torso upright. Full overhead lockout.' },
-      { exerciseId: 'ex_latpd', warmupRange: '2-3', workingSets: 3, repRange: '10-12', rirText: '2/1/0', restSeconds: 150, notes: 'Lean back 15°. Pull to upper chest, squeeze lats.' },
-      { exerciseId: 'ex_csuptbar', warmupRange: '1-2', workingSets: 3, repRange: '10-12', rirText: '2/1/0', restSeconds: 120, notes: 'Flare elbows ~45°. Squeeze at top.' },
-      { exerciseId: 'ex_cabrevfly', warmupRange: '0-1', workingSets: 3, repRange: '15-20', rirText: '1/1/0', restSeconds: 90, notes: 'Cables crossed. Sweep wide arcs. Squeeze rear delts.' },
-      { exerciseId: 'ex_highcablatr', warmupRange: '0-1', workingSets: 3, repRange: '12-15', rirText: '1/0/0', restSeconds: 90, notes: 'Cable at hip height. Raise "out" not "up".' },
-      { exerciseId: 'ex_inccurl', warmupRange: '0-1', workingSets: 3, repRange: '10-12', rirText: '1/1/0', restSeconds: 90, notes: 'Full stretch at bottom. Slow eccentric.' },
-      { exerciseId: 'ex_ohtriext', warmupRange: '0-1', workingSets: 3, repRange: '12-15', rirText: '1/0/0', restSeconds: 90, notes: 'Full overhead stretch. Elbows fixed.' },
-      { exerciseId: 'ex_hang', warmupRange: '0-1', workingSets: 3, repRange: '10-15', rirText: '1/0/0', restSeconds: 90, notes: 'Posterior tilt, curl hips up. Control the negative.' },
+      { exerciseId: 'ex_closelatpd', warmupRange: '2-3', workingSets: 2, repRange: '8-10', rirText: '1/0', restSeconds: 150, notes: 'Last set: myo-reps. Lean back ~15°, drive elbows down.' },
+      { exerciseId: 'ex_csuptbar', warmupRange: '2-3', workingSets: 2, repRange: '8-10', rirText: '1/0', restSeconds: 150, notes: 'Last set: drop set. Flare elbows ~45°, squeeze shoulder blades hard at top.' },
+      { exerciseId: 'ex_machshrug', warmupRange: '1-2', workingSets: 1, repRange: '6-8', rirText: '0', restSeconds: 90, notes: 'Last set: myo-reps. Shrug up to your ears. Use straps.' },
+      { exerciseId: 'ex_machchest', warmupRange: '2-4', workingSets: 2, repRange: '8-10', rirText: '1/0', restSeconds: 210, notes: 'Last set: weighted static hold 30s in bottom (stretched) position after failure.' },
+      { exerciseId: 'ex_highcablatr', warmupRange: '0-1', workingSets: 2, repRange: '8-10', rirText: '0/0', restSeconds: 90, notes: 'Last set: drop set. Cable at hip height, hand past midline at bottom.' },
+      { exerciseId: 'ex_rpec1', warmupRange: '0-1', workingSets: 1, repRange: '8-10', rirText: '0', restSeconds: 90, notes: 'Last set: myo-reps. Sweep out for largest semi-circle with arm.' },
+      { exerciseId: 'ex_cabcrunch', warmupRange: '0-1', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 90, notes: 'Last set: myo-reps. Round lower back, mind-muscle connection with abs.' },
     ],
   },
   {
-    id: 'nip_b2_lower2', name: 'Lower 2', note: 'Nippard Min-Max · Block 2',
+    id: 'nip_mm2_lower2', name: 'Lower 2', note: 'Nippard Min-Max · Block 2 (PDF)',
     scheduledDays: [4], // Fri
     exercises: [
-      { exerciseId: 'ex_rdl', warmupRange: '2-3', workingSets: 3, repRange: '8-12', rirText: '2/1/0', restSeconds: 180, notes: 'Bar close to legs throughout. Feel hamstring stretch at bottom.' },
-      { exerciseId: 'ex_hacksq', warmupRange: '2-4', workingSets: 3, repRange: '10-12', rirText: '2/1/0', restSeconds: 180, notes: 'Feet shoulder-width, slight toe flare. Full depth.' },
-      { exerciseId: 'ex_machhipth', warmupRange: '2-3', workingSets: 3, repRange: '10-15', rirText: '2/1/0', restSeconds: 150, notes: 'Squeeze glutes hard at top. Don\'t hyperextend lumbar.' },
-      { exerciseId: 'ex_nordic', warmupRange: '0-1', workingSets: 3, repRange: '5-8', rirText: '2/1/0', restSeconds: 150, notes: 'Use hands to assist on the way up. Control the eccentric fully.' },
-      { exerciseId: 'ex_seatlegc', warmupRange: '0-1', workingSets: 2, repRange: '12-15', rirText: '1/0', restSeconds: 90, notes: 'Squeeze quads at full extension.' },
-      { exerciseId: 'ex_legpcalf', warmupRange: '0-1', workingSets: 3, repRange: '12-15', rirText: '1/1/0', restSeconds: 90, notes: 'Full plantarflexion. 1-2s pause at bottom.' },
+      { exerciseId: 'ex_lege', warmupRange: '1-2', workingSets: 2, repRange: '8-10', rirText: '0/0', restSeconds: 90, notes: 'Last set: drop set. Set seat back as far as comfortable.' },
+      { exerciseId: 'ex_rdl', warmupRange: '2-3', workingSets: 2, repRange: '6-8', rirText: '2/1', restSeconds: 150, notes: 'Last set: lengthened partials (pause at bottom stretch). Neutral spine throughout.' },
+      { exerciseId: 'ex_machhipth', warmupRange: '2-4', workingSets: 2, repRange: '6-8', rirText: '1/0', restSeconds: 210, notes: 'Last set: lengthened partials. Squeeze glutes hard at top.' },
+      { exerciseId: 'ex_legp', warmupRange: '2-4', workingSets: 1, repRange: '6-8', rirText: '0', restSeconds: 150, notes: 'Last set: lengthened partials. Feet lower for quad focus. RIR 0 = zero reps left.' },
+      { exerciseId: 'ex_stcalf', warmupRange: '0-1', workingSets: 2, repRange: '8-10', rirText: '0/0', restSeconds: 90, notes: 'Last set: drop set. 1-2s pause at bottom, roll ankle on balls of feet.' },
     ],
   },
   {
-    id: 'nip_b2_armsdelts', name: 'Arms / Delts', note: 'Nippard Min-Max · Block 2',
+    id: 'nip_mm2_armsdelts', name: 'Arms / Delts', note: 'Nippard Min-Max · Block 2 (PDF)',
     scheduledDays: [5], // Sat
     exercises: [
-      { exerciseId: 'ex_machpreach', warmupRange: '0-1', workingSets: 3, repRange: '10-12', rirText: '1/1/0', restSeconds: 90, notes: 'Full elbow extension at bottom. Squeeze hard at top.' },
-      { exerciseId: 'ex_ohdbtri', warmupRange: '0-1', workingSets: 3, repRange: '10-12', rirText: '1/1/0', restSeconds: 90, notes: 'Full overhead stretch. Elbows fixed beside head.' },
-      { exerciseId: 'ex_hcurl', warmupRange: '0-1', workingSets: 3, repRange: '10-12', rirText: '1/0/0', restSeconds: 90, notes: 'Neutral grip. Arc the dumbbell out, not up.' },
-      { exerciseId: 'ex_seatdip', warmupRange: '0-1', workingSets: 3, repRange: '10-15', rirText: '1/1/0', restSeconds: 90, notes: 'Full elbow extension at bottom. Elbows tracking back.' },
-      { exerciseId: 'ex_crossbodycurl', warmupRange: '0-1', workingSets: 2, repRange: '12-15', rirText: '1/0', restSeconds: 90, notes: 'Pull across body toward opposite shoulder. Control the eccentric.' },
-      { exerciseId: 'ex_cabkickback', warmupRange: '0-1', workingSets: 2, repRange: '12-15', rirText: '1/0', restSeconds: 90, notes: 'Hinge at hip. Upper arm behind torso throughout.' },
-      { exerciseId: 'ex_dbwrcurl', warmupRange: '0-1', workingSets: 2, repRange: '12-15', rirText: '1/0', restSeconds: 60, notes: 'Forearms on thighs. Full ROM.' },
-      { exerciseId: 'ex_machlatr', warmupRange: '0-1', workingSets: 3, repRange: '12-15', rirText: '1/1/0', restSeconds: 90, notes: 'Squeeze side delt. No shrugging.' },
-      { exerciseId: 'ex_facepull', warmupRange: '0-1', workingSets: 3, repRange: '15-20', rirText: '1/0/0', restSeconds: 90, notes: 'Pull elbows up and out. External rotate. Great for shoulder health.' },
+      { exerciseId: 'ex_bayesian', warmupRange: '0-1', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 90, notes: 'Last set: myo-reps. Lean forward, deep stretch at bottom.' },
+      { exerciseId: 'ex_ohtriext', warmupRange: '0-1', workingSets: 2, repRange: '8-10', rirText: '0/0', restSeconds: 90, notes: 'Last set: lengthened partials. Deep stretch through entire negative.' },
+      { exerciseId: 'ex_zottman', warmupRange: '0-1', workingSets: 1, repRange: '8-10', rirText: '0', restSeconds: 90, notes: 'Last set: myo-reps. Hammer up, palms up on the way down.' },
+      { exerciseId: 'ex_cabkickback', warmupRange: '0-1', workingSets: 2, repRange: '8-10', rirText: '0/0', restSeconds: 90, notes: 'Last set: drop set. Keep upper arm behind torso throughout ROM.' },
+      { exerciseId: 'ex_dbwrcurl', warmupRange: '0-1', workingSets: 2, repRange: '8-10', rirText: '0/0', restSeconds: 90, notes: 'Last set: myo-reps. Smooth, controlled reps.' },
+      { exerciseId: 'ex_dbwrext', warmupRange: '0-1', workingSets: 2, repRange: '8-10', rirText: '0/0', restSeconds: 90, notes: 'Last set: myo-reps. Smooth, controlled reps.' },
+      { exerciseId: 'ex_altdbcurl', warmupRange: '0-1', workingSets: 1, repRange: '6-8', rirText: '0', restSeconds: 90, notes: 'Last set: myo-reps. Slow, controlled reps.' },
+      { exerciseId: 'ex_machlatr', warmupRange: '0-1', workingSets: 2, repRange: '8-10', rirText: '0/0', restSeconds: 90, notes: 'Last set: drop set. Squeeze side delt to move weight.' },
+      { exerciseId: 'ex_deadhang', warmupRange: '0-1', workingSets: 2, repRange: 'Time', rirText: '0/0', restSeconds: 90, notes: 'Try to add a few more seconds each week.' },
     ],
   },
 ];
@@ -3019,12 +3021,14 @@ function RoutinesTab({ routines, setRoutines, exercises, setExercises, onStart }
   const [editing, setEditing] = useState(null);
   const [showImport, setShowImport] = useState(false);
 
-  const hasBlock1 = routines.some(r => r.id.startsWith('nip_') && !r.id.startsWith('nip_b2_') && !r.id.startsWith('nip_lpp') && !r.id.startsWith('nip_ppl'));
+  const hasBlock1 = routines.some(r => r.id.startsWith('nip_') && !r.id.startsWith('nip_b2_') && !r.id.startsWith('nip_mm2_') && !r.id.startsWith('nip_lpp') && !r.id.startsWith('nip_ppl'));
   const hasBlock2 = routines.some(r => r.id.startsWith('nip_b2_'));
+  const hasMM2 = routines.some(r => r.id.startsWith('nip_mm2_'));
 
   const importNippardBlock = (block) => {
-    const prefix = block === 1 ? (id) => id.startsWith('nip_') && !id.startsWith('nip_b2_') && !id.startsWith('nip_lpp') && !id.startsWith('nip_ppl')
-                               : (id) => id.startsWith('nip_b2_');
+    const prefix = block === 1 ? (id) => id.startsWith('nip_') && !id.startsWith('nip_b2_') && !id.startsWith('nip_mm2_') && !id.startsWith('nip_lpp') && !id.startsWith('nip_ppl')
+                 : block === 2 ? (id) => id.startsWith('nip_b2_')
+                               : (id) => id.startsWith('nip_mm2_');
     const existing = new Set(routines.map(r => r.id));
     const newOnes = NIPPARD_ROUTINES.filter(r => prefix(r.id) && !existing.has(r.id));
     setRoutines([...routines, ...newOnes]);
@@ -3059,22 +3063,27 @@ function RoutinesTab({ routines, setRoutines, exercises, setExercises, onStart }
         </div>
       )}>Routines</TabTitle>
 
-      {(!hasBlock1 || !hasBlock2) && (
+      {(!hasBlock1 || !hasBlock2 || !hasMM2) && (
         <MetricCard className="mb-6" style={{ background: `linear-gradient(to bottom right, ${C.accentTint}, ${C.cardBg})` }}>
           <div className="flex items-center gap-2 mb-2">
             <Zap size={16} style={{ color: C.accent }} />
             <div className="text-base font-bold" style={{ color: C.textPrimary }}>Nippard Min-Max</div>
           </div>
-          <div className="text-xs mb-3" style={{ color: C.textSecondary }}>5-day Upper/Lower/Arms split, Mon/Tue/Thu/Fri/Sat, with warm-ups, RIR targets, and coaching notes.</div>
-          <div className="flex gap-2">
+          <div className="text-xs mb-3" style={{ color: C.textSecondary }}>5-day Upper/Lower/Arms split. Block 1 &amp; 2 (original), or the PDF-verified Block 2 with intensity techniques.</div>
+          <div className="flex flex-wrap gap-2">
             {!hasBlock1 && (
               <button onClick={() => importNippardBlock(1)} className="px-4 py-2 rounded-xl font-bold uppercase text-xs tracking-wider" style={{ background: C.accent, color: '#10140C' }}>
-                Import Block 1
+                Block 1
               </button>
             )}
             {!hasBlock2 && (
-              <button onClick={() => importNippardBlock(2)} className="px-4 py-2 rounded-xl font-bold uppercase text-xs tracking-wider" style={{ background: hasBlock1 ? C.accent : C.inputBg, color: hasBlock1 ? '#10140C' : C.textPrimary, border: hasBlock1 ? 'none' : `1px solid ${C.border}` }}>
-                Import Block 2
+              <button onClick={() => importNippardBlock(2)} className="px-4 py-2 rounded-xl font-bold uppercase text-xs tracking-wider" style={{ background: C.inputBg, color: C.textPrimary, border: `1px solid ${C.border}` }}>
+                Block 2
+              </button>
+            )}
+            {!hasMM2 && (
+              <button onClick={() => importNippardBlock(3)} className="px-4 py-2 rounded-xl font-bold uppercase text-xs tracking-wider" style={{ background: C.accent, color: '#10140C' }}>
+                Block 2 (PDF)
               </button>
             )}
           </div>
