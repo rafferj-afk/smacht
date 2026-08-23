@@ -197,6 +197,14 @@ const SEED_EXERCISES = [
   { id: 'ex_pallofpress', name: 'Pallof Press', muscle: 'Core', equipment: 'Cable' },
   { id: 'ex_sideplank', name: 'Side Plank', muscle: 'Core', equipment: 'Bodyweight' },
   { id: 'ex_toetobar', name: 'Toes-to-Bar', muscle: 'Core', equipment: 'Bodyweight' },
+  // Phase 2 additions
+  { id: 'ex_machlatpull', name: 'Machine Lat Pullover', muscle: 'Back', equipment: 'Machine' },
+  { id: 'ex_ezcheatcurl', name: 'EZ-Bar Cheat Curl', muscle: 'Arms', equipment: 'Barbell' },
+  { id: 'ex_ezskull', name: 'EZ-Bar Skull Crusher', muscle: 'Arms', equipment: 'Barbell' },
+  { id: 'ex_glutekick', name: 'Glute Kickback', muscle: 'Legs', equipment: 'Machine' },
+  { id: 'ex_machshp', name: 'Machine Shoulder Press', muscle: 'Shoulders', equipment: 'Machine' },
+  { id: 'ex_sldl', name: 'Stiff-Leg Deadlift', muscle: 'Legs', equipment: 'Barbell' },
+  { id: 'ex_preachammer', name: 'Preacher Hammer Curl', muscle: 'Arms', equipment: 'Dumbbell' },
 ];
 
 const MUSCLE_GROUPS = ['Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Core', 'Other'];
@@ -332,6 +340,128 @@ const NIPPARD_ROUTINES = [
       { exerciseId: 'ex_stcalf', warmupRange: '0-1', workingSets: 2, repRange: '8-10', rirText: '0/0', restSeconds: 90, notes: 'Last set: drop set. 1-2s pause at bottom, roll ankle on balls of feet.' },
     ],
   },
+  // ── Min-Max Phase 2: Peak Physique — Block 1 (Weeks 1–6, 4x/week) ─────────
+  // Week 1 = intro (RIR 1-2 on all sets). Weeks 2–6 = hard (RIR 0 on most sets).
+  // RIR targets below reflect weeks 2–6. No intensity techniques in Block 1.
+  {
+    id: 'nip_p2_upper', name: 'Upper', note: 'Nippard Phase 2 · Block 1',
+    scheduledDays: [0], // Mon
+    exercises: [
+      { exerciseId: 'ex_machchest', warmupRange: '2-3', workingSets: 2, repRange: '4-6', rirText: '0/0', restSeconds: 150, notes: 'First set to failure. 1s pause at bottom, maintain tension on pecs.' },
+      { exerciseId: 'ex_machchest', warmupRange: '0', workingSets: 1, repRange: '20', rirText: '0', restSeconds: 120, notes: 'High-rep pump set — go to failure.' },
+      { exerciseId: 'ex_machlatpull', warmupRange: '1-2', workingSets: 1, repRange: '8-10', rirText: '0', restSeconds: 90, notes: 'Smooth, controlled reps. Feel a deep stretch in your lats at the top.' },
+      { exerciseId: 'ex_machlatpull', warmupRange: '0', workingSets: 1, repRange: '20', rirText: '0', restSeconds: 90, notes: 'High-rep pump set — go to failure.' },
+      { exerciseId: 'ex_pecdeck', warmupRange: '0-1', workingSets: 2, repRange: '10-12', rirText: '0/0', restSeconds: 90, notes: 'Pause 1s at bottom. Go to failure — attempt the last rep even if you think you can\'t get it.' },
+      { exerciseId: 'ex_csuptbar', warmupRange: '1-2', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 150, notes: 'Flare elbows ~45°. Squeeze shoulder blades hard at the top.' },
+      { exerciseId: 'ex_incyraise', warmupRange: '0-1', workingSets: 3, repRange: '10-12', rirText: '0/0/0', restSeconds: 90, notes: '30° incline bench, back against bench. Lift up and out in a Y shape.' },
+      { exerciseId: 'ex_ezcheatcurl', warmupRange: '1', workingSets: 2, repRange: '4-6', rirText: '0/0', restSeconds: 60, notes: 'S1 superset with Skull Crusher. Use momentum to get weight up, control the negative.' },
+      { exerciseId: 'ex_ezskull', warmupRange: '1', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 60, notes: 'S1 superset with Cheat Curl. Deep stretch on the triceps. 1s pause in stretched position.' },
+    ],
+  },
+  {
+    id: 'nip_p2_lower', name: 'Lower', note: 'Nippard Phase 2 · Block 1',
+    scheduledDays: [2], // Wed
+    exercises: [
+      { exerciseId: 'ex_seatlegc', warmupRange: '1-2', workingSets: 3, repRange: '6-8', rirText: '0/0/0', restSeconds: 90, notes: 'Lean forward for maximum hamstring stretch.' },
+      { exerciseId: 'ex_hacksq', warmupRange: '2-3', workingSets: 2, repRange: '4-6', rirText: '1/2', restSeconds: 180, notes: 'Controlled negative, explode on the positive. RIR 0 = no reps left but don\'t fail the rep.' },
+      { exerciseId: 'ex_lege', warmupRange: '0-1', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 90, notes: 'Seat back as far as comfortable. Grab handles to pull butt into seat.' },
+      { exerciseId: 'ex_lege', warmupRange: '0', workingSets: 1, repRange: '20', rirText: '0', restSeconds: 90, notes: 'High-rep pump set. Seat back as far as comfortable.' },
+      { exerciseId: 'ex_walkinglunge', warmupRange: '0-1', workingSets: 1, repRange: '10 per leg', rirText: '1', restSeconds: 90, notes: 'Medium strides. Minimize contribution from back leg.' },
+      { exerciseId: 'ex_stcalf', warmupRange: '0-1', workingSets: 3, repRange: '10-12', rirText: '0/0/0', restSeconds: 90, notes: '1-2s pause at bottom. Roll ankle on balls of feet.' },
+      { exerciseId: 'ex_glutekick', warmupRange: '0-1', workingSets: 1, repRange: '30', rirText: '1', restSeconds: 90, notes: 'Focus on glutes. Squeeze hard at top of each rep.' },
+    ],
+  },
+  {
+    id: 'nip_p2_push', name: 'Push', note: 'Nippard Phase 2 · Block 1',
+    scheduledDays: [4], // Fri
+    exercises: [
+      { exerciseId: 'ex_machshp', warmupRange: '2-3', workingSets: 2, repRange: '4-6', rirText: '0/1', restSeconds: 150, notes: 'Elbows break at least 90°. Mind-muscle connection with delts. Smooth, controlled reps.' },
+      { exerciseId: 'ex_dbbench', warmupRange: '2-3', workingSets: 1, repRange: '10', rirText: '0', restSeconds: 150, notes: '1s pause at bottom, maintain tension on pecs.' },
+      { exerciseId: 'ex_dbbench', warmupRange: '0', workingSets: 1, repRange: '20', rirText: '0', restSeconds: 120, notes: 'High-rep pump set. 1s pause at bottom.' },
+      { exerciseId: 'ex_lege', warmupRange: '0-1', workingSets: 1, repRange: '20', rirText: '0', restSeconds: 90, notes: 'Single-leg leg extension. Seat back as far as comfortable.' },
+      { exerciseId: 'ex_machlatr', warmupRange: '0-1', workingSets: 1, repRange: '10', rirText: '0', restSeconds: 90, notes: 'Resist the negative on every rep. Don\'t pause at the bottom.' },
+      { exerciseId: 'ex_machlatr', warmupRange: '0', workingSets: 1, repRange: '20', rirText: '0', restSeconds: 90, notes: 'High-rep pump set. Resist the negative on every rep.' },
+      { exerciseId: 'ex_cabfly', warmupRange: '0-1', workingSets: 2, repRange: '10-12', rirText: '0/0', restSeconds: 90, notes: 'Focus on a deep stretch in your pecs at the bottom.' },
+      { exerciseId: 'ex_tpush', warmupRange: '0-1', workingSets: 2, repRange: '4-6', rirText: '0/0', restSeconds: 90, notes: 'Rope or bar — whichever feels more comfortable.' },
+    ],
+  },
+  {
+    id: 'nip_p2_pull', name: 'Pull', note: 'Nippard Phase 2 · Block 1',
+    scheduledDays: [5], // Sat
+    exercises: [
+      { exerciseId: 'ex_pullup', warmupRange: '1-2', workingSets: 3, repRange: '4-6', rirText: '1/2/2', restSeconds: 150, notes: 'Slow 2-3s negative. Feel lats pulling apart on the way down.' },
+      { exerciseId: 'ex_sldl', warmupRange: '2-3', workingSets: 2, repRange: '6-8', rirText: '2/3', restSeconds: 150, notes: 'Keep back flat, slight bend in knees. RIR 0 = zero reps left but don\'t fail the rep.' },
+      { exerciseId: 'ex_closelatpd', warmupRange: '1-2', workingSets: 1, repRange: '10', rirText: '0', restSeconds: 150, notes: 'Lean back 15°. Drive elbows down and squeeze shoulder blades together.' },
+      { exerciseId: 'ex_closelatpd', warmupRange: '0', workingSets: 1, repRange: '20', rirText: '0', restSeconds: 150, notes: 'High-rep pump set. Same cue — lean back 15°, elbows down.' },
+      { exerciseId: 'ex_csupmach', warmupRange: '1-2', workingSets: 2, repRange: '4-6', rirText: '0/0', restSeconds: 150, notes: 'Flare elbows ~45°. Squeeze shoulder blades hard at top.' },
+      { exerciseId: 'ex_rpec1', warmupRange: '0-1', workingSets: 1, repRange: '20', rirText: '0', restSeconds: 90, notes: 'Sweep the weight out in the largest semi-circle possible.' },
+      { exerciseId: 'ex_rpec1', warmupRange: '0', workingSets: 1, repRange: '10', rirText: '0', restSeconds: 90, notes: 'Heavier set — sweep the weight out in the largest semi-circle possible.' },
+      { exerciseId: 'ex_preachammer', warmupRange: '0-1', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 90, notes: 'Smooth, controlled reps. Full stretch at the bottom.' },
+      { exerciseId: 'ex_cabcrunch', warmupRange: '0-1', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 90, notes: 'Round lower back as you crunch. Mind-muscle connection with abs.' },
+    ],
+  },
+
+  // ── Min-Max Phase 2: Peak Physique — Block 2 (Weeks 8–12, 4x/week) ─────────
+  // Week 7 = deload (back off 1-2 RIR). Weeks 8–12 = hard (RIR 0).
+  // Intensity techniques added on final set of selected exercises.
+  {
+    id: 'nip_p2b2_upper', name: 'Upper', note: 'Nippard Phase 2 · Block 2',
+    scheduledDays: [0], // Mon
+    exercises: [
+      { exerciseId: 'ex_machchest', warmupRange: '2-3', workingSets: 2, repRange: '4-6', rirText: '0/0', restSeconds: 150, notes: '1s pause at bottom. Last set: Two Drop Sets (~25% reduction each).' },
+      { exerciseId: 'ex_machchest', warmupRange: '0', workingSets: 1, repRange: '20', rirText: '0', restSeconds: 120, notes: 'High-rep pump set to failure.' },
+      { exerciseId: 'ex_machlatpull', warmupRange: '1-2', workingSets: 1, repRange: '8-10', rirText: '0', restSeconds: 90, notes: 'Smooth, controlled reps. Deep stretch in lats at top.' },
+      { exerciseId: 'ex_machlatpull', warmupRange: '0', workingSets: 1, repRange: '20', rirText: '0', restSeconds: 90, notes: 'High-rep pump set to failure.' },
+      { exerciseId: 'ex_pecdeck', warmupRange: '0-1', workingSets: 2, repRange: '10-12', rirText: '0/0', restSeconds: 90, notes: 'Pause 1s at bottom. Last set: Myo-reps (5s rest → 2 reps, repeat 1-3 cycles).' },
+      { exerciseId: 'ex_csuptbar', warmupRange: '1-2', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 150, notes: 'Flare elbows ~45°. Last set: Myo-reps (5s rest → 2 reps, repeat 1-3 cycles).' },
+      { exerciseId: 'ex_incyraise', warmupRange: '0-1', workingSets: 3, repRange: '10-12', rirText: '0/0/0', restSeconds: 90, notes: '30° incline bench, back against bench. Lift up and out in a Y shape.' },
+      { exerciseId: 'ex_ezcheatcurl', warmupRange: '1', workingSets: 2, repRange: '4-6', rirText: '0/0', restSeconds: 60, notes: 'S1 superset with Skull Crusher. Use momentum to get weight up, control the negative.' },
+      { exerciseId: 'ex_ezskull', warmupRange: '1', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 60, notes: 'S1 superset with Cheat Curl. Deep stretch on the triceps. 1s pause in stretch.' },
+    ],
+  },
+  {
+    id: 'nip_p2b2_lower', name: 'Lower', note: 'Nippard Phase 2 · Block 2',
+    scheduledDays: [2], // Wed
+    exercises: [
+      { exerciseId: 'ex_seatlegc', warmupRange: '1-2', workingSets: 3, repRange: '6-8', rirText: '0/0/0', restSeconds: 90, notes: 'Lean forward for maximum hamstring stretch.' },
+      { exerciseId: 'ex_hacksq', warmupRange: '2-3', workingSets: 2, repRange: '4-6', rirText: '1/2', restSeconds: 180, notes: 'Controlled negative, explode positive. Last set: Two Drop Sets (~25% each).' },
+      { exerciseId: 'ex_lege', warmupRange: '0-1', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 90, notes: 'Seat back as far as comfortable. Grab handles to pull butt into seat.' },
+      { exerciseId: 'ex_lege', warmupRange: '0', workingSets: 1, repRange: '20', rirText: '0', restSeconds: 90, notes: 'High-rep pump set.' },
+      { exerciseId: 'ex_walkinglunge', warmupRange: '0-1', workingSets: 1, repRange: '10 per leg', rirText: '1', restSeconds: 90, notes: 'Medium strides. Minimize contribution from back leg.' },
+      { exerciseId: 'ex_stcalf', warmupRange: '0-1', workingSets: 3, repRange: '10-12', rirText: '0/0/0', restSeconds: 90, notes: '1-2s pause at bottom. Last set: Weighted Static Hold (30s hold in bottom position).' },
+      { exerciseId: 'ex_glutekick', warmupRange: '0-1', workingSets: 1, repRange: '30', rirText: '1', restSeconds: 90, notes: 'Focus on glutes. Squeeze hard at top of each rep.' },
+    ],
+  },
+  {
+    id: 'nip_p2b2_push', name: 'Push', note: 'Nippard Phase 2 · Block 2',
+    scheduledDays: [4], // Fri
+    exercises: [
+      { exerciseId: 'ex_machshp', warmupRange: '2-3', workingSets: 2, repRange: '4-6', rirText: '0/1', restSeconds: 150, notes: 'Elbows break at least 90°. Last set: Two Drop Sets (~25% each).' },
+      { exerciseId: 'ex_dbbench', warmupRange: '2-3', workingSets: 1, repRange: '10', rirText: '0', restSeconds: 150, notes: '1s pause at bottom.' },
+      { exerciseId: 'ex_dbbench', warmupRange: '0', workingSets: 1, repRange: '20', rirText: '0', restSeconds: 120, notes: 'High-rep pump set.' },
+      { exerciseId: 'ex_lege', warmupRange: '0-1', workingSets: 1, repRange: '20', rirText: '0', restSeconds: 90, notes: 'Single-leg leg extension.' },
+      { exerciseId: 'ex_machlatr', warmupRange: '0-1', workingSets: 1, repRange: '10', rirText: '0', restSeconds: 90, notes: 'Resist the negative on every rep. Last set: Two Drop Sets (~25% each).' },
+      { exerciseId: 'ex_machlatr', warmupRange: '0', workingSets: 1, repRange: '20', rirText: '0', restSeconds: 90, notes: 'High-rep pump set.' },
+      { exerciseId: 'ex_cabfly', warmupRange: '0-1', workingSets: 2, repRange: '10-12', rirText: '0/0', restSeconds: 90, notes: 'Deep stretch in pecs at the bottom.' },
+      { exerciseId: 'ex_tpush', warmupRange: '0-1', workingSets: 2, repRange: '4-6', rirText: '0/0', restSeconds: 90, notes: 'Last set: Myo-reps (5s rest → 2 reps, repeat 1-3 cycles).' },
+    ],
+  },
+  {
+    id: 'nip_p2b2_pull', name: 'Pull', note: 'Nippard Phase 2 · Block 2',
+    scheduledDays: [5], // Sat
+    exercises: [
+      { exerciseId: 'ex_pullup', warmupRange: '1-2', workingSets: 3, repRange: '4-6', rirText: '0/0/1', restSeconds: 150, notes: 'Slow 2-3s negative. Last set: Myo-reps (5s rest → 2 reps, repeat 1-3 cycles).' },
+      { exerciseId: 'ex_sldl', warmupRange: '2-3', workingSets: 2, repRange: '6-8', rirText: '1/2', restSeconds: 150, notes: 'Keep back flat, slight bend in knees. Don\'t fail the rep.' },
+      { exerciseId: 'ex_closelatpd', warmupRange: '1-2', workingSets: 1, repRange: '10', rirText: '0', restSeconds: 150, notes: 'Lean back 15°. Drive elbows down and squeeze shoulder blades together.' },
+      { exerciseId: 'ex_closelatpd', warmupRange: '0', workingSets: 1, repRange: '20', rirText: '0', restSeconds: 150, notes: 'High-rep pump set.' },
+      { exerciseId: 'ex_csupmach', warmupRange: '1-2', workingSets: 2, repRange: '4-6', rirText: '0/0', restSeconds: 150, notes: 'Flare elbows ~45°. Last set: Myo-reps (5s rest → 2 reps, repeat 1-3 cycles).' },
+      { exerciseId: 'ex_rpec1', warmupRange: '0-1', workingSets: 1, repRange: '20', rirText: '0', restSeconds: 90, notes: 'Sweep out in the largest semi-circle possible.' },
+      { exerciseId: 'ex_rpec1', warmupRange: '0', workingSets: 1, repRange: '10', rirText: '0', restSeconds: 90, notes: 'Heavier set. Last set: Two Drop Sets (~25% each).' },
+      { exerciseId: 'ex_preachammer', warmupRange: '0-1', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 90, notes: 'Smooth, controlled reps. Last set: Myo-reps.' },
+      { exerciseId: 'ex_cabcrunch', warmupRange: '0-1', workingSets: 2, repRange: '6-8', rirText: '0/0', restSeconds: 90, notes: 'Round lower back as you crunch. Mind-muscle connection with abs.' },
+    ],
+  },
+
   {
     id: 'nip_mm2_armsdelts', name: 'Arms / Delts', note: 'Nippard Min-Max · Block 2 (PDF)',
     scheduledDays: [5], // Sat
@@ -864,11 +994,12 @@ export default function App() {
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const [showSettings, setShowSettings] = useState(false);
   const [activeProgramme, setActiveProgramme] = useState(null); // { programmeId, block, week } (block/week 0-indexed)
+  const [homeprogramme, setHomeprogramme] = useState('lpp'); // which programme is shown on home: 'lpp' | 'mm1' | 'mm2'
   const [oneRepMaxes, setOneRepMaxes] = useState({});
 
   useEffect(() => {
     (async () => {
-      const [ex, rt, wk, act, set, prog, orms] = await Promise.all([
+      const [ex, rt, wk, act, set, prog, orms, hp] = await Promise.all([
         storage.get('gym:exercises', null),
         storage.get('gym:routines', []),
         storage.get('gym:workouts', []),
@@ -876,15 +1007,22 @@ export default function App() {
         storage.get('gym:settings', DEFAULT_SETTINGS),
         storage.get('gym:programme', null),
         storage.get('gym:oneRepMaxes', {}),
+        storage.get('gym:homeprogramme', 'lpp'),
       ]);
       const saved = ex || [];
       const merged = [...saved];
       for (const s of SEED_EXERCISES) if (!merged.some(x => x.id === s.id)) merged.push(s);
       setExercises(merged);
       if (!ex) storage.set('gym:exercises', merged);
-      setRoutines(rt); setWorkouts(wk); setActiveWorkout(act);
+      // Seed all Nippard routines that aren't already in storage
+      const existingIds = new Set(rt.map(r => r.id));
+      const missingRoutines = NIPPARD_ROUTINES.filter(r => !existingIds.has(r.id));
+      const mergedRoutines = missingRoutines.length > 0 ? [...rt, ...missingRoutines] : rt;
+      if (missingRoutines.length > 0) storage.set('gym:routines', mergedRoutines);
+
+      setRoutines(mergedRoutines); setWorkouts(wk); setActiveWorkout(act);
       setSettings({ ...DEFAULT_SETTINGS, ...set });
-      setActiveProgramme(prog); setOneRepMaxes(orms);
+      setActiveProgramme(prog); setOneRepMaxes(orms); setHomeprogramme(hp || 'lpp');
       setLoading(false);
     })();
   }, []);
@@ -895,6 +1033,7 @@ export default function App() {
   useEffect(() => { if (!loading) storage.set('gym:active', activeWorkout); }, [activeWorkout, loading]);
   useEffect(() => { if (!loading) storage.set('gym:settings', settings); }, [settings, loading]);
   useEffect(() => { if (!loading) storage.set('gym:programme', activeProgramme); }, [activeProgramme, loading]);
+  useEffect(() => { if (!loading) storage.set('gym:homeprogramme', homeprogramme); }, [homeprogramme, loading]);
   useEffect(() => { if (!loading) storage.set('gym:oneRepMaxes', oneRepMaxes); }, [oneRepMaxes, loading]);
 
   // Notification scheduler: checks once a minute whether to fire today's reminder
@@ -1052,7 +1191,7 @@ export default function App() {
       <div className="min-h-screen pb-24" style={{ background: C.pageBg, color: C.textPrimary, fontFamily: "'Inter', system-ui, sans-serif" }}>
         <FontLoader />
         <div className="max-w-2xl mx-auto">
-          {tab === 'home' && <HomeTab workouts={workouts} routines={routines} exercises={exercises} settings={settings} setSettings={setSettings} onStartEmpty={startEmptyWorkout} onStartRoutine={startFromRoutine} onCreateRoutine={() => setTab('routines')} onOpenSettings={() => setShowSettings(true)} activeProgramme={activeProgramme} setActiveProgramme={setActiveProgramme} oneRepMaxes={oneRepMaxes} setOneRepMaxes={setOneRepMaxes} onStartProgrammeDay={startFromProgrammeDay} />}
+          {tab === 'home' && <HomeTab workouts={workouts} routines={routines} exercises={exercises} settings={settings} setSettings={setSettings} onStartEmpty={startEmptyWorkout} onStartRoutine={startFromRoutine} onCreateRoutine={() => setTab('routines')} onOpenSettings={() => setShowSettings(true)} activeProgramme={activeProgramme} setActiveProgramme={setActiveProgramme} oneRepMaxes={oneRepMaxes} setOneRepMaxes={setOneRepMaxes} onStartProgrammeDay={startFromProgrammeDay} homeprogramme={homeprogramme} setHomeprogramme={setHomeprogramme} />}
           {tab === 'history' && <HistoryTab workouts={workouts} exercises={exercises} setWorkouts={setWorkouts} settings={settings} />}
           {tab === 'exercises' && <ExercisesTab exercises={exercises} setExercises={setExercises} />}
           {tab === 'progress' && <ProgressTab workouts={workouts} exercises={exercises} settings={settings} />}
@@ -1269,7 +1408,7 @@ function TabTitle({ eyebrow, children, action }) {
   );
 }
 
-function HomeTab({ workouts, routines, exercises, settings, setSettings, onStartEmpty, onStartRoutine, onCreateRoutine, onOpenSettings, activeProgramme, setActiveProgramme, oneRepMaxes, setOneRepMaxes, onStartProgrammeDay }) {
+function HomeTab({ workouts, routines, exercises, settings, setSettings, onStartEmpty, onStartRoutine, onCreateRoutine, onOpenSettings, activeProgramme, setActiveProgramme, oneRepMaxes, setOneRepMaxes, onStartProgrammeDay, homeprogramme, setHomeprogramme }) {
   const C = useContext(ThemeContext);
   const [showProgrammeSetup, setShowProgrammeSetup] = useState(false);
   const totalVolume = workouts.reduce((s, w) => s + volumeOf(w, exercises, settings.bodyweight), 0);
@@ -1383,43 +1522,67 @@ function HomeTab({ workouts, routines, exercises, settings, setSettings, onStart
 
         <div className="flex flex-col gap-3">
 
-          {/* HERO — this week's tonnage, compared to your best week once there's history */}
-          <MetricCard>
-            <CardLabel dot={C.accent}>This Week's Tonnage {isRecordWeek && <span className="ml-1" style={{ color: C.accent }}>· RECORD</span>}</CardLabel>
-            <div className="flex items-baseline gap-2 flex-wrap">
-              <span className="num font-extrabold leading-[0.9]" style={{ color: C.textPrimary, fontSize: 52, letterSpacing: '-0.035em' }}>{weekVolumeT.toFixed(1)}</span>
-              <span className="font-semibold" style={{ color: C.textMuted, fontSize: 20 }}>t lifted</span>
-              {volumeVsBest != null && (
-                <span className="text-xs font-bold px-2.5 py-1 rounded-full inline-flex items-center gap-0.5 ml-auto" style={{ background: C.accentTint, color: volumeVsBest >= 0 ? C.accent : C.warmRed }}>
-                  {volumeVsBest >= 0 ? '↑' : '↓'} {Math.abs(volumeVsBest)}% vs best
-                </span>
-              )}
+          {/* HERO — compact inline layout (Option C) */}
+          <MetricCard className="p-0 overflow-hidden">
+            {/* Top row: tonnage + load number side by side */}
+            <div className="flex items-end justify-between gap-3 px-5 pt-5 pb-3">
+              <div>
+                <CardLabel dot={C.accent}>This Week's Tonnage {isRecordWeek && <span className="ml-1" style={{ color: C.accent }}>· RECORD</span>}</CardLabel>
+                <div className="flex items-baseline gap-2 mt-1">
+                  <span className="num font-extrabold leading-[0.9]" style={{ color: C.textPrimary, fontSize: 40, letterSpacing: '-0.035em' }}>{weekVolumeT.toFixed(1)}</span>
+                  <span className="font-semibold" style={{ color: C.textMuted, fontSize: 16 }}>t</span>
+                  {volumeVsBest != null && (
+                    <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: C.accentTint, color: volumeVsBest >= 0 ? C.accent : C.warmRed }}>
+                      {volumeVsBest >= 0 ? '↑' : '↓'}{Math.abs(volumeVsBest)}%
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="text-right shrink-0">
+                <div className="text-[10px] uppercase tracking-[0.14em] mb-1" style={{ color: C.textFaint }}>Load</div>
+                <div className="num font-extrabold leading-none" style={{ color: C.warmRed, fontSize: 22, letterSpacing: '-0.03em' }}>
+                  {thisWeek}<span className="font-semibold" style={{ fontSize: 13, color: C.textFaint }}>/{weeklyTarget}</span>
+                </div>
+              </div>
             </div>
-            {bestWeekVolume > 0 ? (
-              <>
-                <div className="flex justify-between text-xs mt-4 mb-2" style={{ color: C.textMuted }}>
-                  <span>{isRecordWeek ? 'New best week' : 'Best week'}: <b style={{ color: C.textPrimary }}>{bestWeekVolumeT.toFixed(1)}t</b></span>
-                  {!isRecordWeek && <span><b style={{ color: C.textPrimary }}>{Math.max(0, (bestWeekVolumeT - weekVolumeT)).toFixed(1)}t</b> to beat it</span>}
-                </div>
-                <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
-                  <div className="h-full rounded-full" style={{ width: `${Math.min(100, Math.round((weekVolume / bestWeekVolume) * 100))}%`, background: `linear-gradient(90deg, ${C.warmOrange}, ${C.accentHover})` }} />
-                </div>
-              </>
-            ) : (
-              <div className="text-xs mt-3" style={{ color: C.textMuted }}>Log a full week and your best week shows here to beat.</div>
-            )}
-          </MetricCard>
 
-          {/* Weekly Load arc + two stat tiles */}
-          <div className="grid grid-cols-2 gap-3">
-            <MetricCard className="flex items-center justify-center">
-              <RingGauge size={150} stroke={13} pct={loadPct} color={ringColor} value={thisWeek} unit={`/ ${weeklyTarget}`} label="Weekly Load" />
-            </MetricCard>
-            <div className="flex flex-col gap-3">
-              <MetricTile dot={C.warmOrange} label="Working Sets" value={weekSets} unit="this wk" />
-              <MetricTile dot={C.accent} label="Total Workouts" value={workouts.length} />
+            {/* Progress bar */}
+            <div className="mx-4 mb-0 h-[3px] rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
+              {bestWeekVolume > 0
+                ? <div className="h-full rounded-full" style={{ width: `${Math.min(100, Math.round((weekVolume / bestWeekVolume) * 100))}%`, background: `linear-gradient(90deg, ${C.warmOrange}, ${C.accentHover})` }} />
+                : null}
             </div>
-          </div>
+            {bestWeekVolume > 0 && !isRecordWeek && (
+              <div className="flex justify-between text-[10px] px-4 mt-1.5 mb-1" style={{ color: C.textFaint }}>
+                <span>Best: <b style={{ color: C.textMuted }}>{bestWeekVolumeT.toFixed(1)}t</b></span>
+                <span><b style={{ color: C.textMuted }}>{Math.max(0, bestWeekVolumeT - weekVolumeT).toFixed(1)}t</b> to beat it</span>
+              </div>
+            )}
+
+            {/* Bottom strip: sets + workouts */}
+            <div className="flex mt-2" style={{ borderTop: `1px solid ${C.border}` }}>
+              <div className="flex-1 px-5 py-3.5" style={{ borderRight: `1px solid ${C.border}` }}>
+                <div className="text-[10px] uppercase tracking-[0.18em] mb-1 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: C.warmOrange }} />
+                  <span style={{ color: C.textMuted }}>Sets</span>
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="num font-extrabold" style={{ color: C.textPrimary, fontSize: 22, letterSpacing: '-0.03em' }}>{weekSets}</span>
+                  <span className="text-[11px]" style={{ color: C.textMuted }}>this wk</span>
+                </div>
+              </div>
+              <div className="flex-1 px-5 py-3.5">
+                <div className="text-[10px] uppercase tracking-[0.18em] mb-1 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: C.accent }} />
+                  <span style={{ color: C.textMuted }}>Workouts</span>
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="num font-extrabold" style={{ color: C.textPrimary, fontSize: 22, letterSpacing: '-0.03em' }}>{workouts.length}</span>
+                  <span className="text-[11px]" style={{ color: C.textMuted }}>total</span>
+                </div>
+              </div>
+            </div>
+          </MetricCard>
 
           {/* Notification fallback banner */}
           {showNotifFallback && (
@@ -1433,47 +1596,104 @@ function HomeTab({ workouts, routines, exercises, settings, setSettings, onStart
             </div>
           )}
 
-          {/* Programme — pick any session for this week */}
-          {activeProgramme && (
-            <MetricCard className="p-0 overflow-hidden">
-              <div className="flex items-center justify-between px-5 pt-4 pb-3">
-                <div>
-                  <div className="text-[10px] uppercase tracking-[0.16em]" style={{ color: C.textMuted }}>{LPP_PROGRAMME.name}</div>
-                  <div className="text-base font-bold" style={{ color: C.textPrimary }}>{weekLabel} of 8</div>
+          {/* Programme selector — 3 tiles, tap to switch */}
+          {(() => {
+            const PROG_OPTIONS = [
+              { id: 'mm1', label: 'Min-Max 1', color: '#E8923E' },
+              { id: 'mm2', label: 'Min-Max 2', color: '#E8543E' },
+              { id: 'lpp', label: 'LPP', color: C.accent },
+            ];
+
+            // Sessions for whichever programme is selected
+            const mm1Sessions = routines.filter(r => r.id.startsWith('nip_') && !r.id.startsWith('nip_b2_') && !r.id.startsWith('nip_mm2_') && !r.id.startsWith('nip_lpp') && !r.id.startsWith('nip_p2'));
+            const mm2Sessions = routines.filter(r => r.id.startsWith('nip_p2_') || r.id.startsWith('nip_p2b2_'));
+            const lppSessions = programmeBlock ? programmeBlock.days : [];
+
+            const sessionMap = { mm1: mm1Sessions, mm2: mm2Sessions, lpp: lppSessions };
+            const sessions = sessionMap[homeprogramme] || [];
+            const activeColor = PROG_OPTIONS.find(p => p.id === homeprogramme)?.color || C.accent;
+
+            return (
+              <MetricCard className="p-0 overflow-hidden">
+                {/* Pill selector */}
+                <div className="flex gap-2 px-4 pt-4 pb-3">
+                  {PROG_OPTIONS.map(p => {
+                    const active = homeprogramme === p.id;
+                    return (
+                      <button key={p.id} onClick={() => setHomeprogramme(p.id)}
+                        className="flex-1 py-2 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors"
+                        style={active
+                          ? { background: p.color, color: '#10140C' }
+                          : { background: C.inputBg, color: C.textMuted, border: `1px solid ${C.border}` }}>
+                        {p.label}
+                      </button>
+                    );
+                  })}
                 </div>
-                {!isProgrammeComplete ? (
-                  <button onClick={advanceWeek} className="px-3 py-2 rounded-xl font-bold uppercase text-[11px] tracking-wider" style={{ background: C.accentTint, color: C.accent }}>
-                    Advance <ArrowRight size={11} className="inline ml-0.5" />
-                  </button>
-                ) : (
-                  <span className="px-3 py-2 rounded-xl font-bold uppercase text-[11px] tracking-wider" style={{ background: C.accentTint, color: C.accent }}>Final Week</span>
-                )}
-              </div>
-              {programmeBlock.days.map((day) => {
-                const done = completedDayIds.has(day.id);
-                return (
-                  <div key={day.id} className="flex items-center gap-3 px-5 py-3" style={{ borderTop: `1px solid ${C.border}` }}>
-                    <div className="w-8 h-8 rounded-xl grid place-items-center shrink-0" style={{ background: done ? C.accent : C.accentTint, color: done ? '#10140C' : C.accent }}>
-                      {done ? <Check size={15} strokeWidth={3} /> : <Dumbbell size={15} />}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-[15px] font-bold leading-tight" style={{ color: done ? C.textMuted : C.textPrimary }}>{day.name}</div>
-                      <div className="text-[11px]" style={{ color: C.textFaint }}>{day.exercises.length} exercises{done ? ' · done this week' : ''}</div>
-                    </div>
-                    <button
-                      onClick={() => onStartProgrammeDay(day, activeProgramme.week, weekLabel)}
-                      className="px-3.5 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 shrink-0"
-                      style={done
-                        ? { background: 'transparent', border: `1px solid ${C.border}`, color: C.textSecondary }
-                        : { background: C.accent, color: '#10140C' }}
-                    >
-                      <Play size={11} fill="currentColor" /> {done ? 'Again' : 'Start'}
-                    </button>
+
+                {/* LPP week header */}
+                {homeprogramme === 'lpp' && activeProgramme && (
+                  <div className="flex items-center justify-between px-5 pb-2">
+                    <div className="text-xs font-semibold" style={{ color: C.textMuted }}>{weekLabel} of 8</div>
+                    {!isProgrammeComplete ? (
+                      <button onClick={advanceWeek} className="px-3 py-1.5 rounded-xl font-bold uppercase text-[11px] tracking-wider" style={{ background: C.accentTint, color: C.accent }}>
+                        Advance <ArrowRight size={11} className="inline ml-0.5" />
+                      </button>
+                    ) : (
+                      <span className="px-3 py-1.5 text-[11px] font-bold" style={{ color: C.accent }}>Final Week</span>
+                    )}
                   </div>
-                );
-              })}
-            </MetricCard>
-          )}
+                )}
+
+                {/* Session rows */}
+                {sessions.length === 0 ? (
+                  <div className="px-5 py-5 text-sm text-center" style={{ color: C.textMuted, borderTop: `1px solid ${C.border}` }}>
+                    No sessions imported yet —{' '}
+                    <button onClick={onCreateRoutine} className="font-bold underline" style={{ color: activeColor }}>go to Routines</button>
+                  </div>
+                ) : homeprogramme === 'lpp' ? (
+                  sessions.map((day) => {
+                    const done = completedDayIds.has(day.id);
+                    return (
+                      <div key={day.id} className="flex items-center gap-3 px-5 py-3" style={{ borderTop: `1px solid ${C.border}` }}>
+                        <div className="w-8 h-8 rounded-xl grid place-items-center shrink-0" style={{ background: done ? C.accent : C.accentTint, color: done ? '#10140C' : C.accent }}>
+                          {done ? <Check size={15} strokeWidth={3} /> : <Dumbbell size={15} />}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-[15px] font-bold leading-tight" style={{ color: done ? C.textMuted : C.textPrimary }}>{day.name}</div>
+                          <div className="text-[11px]" style={{ color: C.textFaint }}>{day.exercises.length} exercises{done ? ' · done this week' : ''}</div>
+                        </div>
+                        <button
+                          onClick={() => onStartProgrammeDay(day, activeProgramme.week, weekLabel)}
+                          className="px-3.5 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 shrink-0"
+                          style={done
+                            ? { background: 'transparent', border: `1px solid ${C.border}`, color: C.textSecondary }
+                            : { background: C.accent, color: '#10140C' }}>
+                          <Play size={11} fill="currentColor" /> {done ? 'Again' : 'Start'}
+                        </button>
+                      </div>
+                    );
+                  })
+                ) : (
+                  sessions.map((r) => (
+                    <div key={r.id} className="flex items-center justify-between px-5 py-3" style={{ borderTop: `1px solid ${C.border}` }}>
+                      <div>
+                        <div className="text-[15px] font-bold" style={{ color: C.textPrimary }}>{r.name}</div>
+                        <div className="text-[11px]" style={{ color: C.textFaint }}>
+                          {r.exercises.length} exercises
+                          {(r.scheduledDays || []).length > 0 && ` · ${(r.scheduledDays || []).map(d => DAYS[d]).join(', ')}`}
+                        </div>
+                      </div>
+                      <button onClick={() => onStartRoutine(r)} className="px-3.5 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 shrink-0"
+                        style={{ background: activeColor, color: '#10140C' }}>
+                        <Play size={11} fill="currentColor" /> Start
+                      </button>
+                    </div>
+                  ))
+                )}
+              </MetricCard>
+            );
+          })()}
 
           {/* Today's routine banner (non-programme) */}
           {todaysRoutines.length > 0 && (
@@ -1493,15 +1713,9 @@ function HomeTab({ workouts, routines, exercises, settings, setSettings, onStart
             </MetricCard>
           )}
 
-          {/* Primary CTA — when a programme is active, sessions start from the picker above,
-              so the big CTA is empty-workout. Otherwise it's the main entry point. */}
-          {activeProgramme ? (
-            <button onClick={onStartEmpty} className="w-full py-3.5 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2" style={{ background: 'transparent', border: `1px solid ${C.border}`, color: C.textSecondary }}>
-              <Plus size={15} /> Start empty workout
-            </button>
-          ) : (
-            <PrimaryCTA C={C} onClick={onStartEmpty} label="Start Empty Workout" />
-          )}
+          <button onClick={onStartEmpty} className="w-full py-3.5 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2" style={{ background: 'transparent', border: `1px solid ${C.border}`, color: C.textSecondary }}>
+            <Plus size={15} /> Start empty workout
+          </button>
 
           {/* PR + Avg RIR tiles */}
           <div className="grid grid-cols-2 gap-3">
@@ -1511,71 +1725,23 @@ function HomeTab({ workouts, routines, exercises, settings, setSettings, onStart
 
           {/* Programme card + streak */}
           <div className="grid grid-cols-2 gap-3">
-            {activeProgramme ? (
-              <div className="relative rounded-3xl overflow-hidden min-h-[150px] flex items-end" style={{ border: `1px solid ${C.border}` }}>
-                <div className="absolute inset-0" style={{ background: `linear-gradient(180deg, rgba(12,14,11,0) 30%, rgba(12,14,11,0.92) 100%), linear-gradient(120deg, #6b5533, #8a6a3d 40%, #3a4a2a)` }} />
-                <div className="absolute top-3 left-3 text-[10px] font-bold uppercase tracking-[0.12em] px-2.5 py-1 rounded-full" style={{ background: 'rgba(0,0,0,0.5)', color: C.textPrimary }}>Programme</div>
-                <div className="relative p-4">
-                  <div className="text-lg font-extrabold leading-tight" style={{ color: '#fff', letterSpacing: '-0.02em' }}>Legs/Push/Pull</div>
-                  <div className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.75)' }}>16 weeks · Advanced</div>
+            <div className="relative rounded-3xl overflow-hidden min-h-[150px] flex items-end" style={{ border: `1px solid ${C.border}` }}>
+              <div className="absolute inset-0" style={{ background: `linear-gradient(180deg, rgba(12,14,11,0) 30%, rgba(12,14,11,0.92) 100%), linear-gradient(120deg, #6b5533, #8a6a3d 40%, #3a4a2a)` }} />
+              <div className="absolute top-3 left-3 text-[10px] font-bold uppercase tracking-[0.12em] px-2.5 py-1 rounded-full" style={{ background: 'rgba(0,0,0,0.5)', color: C.textPrimary }}>Programme</div>
+              <div className="relative p-4">
+                <div className="text-lg font-extrabold leading-tight" style={{ color: '#fff', letterSpacing: '-0.02em' }}>
+                  {homeprogramme === 'lpp' ? 'Legs/Push/Pull' : homeprogramme === 'mm2' ? 'Min-Max 2' : 'Min-Max 1'}
+                </div>
+                <div className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.75)' }}>
+                  {homeprogramme === 'lpp' ? '16 weeks · Advanced' : homeprogramme === 'mm2' ? '4-day · Upper/Lower/Push/Pull' : '5-day · Upper/Lower/Arms'}
                 </div>
               </div>
-            ) : (
-              <button onClick={() => setShowProgrammeSetup(true)} className="relative rounded-3xl overflow-hidden min-h-[150px] flex flex-col items-start justify-end text-left p-4" style={{ border: `1px solid ${C.border}`, background: `linear-gradient(160deg, ${C.accentTint}, transparent), ${C.cardBg}` }}>
-                <Zap size={18} style={{ color: C.accent }} />
-                <div className="text-base font-extrabold mt-auto pt-2" style={{ color: C.textPrimary }}>Start a Programme</div>
-                <div className="text-xs mt-0.5" style={{ color: C.textMuted }}>Nippard LPP · 16 weeks</div>
-              </button>
-            )}
+            </div>
             <div className="rounded-3xl flex flex-col items-center justify-center gap-3 py-6" style={{ background: `radial-gradient(circle at 50% 35%, ${C.accentGlow}, transparent 60%), ${C.cardBg}`, border: `1px solid ${C.border}` }}>
               <Flame size={40} style={{ color: C.accent, filter: `drop-shadow(0 0 10px ${C.accentGlow})` }} />
               <div className="num font-extrabold leading-none" style={{ color: C.textPrimary, fontSize: 38, letterSpacing: '-0.03em' }}>{streak}</div>
               <div className="text-xs uppercase tracking-[0.24em] font-bold" style={{ color: C.accent }}>Streak</div>
             </div>
-          </div>
-
-          {/* Secondary empty-workout link — only for the routine case (programme already shows one above) */}
-          {!activeProgramme && todaysRoutines.length > 0 && (
-            <button onClick={onStartEmpty} className="w-full py-3 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2" style={{ background: 'transparent', border: `1px solid ${C.border}`, color: C.textSecondary }}>
-              <Plus size={15} /> Start empty workout instead
-            </button>
-          )}
-
-          {/* Your Routines */}
-          <div className="mt-4">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-[11px] uppercase tracking-[0.22em]" style={{ color: C.textMuted }}>Your Routines</h2>
-              <button onClick={onCreateRoutine} className="text-[11px] uppercase tracking-wider font-bold flex items-center gap-1" style={{ color: C.accent }}>
-                Manage <ArrowRight size={12} />
-              </button>
-            </div>
-            {routines.length === 0 ? (
-              <div className="rounded-3xl p-6 text-center" style={{ border: `1px dashed ${C.textFaint}` }}>
-                <Dumbbell size={24} className="mx-auto mb-2" style={{ color: C.textFaint }} />
-                <div className="text-sm mb-3" style={{ color: C.textSecondary }}>No routines yet</div>
-                <button onClick={onCreateRoutine} className="text-xs uppercase tracking-wider font-bold" style={{ color: C.accent }}>
-                  + Add or Import Routines
-                </button>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-2.5">
-                {routines.map((r) => (
-                  <MetricCard key={r.id} as="button" onClick={() => onStartRoutine(r)} className="w-full text-left flex items-center justify-between">
-                    <div>
-                      <div className="text-lg font-bold" style={{ color: C.textPrimary }}>{r.name}</div>
-                      <div className="text-xs mt-1 flex items-center gap-2 flex-wrap" style={{ color: C.textMuted }}>
-                        {r.note && <span style={{ color: C.accent }}>{r.note}</span>}
-                        <span>{r.exercises.length} exercise{r.exercises.length !== 1 ? 's' : ''}</span>
-                        {(r.scheduledDays || []).length > 0 && (
-                          <span>· {(r.scheduledDays || []).map(d => DAYS[d]).join(', ')}</span>
-                        )}
-                      </div>
-                    </div>
-                    <Play size={18} style={{ color: C.accent }} fill="currentColor" />
-                  </MetricCard>
-                ))}
-              </div>
-            )}
           </div>
 
           {/* Last Session */}
@@ -3016,23 +3182,128 @@ function ChartCard({ title, data, dataKey, color, type = 'line' }) {
 // ============================================================
 //  ROUTINES
 // ============================================================
+// ── helpers to classify a routine ID ────────────────────────
+function routineProgramme(id) {
+  if (id.startsWith('nip_p2')) return 'p2';
+  if (id.startsWith('nip_lpp')) return 'lpp';
+  if (id.startsWith('nip_') && !id.startsWith('nip_b2_')) return 'mm1';
+  if (id.startsWith('nip_b2_') || id.startsWith('nip_mm2_')) return 'mm1';
+  return 'custom';
+}
+
+function routineBlock(id) {
+  if (id.startsWith('nip_p2b2_')) return 'Block 2';
+  if (id.startsWith('nip_p2_')) return 'Block 1';
+  if (id.startsWith('nip_mm2_') || id.startsWith('nip_b2_')) return 'Block 2';
+  if (id.startsWith('nip_') && !id.startsWith('nip_lpp')) return 'Block 1';
+  return null;
+}
+
+// ── Expandable session row inside a programme tile ───────────
+function SessionRow({ routine: r, exercises, accentColor, onStart }) {
+  const C = useContext(ThemeContext);
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <div style={{ borderTop: `1px solid ${C.border}` }}>
+      <div className="flex items-center justify-between px-5 py-3">
+        <button className="flex-1 text-left" onClick={() => setExpanded(e => !e)}>
+          <div className="text-sm font-semibold flex items-center gap-1.5" style={{ color: C.textPrimary }}>
+            {r.name}
+            <ChevronDown size={13} style={{ color: C.textFaint, transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s', flexShrink: 0 }} />
+          </div>
+          <div className="text-xs mt-0.5" style={{ color: C.textMuted }}>
+            {r.exercises.length} exercises
+            {(r.scheduledDays || []).length > 0 && ` · ${(r.scheduledDays || []).map(d => DAYS[d]).join(', ')}`}
+          </div>
+        </button>
+        <button onClick={() => onStart(r)} className="ml-4 px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 shrink-0" style={{ background: accentColor, color: '#10140C' }}>
+          <Play size={11} fill="currentColor" /> Start
+        </button>
+      </div>
+      {expanded && (
+        <div className="px-5 pb-4 space-y-1.5">
+          {r.exercises.map((re, i) => {
+            const ex = exercises.find(e => e.id === re.exerciseId);
+            return (
+              <div key={i} className="flex items-center justify-between text-xs" style={{ color: C.textSecondary }}>
+                <span className="truncate">{ex?.name || 'Unknown'}</span>
+                <span className="mono whitespace-nowrap ml-3" style={{ color: C.textMuted }}>
+                  {re.workingSets || 3}×{re.repRange || '—'}
+                  {re.rir != null && re.rir !== '' && ` · RIR ${re.rir}`}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Programme tile that expands to show its sessions ────────
+function ProgrammeTile({ title, subtitle, accentColor, blocks, exercises, onStart, onAddBlock }) {
+  const C = useContext(ThemeContext);
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="rounded-2xl overflow-hidden mb-4" style={{ border: `1px solid ${C.border}`, background: C.cardBg }}>
+      {/* Header — always visible, tap to expand */}
+      <button className="w-full flex items-center justify-between px-5 py-4" onClick={() => setOpen(o => !o)}>
+        <div className="text-left">
+          <div className="text-base font-bold" style={{ color: C.textPrimary }}>{title}</div>
+          <div className="text-xs mt-0.5" style={{ color: C.textMuted }}>{subtitle}</div>
+        </div>
+        <ChevronDown size={18} style={{ color: C.textMuted, transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
+      </button>
+
+      {open && (
+        <div style={{ borderTop: `1px solid ${C.border}` }}>
+          {blocks.map((block, bi) => (
+            <div key={bi}>
+              {block.label && (
+                <div className="px-5 pt-4 pb-1 flex items-center justify-between">
+                  <div className="text-[10px] uppercase tracking-[0.18em] font-semibold" style={{ color: accentColor }}>{block.label}</div>
+                  <div className="text-[10px]" style={{ color: C.textFaint }}>{block.sessions.length} sessions</div>
+                </div>
+              )}
+              {block.sessions.length === 0 ? (
+                <div className="px-5 py-3">
+                  <button onClick={() => onAddBlock(block.importKey)} className="w-full py-2 rounded-xl text-xs font-bold uppercase tracking-wider" style={{ border: `1px dashed ${C.border}`, color: C.textMuted }}>
+                    + Add {block.label}
+                  </button>
+                </div>
+              ) : (
+                block.sessions.map((r) => (
+                  <SessionRow key={r.id} routine={r} exercises={exercises} accentColor={accentColor} onStart={onStart} />
+                ))
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function RoutinesTab({ routines, setRoutines, exercises, setExercises, onStart }) {
   const C = useContext(ThemeContext);
   const [editing, setEditing] = useState(null);
   const [showImport, setShowImport] = useState(false);
 
-  const hasBlock1 = routines.some(r => r.id.startsWith('nip_') && !r.id.startsWith('nip_b2_') && !r.id.startsWith('nip_mm2_') && !r.id.startsWith('nip_lpp') && !r.id.startsWith('nip_ppl'));
-  const hasBlock2 = routines.some(r => r.id.startsWith('nip_b2_'));
-  const hasMM2 = routines.some(r => r.id.startsWith('nip_mm2_'));
-
-  const importNippardBlock = (block) => {
-    const prefix = block === 1 ? (id) => id.startsWith('nip_') && !id.startsWith('nip_b2_') && !id.startsWith('nip_mm2_') && !id.startsWith('nip_lpp') && !id.startsWith('nip_ppl')
-                 : block === 2 ? (id) => id.startsWith('nip_b2_')
-                               : (id) => id.startsWith('nip_mm2_');
+  const importBlock = (matchFn) => {
     const existing = new Set(routines.map(r => r.id));
-    const newOnes = NIPPARD_ROUTINES.filter(r => prefix(r.id) && !existing.has(r.id));
-    setRoutines([...routines, ...newOnes]);
+    const toAdd = NIPPARD_ROUTINES.filter(r => matchFn(r.id) && !existing.has(r.id));
+    setRoutines(prev => [...prev, ...toAdd]);
   };
+
+  // Partition routines into programmes
+  const mm1b1 = routines.filter(r => r.id.startsWith('nip_') && !r.id.startsWith('nip_b2_') && !r.id.startsWith('nip_mm2_') && !r.id.startsWith('nip_lpp') && !r.id.startsWith('nip_p2'));
+  const mm1b2 = routines.filter(r => r.id.startsWith('nip_b2_') || r.id.startsWith('nip_mm2_'));
+  const p2b1  = routines.filter(r => r.id.startsWith('nip_p2_') && !r.id.startsWith('nip_p2b2_'));
+  const p2b2  = routines.filter(r => r.id.startsWith('nip_p2b2_'));
+  const lpp   = routines.filter(r => r.id.startsWith('nip_lpp'));
+  const custom = routines.filter(r => routineProgramme(r.id) === 'custom');
 
   if (editing !== null) {
     return (
@@ -3048,107 +3319,123 @@ function RoutinesTab({ routines, setRoutines, exercises, setExercises, onStart }
   }
 
   return (
-    <div className="px-5 pt-8 relative">
+    <div className="px-5 pt-8 pb-32 relative">
       <ScreenAura />
       <div className="relative z-10">
-      <TabTitle eyebrow="Your training" action={(
-        <div className="flex items-center gap-2">
-          <button onClick={() => setShowImport(true)} className="px-3 py-2 rounded-xl font-semibold uppercase text-xs tracking-wider flex items-center gap-1"
-            style={{ background: C.cardBg, border: `1px solid ${C.border}`, color: C.textSecondary }}>
-            <Upload size={12} /> Import
-          </button>
+
+        <TabTitle eyebrow="Your training" action={(
           <button onClick={() => setEditing('new')} className="px-3 py-2 rounded-xl font-bold uppercase text-xs tracking-wider flex items-center gap-1" style={{ background: C.accent, color: '#10140C' }}>
             <Plus size={14} /> New
           </button>
-        </div>
-      )}>Routines</TabTitle>
+        )}>Routines</TabTitle>
 
-      {(!hasBlock1 || !hasBlock2 || !hasMM2) && (
-        <MetricCard className="mb-6" style={{ background: `linear-gradient(to bottom right, ${C.accentTint}, ${C.cardBg})` }}>
-          <div className="flex items-center gap-2 mb-2">
-            <Zap size={16} style={{ color: C.accent }} />
-            <div className="text-base font-bold" style={{ color: C.textPrimary }}>Nippard Min-Max</div>
-          </div>
-          <div className="text-xs mb-3" style={{ color: C.textSecondary }}>5-day Upper/Lower/Arms split. Block 1 &amp; 2 (original), or the PDF-verified Block 2 with intensity techniques.</div>
-          <div className="flex flex-wrap gap-2">
-            {!hasBlock1 && (
-              <button onClick={() => importNippardBlock(1)} className="px-4 py-2 rounded-xl font-bold uppercase text-xs tracking-wider" style={{ background: C.accent, color: '#10140C' }}>
-                Block 1
-              </button>
-            )}
-            {!hasBlock2 && (
-              <button onClick={() => importNippardBlock(2)} className="px-4 py-2 rounded-xl font-bold uppercase text-xs tracking-wider" style={{ background: C.inputBg, color: C.textPrimary, border: `1px solid ${C.border}` }}>
-                Block 2
-              </button>
-            )}
-            {!hasMM2 && (
-              <button onClick={() => importNippardBlock(3)} className="px-4 py-2 rounded-xl font-bold uppercase text-xs tracking-wider" style={{ background: C.accent, color: '#10140C' }}>
-                Block 2 (PDF)
-              </button>
-            )}
-          </div>
-        </MetricCard>
-      )}
+        {/* ── Programmes section ── */}
+        <div className="text-[10px] uppercase tracking-[0.22em] mb-3 mt-1" style={{ color: C.textMuted }}>Programmes</div>
 
-      {routines.length === 0 ? (
-        <div className="text-center py-8">
-          <Dumbbell size={32} className="mx-auto mb-3" style={{ color: C.textFaint }} />
-          <div className="text-sm mb-4" style={{ color: C.textMuted }}>Build a routine, import one, or load the Nippard program above.</div>
-          <button onClick={() => setEditing('new')} className="px-4 py-2 rounded-xl font-bold uppercase text-xs tracking-wider" style={{ background: C.accent, color: '#10140C' }}>Create First Routine</button>
-        </div>
-      ) : (
-        <div className="flex flex-col gap-3">
-          {routines.map((r) => (
-            <MetricCard key={r.id}>
-              <div className="flex items-baseline justify-between mb-2">
-                <div>
-                  <div className="text-lg font-bold" style={{ color: C.textPrimary }}>{r.name}</div>
-                  {r.note && <div className="text-[10px] uppercase tracking-wider" style={{ color: C.accent }}>{r.note}</div>}
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => {
-                      const json = JSON.stringify({ name: r.name, note: r.note, scheduledDays: r.scheduledDays, exercises: r.exercises }, null, 2);
-                      navigator.clipboard.writeText(json).then(() => alert('Routine copied as JSON.'));
-                    }}
-                    style={{ color: C.textMuted }} title="Share"
-                  ><Upload size={14} /></button>
-                  <button onClick={() => setEditing(r.id)} style={{ color: C.textMuted }}><Edit3 size={14} /></button>
-                </div>
-              </div>
-              <div className="text-xs mb-3 flex items-center gap-2 flex-wrap" style={{ color: C.textMuted }}>
-                <span>{r.exercises.length} exercise{r.exercises.length !== 1 ? 's' : ''}</span>
-                {(r.scheduledDays || []).length > 0 && (
-                  <span>· {(r.scheduledDays || []).map(d => DAYS[d]).join(', ')}</span>
-                )}
-              </div>
-              <div className="space-y-1 mb-3">
-                {r.exercises.slice(0, 5).map((re, i) => {
-                  const ex = exercises.find((e) => e.id === re.exerciseId);
-                  return (
-                    <div key={i} className="text-xs flex justify-between" style={{ color: C.textSecondary }}>
-                      <span className="truncate">{ex?.name || 'Unknown'}</span>
-                      <span className="mono whitespace-nowrap ml-2" style={{ color: C.textMuted }}>{re.workingSets || 3}×{re.repRange || '—'}</span>
-                    </div>
-                  );
-                })}
-                {r.exercises.length > 5 && <div className="text-xs italic" style={{ color: C.textFaint }}>+{r.exercises.length - 5} more…</div>}
-              </div>
-              <button onClick={() => onStart(r)} className="w-full py-2.5 rounded-xl font-bold uppercase text-xs tracking-wider flex items-center justify-center gap-2" style={{ background: C.accent, color: '#10140C' }}>
-                <Play size={12} fill="currentColor" /> Start
-              </button>
-            </MetricCard>
-          ))}
-        </div>
-      )}
-
-      {showImport && (
-        <ImportRoutineModal
-          onClose={() => setShowImport(false)}
-          onImport={(r) => { setRoutines([...routines, { ...r, id: uid() }]); setShowImport(false); }}
+        <ProgrammeTile
+          title="Min-Max Phase 1"
+          subtitle="5-day · Upper / Lower / Arms"
+          accentColor="#E8923E"
           exercises={exercises}
+          onStart={onStart}
+          onAddBlock={(key) => {
+            if (key === 'mm1b1') importBlock(id => id.startsWith('nip_') && !id.startsWith('nip_b2_') && !id.startsWith('nip_mm2_') && !id.startsWith('nip_lpp') && !id.startsWith('nip_p2'));
+            if (key === 'mm1b2') importBlock(id => id.startsWith('nip_mm2_'));
+          }}
+          blocks={[
+            { label: 'Block 1', importKey: 'mm1b1', sessions: mm1b1 },
+            { label: 'Block 2', importKey: 'mm1b2', sessions: mm1b2 },
+          ]}
         />
-      )}
+
+        <ProgrammeTile
+          title="Min-Max Phase 2"
+          subtitle="4-day · Upper / Lower / Push / Pull"
+          accentColor="#E8543E"
+          exercises={exercises}
+          onStart={onStart}
+          onAddBlock={(key) => {
+            if (key === 'p2b1') importBlock(id => id.startsWith('nip_p2_') && !id.startsWith('nip_p2b2_'));
+            if (key === 'p2b2') importBlock(id => id.startsWith('nip_p2b2_'));
+          }}
+          blocks={[
+            { label: 'Block 1', importKey: 'p2b1', sessions: p2b1 },
+            { label: 'Block 2', importKey: 'p2b2', sessions: p2b2 },
+          ]}
+        />
+
+        <ProgrammeTile
+          title="LPP Hypertrophy"
+          subtitle="16-week periodized · Legs / Push / Pull"
+          accentColor={C.accent}
+          exercises={exercises}
+          onStart={onStart}
+          onAddBlock={() => {}}
+          blocks={[
+            { label: null, importKey: null, sessions: lpp },
+          ]}
+        />
+
+        {/* ── My Routines section ── */}
+        <div className="text-[10px] uppercase tracking-[0.22em] mb-3 mt-6" style={{ color: C.textMuted }}>My Routines</div>
+
+        {custom.length === 0 ? (
+          <div className="rounded-2xl flex flex-col items-center justify-center py-10 mb-4" style={{ border: `1px dashed ${C.border}` }}>
+            <div className="text-sm mb-3" style={{ color: C.textMuted }}>No custom routines yet</div>
+            <button onClick={() => setEditing('new')} className="px-4 py-2 rounded-xl font-bold uppercase text-xs tracking-wider" style={{ background: C.accent, color: '#10140C' }}>
+              Create one
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3 mb-4">
+            {custom.map((r) => (
+              <MetricCard key={r.id}>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-base font-bold" style={{ color: C.textPrimary }}>{r.name}</div>
+                  <div className="flex items-center gap-3">
+                    <button onClick={() => setEditing(r.id)} style={{ color: C.textMuted }}><Edit3 size={14} /></button>
+                    <button onClick={() => {
+                      const json = JSON.stringify({ name: r.name, note: r.note, scheduledDays: r.scheduledDays, exercises: r.exercises }, null, 2);
+                      navigator.clipboard.writeText(json).then(() => alert('Copied as JSON.'));
+                    }} style={{ color: C.textMuted }} title="Share"><Upload size={14} /></button>
+                  </div>
+                </div>
+                <div className="text-xs mb-3" style={{ color: C.textMuted }}>
+                  {r.exercises.length} exercises
+                  {(r.scheduledDays || []).length > 0 && ` · ${(r.scheduledDays || []).map(d => DAYS[d]).join(', ')}`}
+                </div>
+                <div className="space-y-1 mb-3">
+                  {r.exercises.slice(0, 4).map((re, i) => {
+                    const ex = exercises.find(e => e.id === re.exerciseId);
+                    return (
+                      <div key={i} className="text-xs flex justify-between" style={{ color: C.textSecondary }}>
+                        <span className="truncate">{ex?.name || 'Unknown'}</span>
+                        <span className="mono whitespace-nowrap ml-2" style={{ color: C.textMuted }}>{re.workingSets || 3}×{re.repRange || '—'}</span>
+                      </div>
+                    );
+                  })}
+                  {r.exercises.length > 4 && <div className="text-xs" style={{ color: C.textFaint }}>+{r.exercises.length - 4} more</div>}
+                </div>
+                <button onClick={() => onStart(r)} className="w-full py-2.5 rounded-xl font-bold uppercase text-xs tracking-wider flex items-center justify-center gap-2" style={{ background: C.accent, color: '#10140C' }}>
+                  <Play size={12} fill="currentColor" /> Start
+                </button>
+              </MetricCard>
+            ))}
+          </div>
+        )}
+
+        {/* JSON import */}
+        <button onClick={() => setShowImport(true)} className="w-full py-3 rounded-xl text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 mb-6" style={{ border: `1px solid ${C.border}`, color: C.textMuted }}>
+          <Upload size={13} /> Import routine from JSON
+        </button>
+
+        {showImport && (
+          <ImportRoutineModal
+            onClose={() => setShowImport(false)}
+            onImport={(r) => { setRoutines([...routines, { ...r, id: uid() }]); setShowImport(false); }}
+            exercises={exercises}
+          />
+        )}
       </div>
     </div>
   );
