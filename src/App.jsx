@@ -2018,7 +2018,7 @@ function ActiveWorkoutView({ workout, setWorkout, exercises, workouts, onFinish,
         <DraggableExerciseList
           exercises={workout.exercises}
           onReorder={(from, to) => moveExercise(from, to)}
-          renderItem={(ex, exIdx) => (
+          renderItem={(ex, exIdx, onHandleTouchStart) => (
             <ExerciseBlock
               key={exIdx}
               exercise={ex} exIdx={exIdx}
@@ -2044,6 +2044,7 @@ function ActiveWorkoutView({ workout, setWorkout, exercises, workouts, onFinish,
               }}
               unit={settings.unit}
               bodyweight={settings.bodyweight}
+              onDragHandleTouchStart={onHandleTouchStart}
             />
           )}
         />
@@ -2108,46 +2109,87 @@ function ActiveWorkoutView({ workout, setWorkout, exercises, workouts, onFinish,
 function DraggableExerciseList({ exercises, onReorder, renderItem }) {
   const [dragIdx, setDragIdx] = useState(null);
   const [overIdx, setOverIdx] = useState(null);
-  const dragNode = useRef(null);
+  const containerRef = useRef(null);
+  const state = useRef({ dragging: false, fromIdx: null, itemRects: [], scrollRAF: null, clientY: 0 });
 
-  const handleDragStart = (e, idx) => {
-    setDragIdx(idx);
-    dragNode.current = e.currentTarget;
-    e.dataTransfer.effectAllowed = 'move';
-    // Minimal ghost: use the element itself
-    setTimeout(() => { if (dragNode.current) dragNode.current.style.opacity = '0.4'; }, 0);
+  const getItemRects = () => {
+    if (!containerRef.current) return [];
+    return Array.from(containerRef.current.children).map(el => el.getBoundingClientRect());
   };
 
-  const handleDragEnter = (idx) => {
-    if (idx !== dragIdx) setOverIdx(idx);
-  };
-
-  const handleDragEnd = () => {
-    if (dragNode.current) dragNode.current.style.opacity = '1';
-    if (dragIdx !== null && overIdx !== null && dragIdx !== overIdx) {
-      onReorder(dragIdx, overIdx);
+  const hitIndex = (clientY) => {
+    const rects = state.current.itemRects;
+    for (let i = 0; i < rects.length; i++) {
+      if (clientY < rects[i].bottom) return i;
     }
+    return rects.length - 1;
+  };
+
+  const startScroll = () => {
+    const ZONE = 80;
+    const SPEED = 8;
+    const tick = () => {
+      const y = state.current.clientY;
+      const vh = window.innerHeight;
+      if (y < ZONE) window.scrollBy(0, -SPEED);
+      else if (y > vh - ZONE) window.scrollBy(0, SPEED);
+      if (state.current.dragging) state.current.scrollRAF = requestAnimationFrame(tick);
+    };
+    state.current.scrollRAF = requestAnimationFrame(tick);
+  };
+
+  const stopScroll = () => {
+    if (state.current.scrollRAF) cancelAnimationFrame(state.current.scrollRAF);
+  };
+
+  const onHandleTouchStart = (e, idx) => {
+    e.preventDefault(); // stop page scroll while dragging
+    state.current.dragging = true;
+    state.current.fromIdx = idx;
+    state.current.itemRects = getItemRects();
+    state.current.clientY = e.touches[0].clientY;
+    setDragIdx(idx);
+    setOverIdx(idx);
+    startScroll();
+  };
+
+  const onTouchMove = (e) => {
+    if (!state.current.dragging) return;
+    const clientY = e.touches[0].clientY;
+    state.current.clientY = clientY;
+    const over = hitIndex(clientY);
+    setOverIdx(over);
+  };
+
+  const onTouchEnd = () => {
+    if (!state.current.dragging) return;
+    stopScroll();
+    state.current.dragging = false;
+    const from = state.current.fromIdx;
+    const to = overIdx;
     setDragIdx(null);
     setOverIdx(null);
-    dragNode.current = null;
+    if (from !== null && to !== null && from !== to) onReorder(from, to);
   };
 
   return (
-    <div className="space-y-4">
+    <div
+      ref={containerRef}
+      className="space-y-4"
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+      onTouchCancel={onTouchEnd}
+    >
       {exercises.map((ex, idx) => (
         <div
           key={idx}
-          draggable
-          onDragStart={(e) => handleDragStart(e, idx)}
-          onDragEnter={() => handleDragEnter(idx)}
-          onDragOver={(e) => e.preventDefault()}
-          onDragEnd={handleDragEnd}
           style={{
-            transition: 'transform 0.15s',
-            transform: overIdx === idx && dragIdx !== idx ? 'translateY(4px)' : 'none',
+            opacity: dragIdx === idx ? 0.4 : 1,
+            transition: 'transform 0.15s, opacity 0.15s',
+            transform: overIdx === idx && dragIdx !== null && dragIdx !== idx ? 'translateY(6px)' : 'none',
           }}
         >
-          {renderItem(ex, idx)}
+          {renderItem(ex, idx, (e) => onHandleTouchStart(e, idx))}
         </div>
       ))}
     </div>
@@ -2157,12 +2199,11 @@ function DraggableExerciseList({ exercises, onReorder, renderItem }) {
 function ExerciseBlock({
   exercise, exIdx, allExercises, workouts, exerciseDefs, onToggleSet, onUpdateSet, onChangeSetType,
   onAddSet, onRemoveSet, onDuplicateSet, onRemove, onSwap, onPlateCalc, onSuperset, onClearSuperset, onEditRest,
-  unit, bodyweight,
+  unit, bodyweight, onDragHandleTouchStart,
 }) {
   const C = useContext(ThemeContext);
   const [showTypeMenu, setShowTypeMenu] = useState(null);
   const [showRestEdit, setShowRestEdit] = useState(false);
-  const [dismissedSuggestion, setDismissedSuggestion] = useState(false);
 
   const lastSets = findLastSetsFor(workouts, exercise.exerciseId);
   const isSuperset = !!exercise.supersetGroup;
@@ -2176,13 +2217,12 @@ function ExerciseBlock({
     .reduce((max, s) => Math.max(max, s.weight || 0), 0);
   const isPR = sessionBest > 0 && sessionBest > historicalBest;
 
-  // No sets logged yet this session (weight/reps not typed in) means this is effectively "starting"
-  // this exercise for today — that's when a stale suggestion is most useful, before you've overwritten it.
-  const hasLoggedThisSession = exercise.sets.some(s => s.completed);
   const equipment = exerciseDefs?.find(e => e.id === exercise.exerciseId)?.equipment;
-  const suggestion = (!hasLoggedThisSession && !dismissedSuggestion)
+  const hasLoggedThisSession = exercise.sets.some(s => s.completed);
+  const suggestion = !hasLoggedThisSession
     ? suggestProgression(workouts, exercise.exerciseId, exercise.repRange, exercise.rirTarget, equipment)
     : null;
+  const progressSuggestion = suggestion?.type === 'progress' ? suggestion : null;
 
   return (
     <div
@@ -2217,7 +2257,11 @@ function ExerciseBlock({
           {exercise.notes && <div className="text-xs mt-1 italic" style={{ color: C.textMuted }}>{exercise.notes}</div>}
         </div>
         <div className="flex items-center gap-1 shrink-0">
-          <div className="flex flex-col items-center justify-center px-1 cursor-grab active:cursor-grabbing touch-none" style={{ color: C.textFaint }}>
+          <div
+            className="flex flex-col items-center justify-center px-1 cursor-grab active:cursor-grabbing"
+            style={{ color: C.textFaint, touchAction: 'none' }}
+            onTouchStart={onDragHandleTouchStart}
+          >
             <GripVertical size={16} />
           </div>
           <button onClick={() => setShowRestEdit(true)} className="p-1 mono text-[10px] uppercase flex items-center gap-0.5" style={{ color: C.textMuted }}>
@@ -2233,24 +2277,11 @@ function ExerciseBlock({
         </div>
       </div>
 
-      {suggestion && (
-        <div
-          className="flex items-center justify-between gap-2 px-4 py-2 text-xs"
-          style={{
-            background: suggestion.type === 'progress' ? C.accentTint : '#3A1F1F',
-            color: suggestion.type === 'progress' ? C.accent : '#F0A0A0',
-            borderBottom: `1px solid ${C.border}`,
-          }}
-        >
-          <div className="flex items-center gap-1.5 min-w-0">
-            {suggestion.type === 'progress' ? <TrendingUp size={13} className="shrink-0" /> : <Flame size={13} className="shrink-0" />}
-            <span className="truncate">
-              {suggestion.type === 'progress'
-                ? <>Try <span className="mono font-bold">{suggestion.suggestedWeight} {unit}</span> — {suggestion.reason}</>
-                : <>Hold or ease back — {suggestion.reason}</>}
-            </span>
-          </div>
-          <button onClick={() => setDismissedSuggestion(true)} className="shrink-0 opacity-70"><X size={13} /></button>
+
+      {progressSuggestion && (
+        <div className="flex items-center gap-1.5 px-4 py-2 text-xs" style={{ background: C.accentTint, color: C.accent, borderBottom: `1px solid ${C.border}` }}>
+          <TrendingUp size={13} className="shrink-0" />
+          <span>Try <span className="mono font-bold">{progressSuggestion.suggestedWeight} {unit}</span> — {progressSuggestion.reason}</span>
         </div>
       )}
 
