@@ -4,7 +4,7 @@ import {
   Home, History, Dumbbell, TrendingUp, Plus, X, Check, Play, Square,
   ChevronLeft, Clock, Search, Trash2, Edit3, Timer, Flame, ArrowRight,
   Settings, Calculator, Download, Upload, Link2, Zap, Volume2, VolumeX, Bell, BellOff,
-  Moon, Sun, Copy, CheckCheck, Share2, ChevronUp, ChevronDown, RefreshCw,
+  Moon, Sun, Copy, CheckCheck, Share2, ChevronUp, ChevronDown, RefreshCw, GripVertical,
 } from 'lucide-react';
 
 // ============================================================
@@ -1606,7 +1606,7 @@ function HomeTab({ workouts, routines, exercises, settings, setSettings, onStart
 
             // Sessions for whichever programme is selected
             const mm1Sessions = routines.filter(r => r.id.startsWith('nip_') && !r.id.startsWith('nip_b2_') && !r.id.startsWith('nip_mm2_') && !r.id.startsWith('nip_lpp') && !r.id.startsWith('nip_p2'));
-            const mm2Sessions = routines.filter(r => r.id.startsWith('nip_p2_') || r.id.startsWith('nip_p2b2_'));
+            const mm2Sessions = routines.filter(r => r.id.startsWith('nip_p2_') && !r.id.startsWith('nip_p2b2_'));
             const lppSessions = programmeBlock ? programmeBlock.days : [];
 
             const sessionMap = { mm1: mm1Sessions, mm2: mm2Sessions, lpp: lppSessions };
@@ -1675,20 +1675,8 @@ function HomeTab({ workouts, routines, exercises, settings, setSettings, onStart
                     );
                   })
                 ) : (
-                  sessions.map((r) => (
-                    <div key={r.id} className="flex items-center justify-between px-5 py-3" style={{ borderTop: `1px solid ${C.border}` }}>
-                      <div>
-                        <div className="text-[15px] font-bold" style={{ color: C.textPrimary }}>{r.name}</div>
-                        <div className="text-[11px]" style={{ color: C.textFaint }}>
-                          {r.exercises.length} exercises
-                          {(r.scheduledDays || []).length > 0 && ` · ${(r.scheduledDays || []).map(d => DAYS[d]).join(', ')}`}
-                        </div>
-                      </div>
-                      <button onClick={() => onStartRoutine(r)} className="px-3.5 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 shrink-0"
-                        style={{ background: activeColor, color: '#10140C' }}>
-                        <Play size={11} fill="currentColor" /> Start
-                      </button>
-                    </div>
+                  sessions.map(r => (
+                    <SessionRow key={r.id} routine={r} exercises={exercises} accentColor={activeColor} onStart={onStartRoutine} />
                   ))
                 )}
               </MetricCard>
@@ -2027,8 +2015,10 @@ function ActiveWorkoutView({ workout, setWorkout, exercises, workouts, onFinish,
           </div>
         )}
 
-        <div className="space-y-4">
-          {workout.exercises.map((ex, exIdx) => (
+        <DraggableExerciseList
+          exercises={workout.exercises}
+          onReorder={(from, to) => moveExercise(from, to)}
+          renderItem={(ex, exIdx) => (
             <ExerciseBlock
               key={exIdx}
               exercise={ex} exIdx={exIdx}
@@ -2052,15 +2042,11 @@ function ActiveWorkoutView({ workout, setWorkout, exercises, workouts, onFinish,
                 next.exercises[exIdx] = { ...next.exercises[exIdx], restSeconds: sec };
                 setWorkout(next);
               }}
-              onMoveUp={() => moveExercise(exIdx, exIdx - 1)}
-              onMoveDown={() => moveExercise(exIdx, exIdx + 1)}
-              canMoveUp={exIdx > 0}
-              canMoveDown={exIdx < workout.exercises.length - 1}
               unit={settings.unit}
               bodyweight={settings.bodyweight}
             />
-          ))}
-        </div>
+          )}
+        />
 
         <button
           onClick={() => setShowPicker(true)}
@@ -2118,10 +2104,60 @@ function ActiveWorkoutView({ workout, setWorkout, exercises, workouts, onFinish,
   );
 }
 
+// ── Drag-and-drop exercise list ──────────────────────────────
+function DraggableExerciseList({ exercises, onReorder, renderItem }) {
+  const [dragIdx, setDragIdx] = useState(null);
+  const [overIdx, setOverIdx] = useState(null);
+  const dragNode = useRef(null);
+
+  const handleDragStart = (e, idx) => {
+    setDragIdx(idx);
+    dragNode.current = e.currentTarget;
+    e.dataTransfer.effectAllowed = 'move';
+    // Minimal ghost: use the element itself
+    setTimeout(() => { if (dragNode.current) dragNode.current.style.opacity = '0.4'; }, 0);
+  };
+
+  const handleDragEnter = (idx) => {
+    if (idx !== dragIdx) setOverIdx(idx);
+  };
+
+  const handleDragEnd = () => {
+    if (dragNode.current) dragNode.current.style.opacity = '1';
+    if (dragIdx !== null && overIdx !== null && dragIdx !== overIdx) {
+      onReorder(dragIdx, overIdx);
+    }
+    setDragIdx(null);
+    setOverIdx(null);
+    dragNode.current = null;
+  };
+
+  return (
+    <div className="space-y-4">
+      {exercises.map((ex, idx) => (
+        <div
+          key={idx}
+          draggable
+          onDragStart={(e) => handleDragStart(e, idx)}
+          onDragEnter={() => handleDragEnter(idx)}
+          onDragOver={(e) => e.preventDefault()}
+          onDragEnd={handleDragEnd}
+          style={{
+            transition: 'transform 0.15s',
+            transform: overIdx === idx && dragIdx !== idx ? 'translateY(4px)' : 'none',
+          }}
+        >
+          {renderItem(ex, idx)}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function ExerciseBlock({
   exercise, exIdx, allExercises, workouts, exerciseDefs, onToggleSet, onUpdateSet, onChangeSetType,
   onAddSet, onRemoveSet, onDuplicateSet, onRemove, onSwap, onPlateCalc, onSuperset, onClearSuperset, onEditRest,
-  onMoveUp, onMoveDown, canMoveUp, canMoveDown, unit, bodyweight,
+  unit, bodyweight,
 }) {
   const C = useContext(ThemeContext);
   const [showTypeMenu, setShowTypeMenu] = useState(null);
@@ -2181,9 +2217,8 @@ function ExerciseBlock({
           {exercise.notes && <div className="text-xs mt-1 italic" style={{ color: C.textMuted }}>{exercise.notes}</div>}
         </div>
         <div className="flex items-center gap-1 shrink-0">
-          <div className="flex flex-col">
-            <button onClick={onMoveUp} disabled={!canMoveUp} className="p-0.5 transition" style={{ color: canMoveUp ? C.textMuted : C.textFaint }}><ChevronUp size={13} /></button>
-            <button onClick={onMoveDown} disabled={!canMoveDown} className="p-0.5 transition" style={{ color: canMoveDown ? C.textMuted : C.textFaint }}><ChevronDown size={13} /></button>
+          <div className="flex flex-col items-center justify-center px-1 cursor-grab active:cursor-grabbing touch-none" style={{ color: C.textFaint }}>
+            <GripVertical size={16} />
           </div>
           <button onClick={() => setShowRestEdit(true)} className="p-1 mono text-[10px] uppercase flex items-center gap-0.5" style={{ color: C.textMuted }}>
             <Timer size={12} />{fmtTime(exercise.restSeconds || 90)}
