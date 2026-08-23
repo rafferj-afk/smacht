@@ -1166,7 +1166,7 @@ export default function App() {
   if (loading) {
     return (
       <ThemeContext.Provider value={C}>
-        <div className="min-h-screen flex items-center justify-center" style={{ background: C.pageBg, color: C.textSecondary }}>
+        <div className="flex items-center justify-center" style={{ minHeight: '100dvh', background: C.pageBg, color: C.textSecondary }}>
           <div className="text-sm tracking-widest uppercase opacity-60">Loading…</div>
         </div>
       </ThemeContext.Provider>
@@ -1188,7 +1188,7 @@ export default function App() {
 
   return (
     <ThemeContext.Provider value={C}>
-      <div className="min-h-screen pb-24" style={{ background: C.pageBg, color: C.textPrimary, fontFamily: "'Inter', system-ui, sans-serif" }}>
+      <div className="pb-24" style={{ minHeight: '100dvh', background: C.pageBg, color: C.textPrimary, fontFamily: "'Inter', system-ui, sans-serif" }}>
         <FontLoader />
         <div className="max-w-2xl mx-auto">
           {tab === 'home' && <HomeTab workouts={workouts} routines={routines} exercises={exercises} settings={settings} setSettings={setSettings} onStartEmpty={startEmptyWorkout} onStartRoutine={startFromRoutine} onCreateRoutine={() => setTab('routines')} onOpenSettings={() => setShowSettings(true)} activeProgramme={activeProgramme} setActiveProgramme={setActiveProgramme} oneRepMaxes={oneRepMaxes} setOneRepMaxes={setOneRepMaxes} onStartProgrammeDay={startFromProgrammeDay} homeprogramme={homeprogramme} setHomeprogramme={setHomeprogramme} />}
@@ -1320,7 +1320,7 @@ function Modal({ children, onClose, fullscreen }) {
       <div className="absolute inset-0 backdrop-blur-sm" style={{ background: 'rgba(0,0,0,0.4)' }} onClick={onClose} />
       <div
         className={`relative w-full overflow-y-auto ${fullscreen ? 'h-full sm:max-w-2xl sm:h-[90vh] sm:rounded-2xl' : 'max-w-md max-h-[90vh] rounded-t-3xl sm:rounded-3xl'}`}
-        style={{ background: C.cardBg, border: `1px solid ${C.border}` }}
+        style={{ background: C.cardBg, border: `1px solid ${C.border}`, overscrollBehavior: 'contain' }}
         onClick={(e) => e.stopPropagation()}
       >
         {children}
@@ -1896,6 +1896,13 @@ function ActiveWorkoutView({ workout, setWorkout, exercises, workouts, onFinish,
   };
 
   const toggleSetComplete = (exIdx, setIdx) => {
+    // Unlock AudioContext on iOS — must happen inside a direct user gesture handler
+    if (window.AudioContext || window.webkitAudioContext) {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+      } catch (_) {}
+    }
     const set = workout.exercises[exIdx].sets[setIdx];
     const wasCompleted = set.completed;
     updateSet(exIdx, setIdx, { completed: !set.completed });
@@ -1976,7 +1983,7 @@ function ActiveWorkoutView({ workout, setWorkout, exercises, workouts, onFinish,
   const totalSets = workout.exercises.reduce((s, e) => s + e.sets.filter(isStatSet).length, 0);
 
   return (
-    <div className="min-h-screen" style={{ background: C.pageBg, color: C.textPrimary, fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div style={{ minHeight: '100dvh', background: C.pageBg, color: C.textPrimary, fontFamily: "'Inter', system-ui, sans-serif" }}>
       <FontLoader />
 
       <div className="sticky top-0 backdrop-blur z-30" style={{ background: C.stickyBg, borderBottom: `1px solid ${C.border}` }}>
@@ -2053,8 +2060,8 @@ function ActiveWorkoutView({ workout, setWorkout, exercises, workouts, onFinish,
           onClick={() => setShowPicker(true)}
           className="w-full mt-4 py-4 rounded-2xl flex items-center justify-center gap-2 font-semibold uppercase text-xs tracking-wider transition"
           style={{ border: `2px dashed ${C.border}`, color: C.textMuted }}
-          onMouseOver={(e) => { e.currentTarget.style.borderColor = C.accent; e.currentTarget.style.color = C.accent; }}
-          onMouseOut={(e) => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.color = C.textMuted; }}
+          onPointerEnter={(e) => { e.currentTarget.style.borderColor = C.accent; e.currentTarget.style.color = C.accent; }}
+          onPointerLeave={(e) => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.color = C.textMuted; }}
         >
           <Plus size={16} /> Add Exercise
         </button>
@@ -2176,7 +2183,8 @@ function DraggableExerciseList({ exercises, onReorder, renderItem }) {
     <div
       ref={containerRef}
       className="space-y-4"
-      onTouchMove={onTouchMove}
+      style={{ touchAction: state.current.dragging ? 'none' : 'auto' }}
+      onTouchMove={(e) => { if (state.current.dragging) { e.preventDefault(); } onTouchMove(e); }}
       onTouchEnd={onTouchEnd}
       onTouchCancel={onTouchEnd}
     >
@@ -2326,8 +2334,8 @@ function ExerciseBlock({
         onClick={onAddSet}
         className="w-full px-4 py-3 text-xs uppercase tracking-wider font-semibold flex items-center justify-center gap-1.5 transition"
         style={{ background: C.cardBg, color: C.accent, borderTop: `1px solid ${C.border}` }}
-        onMouseOver={(e) => e.currentTarget.style.background = C.accentTint}
-        onMouseOut={(e) => e.currentTarget.style.background = C.cardBg}
+        onPointerEnter={(e) => e.currentTarget.style.background = C.accentTint}
+        onPointerLeave={(e) => e.currentTarget.style.background = C.cardBg}
       >
         <Plus size={14} /> Add Set
       </button>
@@ -2455,8 +2463,9 @@ function SetRow({ index, set, previous, onToggle, onUpdate, onChangeType, onRemo
           value={set.weight || ''}
           onChange={(e) => onUpdate({ weight: parseFloat(e.target.value) || 0 })}
           placeholder={previous ? String(previous.weight) : '0'}
-          className="w-full mono rounded-lg py-1.5 px-1.5 text-center text-sm font-semibold outline-none"
-          style={{ background: C.inputBg, border: `1px solid ${C.border}`, color: C.textPrimary }}
+          autoComplete="off" autoCorrect="off" autoCapitalize="off"
+          className="w-full mono rounded-lg py-1.5 px-1.5 text-center font-semibold outline-none"
+          style={{ background: C.inputBg, border: `1px solid ${C.border}`, color: C.textPrimary, fontSize: 16 }}
           onFocus={(e) => e.currentTarget.style.borderColor = C.accent}
           onBlur={(e) => e.currentTarget.style.borderColor = C.border}
         />
@@ -2465,8 +2474,9 @@ function SetRow({ index, set, previous, onToggle, onUpdate, onChangeType, onRemo
           value={set.reps || ''}
           onChange={(e) => onUpdate({ reps: parseInt(e.target.value) || 0 })}
           placeholder={previous ? String(previous.reps) : '0'}
-          className="w-full mono rounded-lg py-1.5 px-1.5 text-center text-sm font-semibold outline-none"
-          style={{ background: C.inputBg, border: `1px solid ${C.border}`, color: C.textPrimary }}
+          autoComplete="off" autoCorrect="off" autoCapitalize="off"
+          className="w-full mono rounded-lg py-1.5 px-1.5 text-center font-semibold outline-none"
+          style={{ background: C.inputBg, border: `1px solid ${C.border}`, color: C.textPrimary, fontSize: 16 }}
           onFocus={(e) => e.currentTarget.style.borderColor = C.accent}
           onBlur={(e) => e.currentTarget.style.borderColor = C.border}
         />
@@ -2475,8 +2485,9 @@ function SetRow({ index, set, previous, onToggle, onUpdate, onChangeType, onRemo
           value={set.rir ?? ''}
           onChange={(e) => onUpdate({ rir: e.target.value === '' ? null : parseInt(e.target.value) })}
           placeholder="—"
-          className="w-full mono rounded-lg py-1.5 px-1 text-center text-[11px] outline-none disabled:opacity-30"
-          style={{ background: C.inputBg, border: `1px solid ${C.border}`, color: C.textSecondary }}
+          autoComplete="off" autoCorrect="off" autoCapitalize="off"
+          className="w-full mono rounded-lg py-1.5 px-1 text-center outline-none disabled:opacity-30"
+          style={{ background: C.inputBg, border: `1px solid ${C.border}`, color: C.textSecondary, fontSize: 16 }}
           disabled={set.type === 'warmup'}
           onFocus={(e) => e.currentTarget.style.borderColor = C.accent}
           onBlur={(e) => e.currentTarget.style.borderColor = C.border}
@@ -2535,7 +2546,7 @@ function SupersetPicker({ exercises, currentIdx, onPick, onClose }) {
         {available.length === 0 ? (
           <div className="text-sm py-4" style={{ color: C.textMuted }}>Add another exercise first, or remove an existing superset.</div>
         ) : (
-          <div className="space-y-2 mb-4 max-h-[50vh] overflow-y-auto">
+          <div className="space-y-2 mb-4 max-h-[50vh] overflow-y-auto" style={{ overscrollBehavior: 'contain' }}>
             {available.map(({ ex, i }) => (
               <button key={i} onClick={() => onPick(i)} className="w-full py-3 px-4 rounded-xl text-left transition" style={{ background: C.inputBg, color: C.textPrimary }}>
                 {ex.name}
@@ -2570,8 +2581,9 @@ function PlateCalculator({ initialWeight, barWeight, onClose }) {
             <input
               type="number" inputMode="decimal" step="0.5"
               value={target} onChange={(e) => setTarget(parseFloat(e.target.value) || 0)}
-              className="w-full rounded-xl py-3 px-3 text-xl mono font-bold outline-none"
-              style={{ background: C.inputBg, border: `1px solid ${C.border}`, color: C.textPrimary }}
+              autoComplete="off" autoCorrect="off" autoCapitalize="off"
+              className="w-full rounded-xl py-3 px-3 mono font-bold outline-none"
+              style={{ background: C.inputBg, border: `1px solid ${C.border}`, color: C.textPrimary, fontSize: 16 }}
             />
           </div>
           <div>
@@ -2579,8 +2591,9 @@ function PlateCalculator({ initialWeight, barWeight, onClose }) {
             <input
               type="number" inputMode="decimal" step="0.5"
               value={bar} onChange={(e) => setBar(parseFloat(e.target.value) || 0)}
-              className="w-full rounded-xl py-3 px-3 text-xl mono font-bold outline-none"
-              style={{ background: C.inputBg, border: `1px solid ${C.border}`, color: C.textPrimary }}
+              autoComplete="off" autoCorrect="off" autoCapitalize="off"
+              className="w-full rounded-xl py-3 px-3 mono font-bold outline-none"
+              style={{ background: C.inputBg, border: `1px solid ${C.border}`, color: C.textPrimary, fontSize: 16 }}
             />
           </div>
         </div>
@@ -2748,10 +2761,10 @@ function GeminiCopyModal({ workout, exercises, onClose }) {
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(prompt).then(() => {
+    navigator.clipboard?.writeText(prompt).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
-    });
+    }).catch(() => {});
   };
 
   return (
@@ -2769,7 +2782,7 @@ function GeminiCopyModal({ workout, exercises, onClose }) {
             : 'Copy this and paste it into Google Health\'s Gemini agent.'}
         </p>
 
-        <div className="rounded-xl p-3 mb-4 overflow-y-auto max-h-56 text-xs mono whitespace-pre-wrap"
+        <div className="rounded-xl p-3 mb-4 overflow-y-auto max-h-56 text-xs mono whitespace-pre-wrap" style={{ overscrollBehavior: 'contain' }}
           style={{ background: C.inputBg, border: `1px solid ${C.border}`, color: C.textPrimary, lineHeight: 1.6 }}>
           {prompt}
         </div>
@@ -2818,10 +2831,10 @@ function WorkoutDetail({ workout, exercises, onBack, onDelete, onUpdate }) {
         await navigator.share({ title: `Workout: ${workout.name}`, text: prompt });
       } catch { /* cancelled */ }
     } else {
-      navigator.clipboard.writeText(prompt).then(() => {
+      navigator.clipboard?.writeText(prompt).then(() => {
         setCopiedInline(true);
         setTimeout(() => setCopiedInline(false), 2500);
-      });
+      }).catch(() => {});
     }
   };
   return (
@@ -2916,16 +2929,18 @@ function DurationEditModal({ duration, onSave, onClose }) {
             <label className="text-[10px] uppercase tracking-wider mb-1 block" style={{ color: C.textMuted }}>Hours</label>
             <input type="number" inputMode="numeric" min="0" max="12" value={h}
               onChange={(e) => setH(Math.max(0, parseInt(e.target.value) || 0))}
-              className="w-full px-3 py-2.5 rounded-xl text-lg mono text-center"
-              style={{ background: C.inputBg, color: C.textPrimary, border: `1px solid ${C.border}` }} />
+              autoComplete="off" autoCorrect="off" autoCapitalize="off"
+              className="w-full px-3 py-2.5 rounded-xl mono text-center"
+              style={{ background: C.inputBg, color: C.textPrimary, border: `1px solid ${C.border}`, fontSize: 16 }} />
           </div>
           <div className="text-2xl font-bold pb-2.5" style={{ color: C.textMuted }}>:</div>
           <div className="flex-1">
             <label className="text-[10px] uppercase tracking-wider mb-1 block" style={{ color: C.textMuted }}>Minutes</label>
             <input type="number" inputMode="numeric" min="0" max="59" value={m}
               onChange={(e) => setM(Math.min(59, Math.max(0, parseInt(e.target.value) || 0)))}
-              className="w-full px-3 py-2.5 rounded-xl text-lg mono text-center"
-              style={{ background: C.inputBg, color: C.textPrimary, border: `1px solid ${C.border}` }} />
+              autoComplete="off" autoCorrect="off" autoCapitalize="off"
+              className="w-full px-3 py-2.5 rounded-xl mono text-center"
+              style={{ background: C.inputBg, color: C.textPrimary, border: `1px solid ${C.border}`, fontSize: 16 }} />
           </div>
         </div>
         <div className="flex gap-3">
@@ -3100,8 +3115,8 @@ function ProgressTab({ workouts, exercises, settings }) {
                       <button key={ex.id} onClick={() => setSelectedExId(ex.id)}
                         className="w-full grid grid-cols-[1fr_5rem_4rem] px-4 py-2.5 text-left transition"
                         style={{ borderTop: `1px solid ${C.border}` }}
-                        onMouseOver={e => e.currentTarget.style.background = C.inputBg}
-                        onMouseOut={e => e.currentTarget.style.background = 'transparent'}>
+                        onPointerEnter={e => e.currentTarget.style.background = C.inputBg}
+                        onPointerLeave={e => e.currentTarget.style.background = 'transparent'}>
                         <div className="text-sm truncate pr-2" style={{ color: C.textPrimary }}>{ex.name}</div>
                         <div className="mono text-sm font-semibold text-right" style={{ color: C.accent }}>
                           {pr.weight > 0 ? `${pr.weight} kg` : isBW ? 'BW' : '—'}
@@ -3462,7 +3477,7 @@ function RoutinesTab({ routines, setRoutines, exercises, setExercises, onStart }
                     <button onClick={() => setEditing(r.id)} style={{ color: C.textMuted }}><Edit3 size={14} /></button>
                     <button onClick={() => {
                       const json = JSON.stringify({ name: r.name, note: r.note, scheduledDays: r.scheduledDays, exercises: r.exercises }, null, 2);
-                      navigator.clipboard.writeText(json).then(() => alert('Copied as JSON.'));
+                      navigator.clipboard?.writeText(json).then(() => alert('Copied as JSON.')).catch(() => alert('Copy not supported in this browser.'));
                     }} style={{ color: C.textMuted }} title="Share"><Upload size={14} /></button>
                   </div>
                 </div>
@@ -3561,7 +3576,7 @@ function RoutineEditor({ routine, exercises, onSave, onCancel, onDelete, isNew }
   };
 
   return (
-    <div className="min-h-screen" style={{ background: C.pageBg }}>
+    <div style={{ minHeight: '100dvh', background: C.pageBg }}>
       <FontLoader />
       <div className="px-5 pt-8 pb-32">
         <div className="flex items-center justify-between mb-4">
@@ -3755,24 +3770,27 @@ function SettingsModal({ settings, setSettings, workouts, routines, exercises, s
         <div className="space-y-4 mb-6">
           <div>
             <label className="text-[10px] uppercase tracking-wider block mb-1" style={{ color: C.textMuted }}>Default rest (seconds)</label>
-            <input type="number" value={settings.defaultRest}
+            <input type="number" inputMode="numeric" value={settings.defaultRest}
               onChange={(e) => setSettings({ ...settings, defaultRest: parseInt(e.target.value) || 90 })}
+              autoComplete="off" autoCorrect="off" autoCapitalize="off"
               className="w-full rounded-xl py-3 px-3 mono outline-none"
-              style={{ background: C.inputBg, border: `1px solid ${C.border}`, color: C.textPrimary }} />
+              style={{ background: C.inputBg, border: `1px solid ${C.border}`, color: C.textPrimary, fontSize: 16 }} />
           </div>
           <div>
             <label className="text-[10px] uppercase tracking-wider block mb-1" style={{ color: C.textMuted }}>Bar weight (kg)</label>
-            <input type="number" step="0.5" value={settings.barWeight}
+            <input type="number" inputMode="decimal" step="0.5" value={settings.barWeight}
               onChange={(e) => setSettings({ ...settings, barWeight: parseFloat(e.target.value) || 20 })}
+              autoComplete="off" autoCorrect="off" autoCapitalize="off"
               className="w-full rounded-xl py-3 px-3 mono outline-none"
-              style={{ background: C.inputBg, border: `1px solid ${C.border}`, color: C.textPrimary }} />
+              style={{ background: C.inputBg, border: `1px solid ${C.border}`, color: C.textPrimary, fontSize: 16 }} />
           </div>
           <div>
             <label className="text-[10px] uppercase tracking-wider block mb-1" style={{ color: C.textMuted }}>Bodyweight (kg)</label>
-            <input type="number" step="0.5" value={settings.bodyweight ?? 70}
+            <input type="number" inputMode="decimal" step="0.5" value={settings.bodyweight ?? 70}
               onChange={(e) => setSettings({ ...settings, bodyweight: parseFloat(e.target.value) || 70 })}
+              autoComplete="off" autoCorrect="off" autoCapitalize="off"
               className="w-full rounded-xl py-3 px-3 mono outline-none"
-              style={{ background: C.inputBg, border: `1px solid ${C.border}`, color: C.textPrimary }} />
+              style={{ background: C.inputBg, border: `1px solid ${C.border}`, color: C.textPrimary, fontSize: 16 }} />
             <div className="text-[10px] mt-1" style={{ color: C.textMuted }}>Used to calculate volume for bodyweight exercises</div>
           </div>
           <button onClick={() => setSettings({ ...settings, soundEnabled: !settings.soundEnabled })}
